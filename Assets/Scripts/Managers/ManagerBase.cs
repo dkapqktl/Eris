@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 // class     : 변수 o / 함수 내용 o / 객체생성 o // 자동차로 따지면 : 벤츠(분류), S클래스(분류)
@@ -10,16 +11,16 @@ public abstract class ManagerBase : MonoBehaviour
     GameManager _connetedManager;
 
     // virtual 을 쓰려고 할땐 OCP(개방폐쇄원칙) 을 생각해야함 (확장은 가능, 수정은 불가)
-    public void Connect(GameManager newManager) // 연결
+    public IEnumerator Connect(GameManager newManager) // 연결
     {
         if (_connetedManager != null) Disconnect();
 
         _connetedManager = newManager;
-        OnConnected(newManager);
+        yield return OnConnected(newManager);
     }
 
     // virtual 대신 abstract : 부모에서 정의하지 않겠다, 자식이 알아서 만들어라
-    protected abstract void OnConnected(GameManager newManager); // 연결 했을때
+    protected abstract IEnumerator OnConnected(GameManager newManager); // 연결 했을때
 
 
     public void Disconnect() // 연결 해제

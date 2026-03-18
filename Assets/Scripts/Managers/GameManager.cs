@@ -1,4 +1,7 @@
+using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 
 public class GameManager : MonoBehaviour
@@ -32,6 +35,8 @@ public class GameManager : MonoBehaviour
     InputManager    _input;
     public InputManager Input => _input;
 
+    IEnumerator initializing; // 초기화 중 코루틴
+
 
 
     // Awake     : 프로그램이 시작할 때 (아침에 일어나 뇌 부팅중)
@@ -47,6 +52,7 @@ public class GameManager : MonoBehaviour
         else // 지금 게임메니저가 있다면
         {
             Destroy(this); // 게임메니저를 없애라
+            return; // 부서지면 이후 InitializeManager가 실행하지 못하도록 return 을 적음
         }
 
         // 게임메니저를 많이 넣어놔도 하나만 남기고 다 사라짐
@@ -60,21 +66,33 @@ public class GameManager : MonoBehaviour
         // 오디오
         // 카메라
         // 유저입력 등등
+        initializing = InitializeManagers(); // 반환형식은 IEnumerator => 반복자, 반복해서 함수가 실행 => 프레임 단위로 기다렸다가 실행
+        // 한번 실행하고 [ yield ] 양보 했다가 다음 프레임에 또 나와서 실행하고 반복
+
+        // Coroutine : Co(함께) routine(루틴) 의 합성어, 루틴을 협력적으로 실행
+        StartCoroutine(initializing);
+        // StartCoroutine("InitializeManagers"); 이건 안좋다고 함, 그래서 initializing = InitializeManagers(); 처럼 저장해서 쓰는게 좋다고 함
+
+
     }
 
-    
-
-    void InitializeManager()
+    void OnDestroy()
     {
+        StopCoroutine(initializing); // 로딩이 진행 중이였다면 끊어버릴 수 있도록
+        DeleteManager();
+    }
 
-        CreateManager(ref _ui);
-        CreateManager(ref _data);
-        CreateManager(ref _save);
-        CreateManager(ref _setting);
-        CreateManager(ref _language);
-        CreateManager(ref _audio);
-        CreateManager(ref _camera);
-        CreateManager(ref _input);
+    IEnumerator InitializeManagers()
+    {
+        //             UI를 불러와서 게임매니저(this) 연결한다(connect)
+        yield return CreateManager(ref _ui).Connect(this); // 로딩하려면 UI필요
+        yield return CreateManager(ref _data).Connect(this); // 게임 데이터 불러오기
+        yield return CreateManager(ref _save).Connect(this); // 저장
+        yield return CreateManager(ref _setting).Connect(this); // 세팅 이후 아래것들
+        yield return CreateManager(ref _language).Connect(this);
+        yield return CreateManager(ref _audio).Connect(this);
+        yield return CreateManager(ref _camera).Connect(this);
+        yield return CreateManager(ref _input).Connect(this);
 
         /* 없애도 됨
         if (_ui == null)
@@ -127,6 +145,18 @@ public class GameManager : MonoBehaviour
         */
     }
 
+    void DeleteManager()
+    {
+        Input?.Disconnect();
+        Audio?.Disconnect();
+        Language?.Disconnect();
+        Setting?.Disconnect();
+        Save.Disconnect();
+        Camera?.Disconnect();
+        UI?.Disconnect();
+        Data?.Disconnect();
+    }
+
     // 반환값 이름<자료형>(매개변수) where 자료형 : 부모
     // 원본 값이랑 연결되는 변수
 
@@ -135,12 +165,14 @@ public class GameManager : MonoBehaviour
     {
         if (targetVariable == null)
         {
-            targetVariable = gameObject.AddComponent<ManagerType>();
+            targetVariable = this.TryAddComponent<ManagerType>();
             targetVariable.Connect(this);
         }
 
         return targetVariable;
     }
+
+
 
     void Update()
     {
