@@ -118,6 +118,7 @@ public class GameManager : MonoBehaviour
         loadingProgress?.AddCurrent(1);
         yield return _input.Connect(this);
         loadingProgress?.AddCurrent(1);
+        yield return new WaitForSeconds(1.0f);
         UIManager.ClaimCloseUI(UIType.Loading);
         /* ¾ø¾Öµµ µÊ
         if (_ui == null)
