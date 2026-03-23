@@ -10,6 +10,10 @@ public abstract class ManagerBase : MonoBehaviour
 {
     GameManager _connetedManager;
 
+    // 프로퍼티에도 virtual을 쓸 수 있다.
+    public virtual int LoadCount => 1;
+   
+
     // virtual 을 쓰려고 할땐 OCP(개방폐쇄원칙) 을 생각해야함 (확장은 가능, 수정은 불가)
     public IEnumerator Connect(GameManager newManager) // 연결
     {

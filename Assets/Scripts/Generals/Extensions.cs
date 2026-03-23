@@ -14,6 +14,7 @@ public static class Extensions
     // 0 정규화 :  0 =  0
     public static float nomalized(this float target) // this => 내가 함수를 넣고싶은 대상
     {
+
         if      (target > 0) { return  1; }
         else if (target < 0) { return -1; }
         else                 { return  0; }

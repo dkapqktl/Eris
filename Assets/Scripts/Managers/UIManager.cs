@@ -5,7 +5,7 @@ using UnityEngine.Rendering;
 
 public enum UIType
 {
-    None, Loading, Title,
+    None, Loading, Title, LoadingText,
     _Length
 }
 
@@ -23,7 +23,8 @@ public class UIManager : ManagerBase
     {
         _mainCanvas = GetComponentInChildren<Canvas>();
         // UIBase.FindUIBaseWithTag("MainCanvas"); => 글자로 찾는 방법인데 위에서부터 쭉 찾는거라 오래걸림
-        Debug.Log(MainCanvas);
+        SetUI(UIType.Loading, GetComponentInChildren<UI_LoadingScreen>()); // <> => 어떤 타입을 원하는지? => 자료형!
+        // Debug.Log(MainCanvas);
         yield return null;
     }
 
@@ -32,24 +33,28 @@ public class UIManager : ManagerBase
 
     }
 
-    public UIBase SetUI(UIType wnatType, UIBase wantUI)
+    protected UIBase SetUI(UIType wantType, UIBase wantUI)
     {
         if (wantUI == null) return null; // null 이면 null
 
-        if (uiDictionary.TryGetValue(wnatType, out UIBase origin)) return origin; // 입력한게 2가지라면 origin을 쓴다.
+        if (uiDictionary.TryGetValue(wantType, out UIBase origin)) return origin; // 입력한게 2가지라면 origin을 쓴다.
 
-        uiDictionary.Add(wnatType, wantUI); // 위 두가지에 해당하지 않는다면 입력된 값 그대로 출력
+        uiDictionary.Add(wantType, wantUI); // 위 두가지에 해당하지 않는다면 입력된 값 그대로 출력
 
         return wantUI;
     }
+    public static UIBase ClaimSetUI(UIType wantType, UIBase wantUI) => GameManager.Instance?.UI?.SetUI(wantType, wantUI);
 
-    public UIBase GetUI(UIType wantType)
+
+    protected UIBase GetUI(UIType wantType)
     {
         if (uiDictionary.TryGetValue(wantType, out UIBase result)) return result; // 있으면 result 반환
         else return null; // 없으면 null
     }
+    public static UIBase ClaimGetUI(UIType wantType) => GameManager.Instance?.UI?.GetUI(wantType);
 
-    public UIBase OpenUI(UIType wantType)
+
+    protected UIBase OpenUI(UIType wantType)
     {
         UIBase result = GetUI(wantType);
         // result 는 IOpenable 인 opener 인가
@@ -59,20 +64,29 @@ public class UIManager : ManagerBase
         // if(opener != null) opener.Open();
         return result;
     }
+    public static UIBase ClaimOpenUI(UIType wantType) => GameManager.Instance?.UI?.OpenUI(wantType);
 
-    public UIBase CloseUI(UIType wantType)
+
+    protected UIBase CloseUI(UIType wantType)
     {
+        // CloseUI(UIType wantType) => 이런방식은 매개변수 생성
+        // UIBase result => 이런식이 지역변수
+        // asOpenable.Close(); => asOpenable 의(.) 닫기(Close()) 기능
+       
         UIBase result = GetUI(wantType);
+        //              자료형    이름     => 변수생성
         if (result is IOpenable asOpenable) asOpenable.Close();
         return result;
     }
+    public static UIBase ClaimCloseUI(UIType wantType) => GameManager.Instance?.UI?.CloseUI(wantType);
 
-    public UIBase ToggleUI(UIType wantType)
+
+    protected UIBase ToggleUI(UIType wantType)
     {
         UIBase result = GetUI(wantType);
         if (result is IOpenable asOpenable) asOpenable.Toggle();
         // result?.SetActive(!result.activeSelf); // activeSelf 지금 상태가 result 상태이면(on/off) ! 반대값을 출력하고 그 값으로 SetActive 작동하라
         return result;
     }
-
+    public static UIBase ClaimToggleUI(UIType wantType) => GameManager.Instance?.UI?.ToggleUI(wantType);
 }

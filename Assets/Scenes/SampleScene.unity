@@ -119,6 +119,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &167443179 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3560396556947561153, guid: 3b00bd7c1db53cf4fb70024dfe28d3ac, type: 3}
+  m_PrefabInstance: {fileID: 6583781255760630657}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &296518553
 GameObject:
   m_ObjectHideFlags: 0
@@ -208,6 +219,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb9f22ab8b8339043bb3d38ff170c039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_LoadingScreen
+  progressBar: {fileID: 2117266254}
+  progressText: {fileID: 722005166}
+  statusText: {fileID: 167443179}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -429,6 +443,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &722005166 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7801981627451012697, guid: 3b00bd7c1db53cf4fb70024dfe28d3ac, type: 3}
+  m_PrefabInstance: {fileID: 6583781255760630657}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1 &793841846
 GameObject:
   m_ObjectHideFlags: 0
@@ -661,6 +686,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 571904932678855462, guid: 3b00bd7c1db53cf4fb70024dfe28d3ac, type: 3}
   m_PrefabInstance: {fileID: 6583781255760630657}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &2117266254 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3896821024498288368, guid: 3b00bd7c1db53cf4fb70024dfe28d3ac, type: 3}
+  m_PrefabInstance: {fileID: 6583781255760630657}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67db9e8f0e2ae9c40bc1e2b64352a6b4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Slider
 --- !u!1001 &6583781255760630657
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -72,28 +72,53 @@ public class GameManager : MonoBehaviour
         // Coroutine : Co(함께) routine(루틴) 의 합성어, 루틴을 협력적으로 실행
         StartCoroutine(initializing);
         // StartCoroutine("InitializeManagers"); 이건 안좋다고 함, 그래서 initializing = InitializeManagers(); 처럼 저장해서 쓰는게 좋다고 함
+        // initializing을 StartCoroutine 반복해서 실행해줘
 
+        UIManager.ClaimCloseUI(UIType.Loading);
 
     }
 
     void OnDestroy()
     {
-        StopCoroutine(initializing); // 로딩이 진행 중이였다면 끊어버릴 수 있도록
+        if(initializing != null) StopCoroutine(initializing); // 로딩이 진행 중이였다면 끊어버릴 수 있도록
         DeleteManager();
     }
 
     IEnumerator InitializeManagers()
     {
-        //             UI를 불러와서 게임매니저(this) 연결한다(connect)
-        yield return CreateManager(ref _ui).Connect(this); // 로딩하려면 UI필요
-        yield return CreateManager(ref _data).Connect(this); // 게임 데이터 불러오기
-        yield return CreateManager(ref _save).Connect(this); // 저장
-        yield return CreateManager(ref _setting).Connect(this); // 세팅 이후 아래것들
-        yield return CreateManager(ref _language).Connect(this);
-        yield return CreateManager(ref _audio).Connect(this);
-        yield return CreateManager(ref _camera).Connect(this);
-        yield return CreateManager(ref _input).Connect(this);
+        int tatalLoadCount = 0;
 
+        tatalLoadCount += CreateManager(ref _ui).LoadCount;
+        tatalLoadCount += CreateManager(ref _data).LoadCount;
+        tatalLoadCount += CreateManager(ref _save).LoadCount;
+        tatalLoadCount += CreateManager(ref _setting).LoadCount;
+        tatalLoadCount += CreateManager(ref _language).LoadCount;
+        tatalLoadCount += CreateManager(ref _audio).LoadCount;
+        tatalLoadCount += CreateManager(ref _camera).LoadCount;
+        tatalLoadCount += CreateManager(ref _input).LoadCount;
+
+
+        //             UI를 불러와서 게임매니저(this) 연결한다(connect)
+        yield return _ui.Connect(this); // 로딩하려면 UI필요
+        UIBase loadingUI = UIManager.ClaimOpenUI(UIType.Loading); // UI System 이 돌아가기 시작했으니 기능 실행해보기!
+        IProgress<int> loadingProgress = loadingUI as IProgress<int>; // 이 유아이가 아이프로그래스라면
+
+        loadingProgress?.Set(0, tatalLoadCount);
+        yield return _data.Connect(this); // 게임 데이터 불러오기
+        loadingProgress?.AddCurrent(1);
+        yield return _save.Connect(this); // 저장
+        loadingProgress?.AddCurrent(1);
+        yield return _setting.Connect(this); // 세팅 이후 아래것들
+        loadingProgress?.AddCurrent(1);
+        yield return _language.Connect(this);
+        loadingProgress?.AddCurrent(1);
+        yield return _audio.Connect(this);
+        loadingProgress?.AddCurrent(1);
+        yield return _camera.Connect(this);
+        loadingProgress?.AddCurrent(1);
+        yield return _input.Connect(this);
+        loadingProgress?.AddCurrent(1);
+        UIManager.ClaimCloseUI(UIType.Loading);
         /* 없애도 됨
         if (_ui == null)
         {
