@@ -1,0 +1,135 @@
+{
+    "version": 1,
+    "name": "GeneralKeyInput",
+    "maps": [
+        {
+            "name": "General",
+            "id": "a3a0ea90-95b4-4058-8d33-48ade03c986c",
+            "actions": [
+                {
+                    "name": "CursorPositionChanged",
+                    "type": "Value",
+                    "id": "8eec7a98-3a42-4b2e-b340-6dda6531a8bc",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "CursorDeltaChanged",
+                    "type": "Value",
+                    "id": "88da0916-8577-43fd-acd5-273875f3570d",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "MouseLeftButtonDown",
+                    "type": "Button",
+                    "id": "5f411079-b256-4387-83b7-e4b58a39ef79",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MouseRightButtonDown",
+                    "type": "Button",
+                    "id": "b5996b59-0b9d-4ad9-85ea-e1239354ff8d",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MouseLeftButtonUp",
+                    "type": "Button",
+                    "id": "8d1cb8e7-a628-405a-94a4-65a3880bc09c",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "MouseRightButtonUp",
+                    "type": "Button",
+                    "id": "07c6aca9-d673-428b-93fc-c8f04311ee6e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "7c511c65-0bbb-4e6c-a7ff-adcf91a2a0a4",
+                    "path": "<Mouse>/position",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CursorPositionChanged",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8efb4dd3-693b-4511-add0-a3ea755943e0",
+                    "path": "<Mouse>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "CursorDeltaChanged",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "5f92ad55-e3d7-4744-808e-a50afb5c8b32",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseLeftButtonDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "846fcc61-9bc8-4296-8558-9dd3fd49b12b",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseRightButtonDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4eb7aa49-c34f-4961-ac9c-b7ef0d4ac266",
+                    "path": "<Mouse>/rightButton",
+                    "interactions": "Press(behavior=1)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseRightButtonUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "97416a33-bf67-40e7-bdf7-bf80485e1626",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "Press(behavior=1)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "MouseLeftButtonUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}

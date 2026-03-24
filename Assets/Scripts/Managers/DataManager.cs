@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets; // UnityEngine에 AddressableAssets 파일 불러오기
 
@@ -15,6 +16,9 @@ A a;
 
 public class DataManager : ManagerBase
 {
+    // 딕셔너리 안에 딕셔너리
+    //         어떤 종류인지
+    static Dictionary<System.Type, Dictionary<string, Object>> dataDictionary = new();
 
     // 프로퍼티는 변수 모양이지만 함수
     //              int GetLoadCount => 100; 이게 실제 모양임
@@ -56,6 +60,13 @@ public class DataManager : ManagerBase
         // LoadFileFromAssetBundle<GameObject>("Original/Prefabs/Square.prefab");
         LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad); // 
 
+
+        /*
+        GameObject prefad = LoadDataFile<GameObject>("square 17");
+        Instantiate(prefad, Random.insideUnitCircle * 5.0f, Random.rotation);
+        */
+
+
         if (TryGetFileFromResources("Prefabs/Square", out Sprite trash))
         {
             Debug.Log(trash);
@@ -85,10 +96,34 @@ public class DataManager : ManagerBase
         return result != null; // result가 null 이 아니라면 ture
     }
 
-    public void SaveDataFile<T>(T target) where T : Object
+    public static void SaveDataFile<T>(T target) where T : Object
     {
         if (target == null) return;
-        Debug.Log(target);
+        Dictionary<string, Object> innerDictionary;
+
+        // 
+        if(!dataDictionary.TryGetValue(typeof(T), out innerDictionary)) // dataDictionary의 값을 ()에서 얻어오는걸 시도해라, 타입이 T인지 확인해라
+        {
+            innerDictionary = new();
+            dataDictionary.Add(typeof(T), innerDictionary);
+        }
+
+        innerDictionary.TryAdd(target.name, target);
+     }
+
+    public static T LoadDataFile<T>(string fileName) where T : Object
+    {
+
+        if (dataDictionary.TryGetValue(typeof(T), out Dictionary<string, Object> innerDictionary))
+        {
+            if(innerDictionary.TryGetValue(fileName, out Object result))
+            {
+                return result as T; // Object는 T타입으로 못만듦, result만 적으면 오류생김, as T를 써야함
+                // as ~ : result를 T 처럼 봐라
+            }
+        }
+
+        return null;
     }
 
     // Action 행동은 언제나 함수 => 반환값이 없는 함수
@@ -103,6 +138,7 @@ public class DataManager : ManagerBase
             actionForEachLoad();
         }); // 불러오기를 시키고
         await finder.Task; // 파인더를 사용한다.
+        finder.Release();
     }
 
     // async 함수는 비동기 함수 => 다른 함수와 같이 돌아갈 수 있는 함수
@@ -114,7 +150,7 @@ public class DataManager : ManagerBase
         var finder =  Addressables.LoadAssetAsync<GameObject>(address);
         await finder.Task;
         SaveDataFile(finder.Result);
-
+        finder.Release();
 
 
         // Tan => ATan => 비동기, 동기화하지 않는다
