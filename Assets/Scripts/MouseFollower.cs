@@ -3,27 +3,29 @@ using UnityEngine.UIElements;
 
 public class MouseFollower : MonoBehaviour
 {
-
-    float zPosition = 0f;
     void Start()
     {
-        InputManager.OnMouseMove += MoveToMouse; // 마우스를 따라가라
+        InputManager.OnMouseMove += MoveToMouse; // 마우스를 커서를 따라가라
+        //  InputManager.OnMouseLeftUp += CreateToMouse; // 마우스 좌클릭시 커서위치를 따라가라
+        InputManager.OnMouseLeftDown += CreateToMouse; // 마우스 좌클릭시 커서위치를 따라가라
+        InputManager.OnMouseRightUp += DestroyOnMouse;
+        // InputManager.OnMouseRightDown += DestroyOnMouse;
     }
 
-    public void OnKeyZ()
+    void DestroyOnMouse(Vector2 screenPosition, Vector3 worldPosition)
     {
-        zPosition -= 10f;
+        Debug.Log(GameManager.Instance.Input.GetGameObjectUnderCursor());
     }
 
-    public void OnKeyC()
+    void CreateToMouse(Vector2 screenPosition, Vector3 worldPosition)
     {
-        zPosition += 10f;
+        // 로딩
+        Instantiate(DataManager.LoadDataFile<GameObject>("Square 14"), worldPosition, Quaternion.identity);
     }
+
     void MoveToMouse(Vector2 screenPosition, Vector3 worldPosition)
     {
-        worldPosition.z += zPosition;
         transform.position = worldPosition;            
-      
     }
         
 }

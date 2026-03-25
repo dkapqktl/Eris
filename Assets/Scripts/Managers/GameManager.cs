@@ -4,6 +4,13 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.UIElements;
 
+public delegate void InitializeEvent();
+public delegate void UpdateEvent(float deltaTime); // ex) 3km/h 인 속도로 1시간 30분 정도 가면 몇 키로를 가는지? => 4.5km // 즉 변화량을 시간단위로
+public delegate void DestroyEvent();
+// public delegate void OnEnableEvent();
+// public delegate void OnDisableEvent();
+
+
 public class GameManager : MonoBehaviour
 {
     // static : 프로그램에서 딱 하나뿐
@@ -37,7 +44,23 @@ public class GameManager : MonoBehaviour
 
     IEnumerator initializing; // 초기화 중 코루틴
 
+    public static event InitializeEvent OnInitializeManager;      // 매니저 초기화
+    public static event InitializeEvent OnInitializeController;   // 컨트롤러 초기화
+    public static event InitializeEvent OnInitializeCharacter;    // 캐릭터 초기화
+    public static event InitializeEvent OnInitializeObject;       // 오브젝트 초기화
 
+    public static event UpdateEvent OnUpdateManager;          // 매니저 업데이트
+    public static event UpdateEvent OnUpdateController;       // 컨트롤러 업데이트
+    public static event UpdateEvent OnUpdateCharacter;        // 캐릭터 업데이트
+    public static event UpdateEvent OnUpdateObject;           // 오브젝트 업데이트
+
+    public static event DestroyEvent OnDestroyObject;           // 오브젝트 제거
+    public static event DestroyEvent OnDestroyCharacter;        // 캐릭터 제거
+    public static event DestroyEvent OnDestroyController;       // 컨트롤러 제거
+    public static event DestroyEvent OnDestroyManager;          // 매니저 제거
+
+    bool isLoading = true;
+    bool isPlaying = true;
 
     // Awake     : 프로그램이 시작할 때 (아침에 일어나 뇌 부팅중)
     // OnEnabled : 프로그램이 시작할 때 (뇌가 활성화 됨)
@@ -120,6 +143,7 @@ public class GameManager : MonoBehaviour
         loadingProgress?.AddCurrent(1);
         yield return new WaitForSeconds(1.0f);
         UIManager.ClaimCloseUI(UIType.Loading);
+        isLoading = false;
         /* 없애도 됨
         if (_ui == null)
         {
@@ -198,10 +222,64 @@ public class GameManager : MonoBehaviour
         return targetVariable;
     }
 
+    public static void Pause()
+    {
+        Instance.isPlaying = false;
+    }
 
+
+    public static void UnPause()
+    {
+        Instance.isPlaying = true;
+    }
+
+    public void InvokeInitializeEvent(ref InitializeEvent OriginEvent)
+    {
+        if (OriginEvent != null) // 이벤트가 있으면 실행
+        {
+            InitializeEvent currentEvent = OriginEvent; // 원본은 저장해두고
+            OriginEvent = null; // 기존껀 초기화
+            currentEvent.Invoke(); // 원본은 실행
+        }
+    }
+
+    public void InvokeDestroyEvent(ref DestroyEvent OriginEvent)
+    {
+        if (OriginEvent != null) // 이벤트가 있으면 실행
+        {
+            DestroyEvent currentEvent = OriginEvent; // 원본은 저장해두고
+            OriginEvent = null; // 기존껀 초기화
+            currentEvent.Invoke(); // 원본은 실행
+        }
+    }
 
     void Update()
     {
-        
+        if (isLoading) return;
+        // 게임 진행을 할 수 있는지 조정 => 초기화 해야하는지 말아야하는지
+        // 퍼지 (Pause), 로딩 (Loading) 등의 업데이트를 하면 안되는 상황에서 업데이트 하지 않도록
+
+        InvokeInitializeEvent(ref OnInitializeManager);
+        InvokeInitializeEvent(ref OnInitializeCharacter);
+        InvokeInitializeEvent(ref OnInitializeController);
+        InvokeInitializeEvent(ref OnInitializeObject);
+
+
+        float deltaTime = Time.deltaTime;
+
+        if (isPlaying)
+        {
+            OnUpdateManager?.    Invoke(deltaTime);
+            OnUpdateCharacter?.  Invoke(deltaTime);
+            OnUpdateController?. Invoke(deltaTime);
+            OnUpdateObject?.     Invoke(deltaTime);
+        }
+
+        InvokeDestroyEvent(ref OnDestroyObject);
+        InvokeDestroyEvent(ref OnDestroyCharacter);
+        InvokeDestroyEvent(ref OnDestroyController);
+        InvokeDestroyEvent(ref OnDestroyManager);
+
+
     }
 }
