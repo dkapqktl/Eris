@@ -18,11 +18,14 @@ public class GameManager : MonoBehaviour
 
     public static GameManager Instance => _instance;
 
-    UIManager _ui;
+    UIManager       _ui;
     public UIManager UI => _ui;
 
     DataManager     _data;
     public DataManager Data => _data;
+
+    ObjectManager _objectM;
+    public ObjectManager ObjectM => _objectM;
 
     SaveManager     _save;
     public SaveManager Save => _save;
@@ -111,8 +114,9 @@ public class GameManager : MonoBehaviour
     {
         int tatalLoadCount = 0;
 
-        tatalLoadCount += CreateManager(ref _ui).LoadCount;
+        tatalLoadCount += CreateManager(ref _ui).LoadCount; 
         tatalLoadCount += CreateManager(ref _data).LoadCount;
+        tatalLoadCount += CreateManager(ref _objectM).LoadCount;
         tatalLoadCount += CreateManager(ref _save).LoadCount;
         tatalLoadCount += CreateManager(ref _setting).LoadCount;
         tatalLoadCount += CreateManager(ref _language).LoadCount;
@@ -128,6 +132,8 @@ public class GameManager : MonoBehaviour
 
         loadingProgress?.Set(0, tatalLoadCount);
         yield return _data.Connect(this); // 게임 데이터 불러오기
+        loadingProgress?.AddCurrent(1);
+        yield return _objectM.Connect(this);
         loadingProgress?.AddCurrent(1);
         yield return _save.Connect(this); // 저장
         loadingProgress?.AddCurrent(1);
@@ -198,6 +204,7 @@ public class GameManager : MonoBehaviour
     void DeleteManager()
     {
         Input?.Disconnect();
+        ObjectM?.Disconnect();
         Audio?.Disconnect();
         Language?.Disconnect();
         Setting?.Disconnect();
@@ -232,6 +239,7 @@ public class GameManager : MonoBehaviour
     {
         Instance.isPlaying = true;
     }
+
 
     public void InvokeInitializeEvent(ref InitializeEvent OriginEvent)
     {

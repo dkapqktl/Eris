@@ -57,11 +57,25 @@ public class InputManager : ManagerBase
 
     public void UpdateEvent(float deltaTime)
     {
-        GameManager.Instance.Camera.GetRaycastResult2D(cursorScreenPosition, cursorHitList);
+        RefreshGameObjectUnderCursor();
+    }
+
+    void RefreshGameObjectUnderCursor()
+    {
+        cursorHitList.Clear();
+        if(is2D)
+        { 
+            GameManager.Instance.Camera.GetRaycastResult2D(cursorScreenPosition, cursorHitList);
+        }
+        else
+        {
+            GameManager.Instance.Camera.GetRaycastResult3D(cursorScreenPosition, cursorHitList);
+        }
     }
 
     public GameObject GetGameObjectUnderCursor()
     {
+        // 마우스에 닿은것의 개수가 0이라면 없는것이니 null 을 반환하여 돌아가라
         if (cursorHitList.Count == 0) return null;
 
         return cursorHitList[0].gameObject; // 첫번째 오브젝트를 돌려주기
