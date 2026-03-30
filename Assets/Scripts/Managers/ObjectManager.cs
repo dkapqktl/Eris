@@ -1,6 +1,6 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering.LookDev;
 
 // 없을 수 있다 : class
 // 없을 수 없다 : struct
@@ -16,11 +16,23 @@ public struct PoolSetting
 public class ObjectManager : ManagerBase
 {
     // public 과 상관없이 직렬화가 되면 유니티에서 볼 수 있음
-    [SerializeField] PoolSetting[] testSettings;
+    // [SerializeField] PoolSetting[] testSettings;
+
+    // 리스트 : 추가제거 쉬운 대신 용량↑ / 찾는 속도 느림 / 추가제거 많고 전체를 도는일이 적을때
+    // 배열 : 추가제거 어려운 대신 용량↓ / 찾는 속도 빠름 / 추가제거 적고 전체를 도는일이 많을때
+
+    List<PoolRequest> loadedPoolRequest = new();
+
+    Dictionary<string, GameObject> prefabDictionary = new();
 
     // IEnumerator 에는 반환값이 필요함, 그냥 return 이 아니라 yield return 을 써야함
     protected override IEnumerator OnConnected(GameManager newManager)
     {
+        RegistrationPool("GlobalCharacterPool");
+        RegistrationPool("GlobalControllerPool");
+        RegistrationPool("GlobalEffectPool");
+        RegistrationPool("GlobalObjectPool");
+        RegistrationPool("GlobalUIPool");
         yield return null;
     }
 
@@ -143,7 +155,7 @@ public class ObjectManager : ManagerBase
         return result;
     }
 
-    public static void RegistrationObject(GameObject target)
+    public static void RegistrationObject(GameObject target) // 실제로 등록하는 기능
     {
         if (target)
         {
@@ -183,4 +195,19 @@ public class ObjectManager : ManagerBase
         }
     }
 
+    public void RegistrationPool(string poolName)
+    {
+        PoolRequest currentRequest = DataManager.LoadDataFile<PoolRequest>(poolName);
+        if (currentRequest == null) return;
+        loadedPoolRequest.Add(currentRequest);
+        //        학생          다음학생    in     3학년 1반
+        foreach (PoolSetting currentSetting in currentRequest.settings)
+        {
+            string currentName = currentSetting.poolName;
+            GameObject currentPrefab = currentSetting.target;
+            if (currentPrefab == null) continue; // 없다면 건너뛰기
+            if (prefabDictionary.ContainsKey(currentName)) continue; // 이름이 같다면 건너뛰기
+            prefabDictionary.Add(currentName, currentPrefab);
+        }
+    }
 }

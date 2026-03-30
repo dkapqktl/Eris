@@ -59,6 +59,7 @@ public class DataManager : ManagerBase
         // 그냥 함수를 실행하는 것이 아니라, 이 작업을 시작할 인원을 모 => 해당 스레드한테 시켜야 함
         // LoadFileFromAssetBundle<GameObject>("Original/Prefabs/Square.prefab");
         LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad); // 
+        LoadAllFromAssetBundle<PoolRequest>("Global", ProgressOnLoad);
 
 
         /*
