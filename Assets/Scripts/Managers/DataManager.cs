@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets; // UnityEngine에 AddressableAssets 파일 불러오기
 
@@ -47,19 +48,22 @@ public class DataManager : ManagerBase
 
         int loaded = 0;
         int total = LoadCount;
+        string loadString = "Load Data";
 
         System.Action ProgressOnLoad = () =>
         {
             loaded++;
             progressUI?.AddCurrent(1);
-            statusUI?.SetCurrentStatus($"Load Date({loaded} / {total})");
+            statusUI?.SetCurrentStatus($"{loadString}({loaded} / {total})");
         };
 
-        
+
         // 그냥 함수를 실행하는 것이 아니라, 이 작업을 시작할 인원을 모 => 해당 스레드한테 시켜야 함
         // LoadFileFromAssetBundle<GameObject>("Original/Prefabs/Square.prefab");
-        LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad); // 
-        LoadAllFromAssetBundle<PoolRequest>("Global", ProgressOnLoad);
+        loadString = "Load Game Objects";
+        yield return LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad).WiatForTask(); // WiatForTask => Task가 끝날때 까지 기다리는 함수
+        loadString = "Load Pool Requests";
+        yield return LoadAllFromAssetBundle<PoolRequest>("Global", ProgressOnLoad).WiatForTask(); // WiatForTask => Task가 끝날때 까지 기다리는 함수
 
 
         /*
@@ -131,7 +135,7 @@ public class DataManager : ManagerBase
     // Action<int> => void function(int a)
     // Action<float> => void function(float a)
     // Action<int, float> => void function(int a, float b)
-    public async void LoadAllFromAssetBundle<T>(string label, System.Action actionForEachLoad) where T : Object
+    public async Task LoadAllFromAssetBundle<T>(string label, System.Action actionForEachLoad) where T : Object
     {
         var finder = Addressables.LoadAssetsAsync<T>(label, (T loaded) =>
         {
@@ -139,6 +143,7 @@ public class DataManager : ManagerBase
             actionForEachLoad();
         }); // 불러오기를 시키고
         await finder.Task; // 파인더를 사용한다.
+        finder.WaitForCompletion(); // 끝날때까지 기다린다.
         finder.Release();
     }
 

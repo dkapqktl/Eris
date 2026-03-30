@@ -23,7 +23,8 @@ public class ObjectManager : ManagerBase
 
     List<PoolRequest> loadedPoolRequest = new();
 
-    Dictionary<string, GameObject> prefabDictionary = new();
+    Dictionary<string, ObjectPoolModule> prefabDictionary = new();
+
 
     // IEnumerator 에는 반환값이 필요함, 그냥 return 이 아니라 yield return 을 써야함
     protected override IEnumerator OnConnected(GameManager newManager)
@@ -33,8 +34,19 @@ public class ObjectManager : ManagerBase
         RegistrationPool("GlobalEffectPool");
         RegistrationPool("GlobalObjectPool");
         RegistrationPool("GlobalUIPool");
+
+        InitializePool();
+
         yield return null;
     }
+    
+    // OnConnected => 연결이 되었을 때 => 시작할 때 => 초기화 할 때 => 코루틴으로 만들어야함 => IEnumerator
+    // OnDisconnected => 연결이 끊겼을 때 => 끝날 때 => 정리할 때
+    // 코루틴이란? => 중간에 멈췄다가 다시 시작할 수 있는 함수 => IEnumerator => yield return => 멈추는 지점
+    // 코루틴을 쓰는 이유? => 시간이 걸리는 작업을 나눠서 처리할 수 있음 => 프레임이 끊기는 것을 방지할 수 있음
+    // 프레임이란 => 1초에 몇번 화면이 갱신되는지 => 60프레임 => 1초에 60번 화면이 갱신됨 => 1프레임 = 1/60초 => 16.67ms => 16.67ms 이상 걸리는 작업이 있으면 프레임이 끊김 => 프레임 드랍
+    // 프레임 드랍 => 게임이 끊기는 것 => 플레이어가 불편함 => 프레임 드랍을 방지하기 위해 코루틴을 사용함
+
 
     protected override void OnDisconnected()
     {
@@ -190,6 +202,7 @@ public class ObjectManager : ManagerBase
             // GetComponentsInChildren<IFunctionable> => 나 포함 자식들 한테 있는 모든 컴포넌트
             foreach (var current in target.GetComponentsInChildren<IFunctionable>())
             {
+               
                 current.UnRegistrationFunctions();
             }
         }
@@ -208,6 +221,14 @@ public class ObjectManager : ManagerBase
             if (currentPrefab == null) continue; // 없다면 건너뛰기
             if (prefabDictionary.ContainsKey(currentName)) continue; // 이름이 같다면 건너뛰기
             prefabDictionary.Add(currentName, currentPrefab);
+        }
+    }
+
+    public void InitializePool(string poolName)
+    {
+        foreach(ObjectPoolModule currentPool in poolDictionary.Values)
+        {
+            currentPool.InitializePool();
         }
     }
 }

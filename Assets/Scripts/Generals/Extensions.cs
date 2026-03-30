@@ -1,5 +1,6 @@
 using UnityEngine;
-
+using System.Collections;
+using System.Threading.Tasks;
 // 게임으로 따지면 확장팩(DLC)
 // => 추가 컨텐츠
 // 원본에 없는것을 추가해주는 개념
@@ -39,6 +40,18 @@ public static class Extensions
         // return target.GetComponent<T>();
 
         return result;
+    }
+
+    public static T TryAddComponent<T>(this GameObject target) where T : Component // NRVO => 이름이 있는 반환값 최적화 => 컴파일러가 최적화해서 반환값을 바로 반환해주는 것
+    {
+        if (target == null) return null;
+        else                return target.TryAddComponent<T>(); // NRVO
+    }
+
+    public static IEnumerator WiatForTask(this Task targetTask) // Task => 비동기 작업 => 끝날때 까지 기다리는 함수
+    {
+        yield return new WaitUntil(() => targetTask.IsCompleted); // Task가 끝날때 까지 기다려라
+        targetTask.Dispose(); // Task는 끝났으면 닫아줘야함
     }
 
     public static T TryAddComponent<T>(this Component target) where T : Component
