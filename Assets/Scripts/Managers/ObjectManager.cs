@@ -1,20 +1,22 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-// 없을 수 있다 : class
-// 없을 수 없다 : struct
-[System.Serializable] // Serializable : 직렬화할수있는 // serial => 연속적인, 직렬연결되어있다. // ~lize => ~ 화 // ~able => ~할수있는
-public struct PoolSetting
-{
-    public string poolName;
-    public GameObject target; // 대상
-    public int countInitial; // 처음 준비할 개수
-    public int countAdditional; // 부족하면 추가 할 개수
-}
+
 
 public class ObjectManager : ManagerBase
 {
+
+    readonly string[] globalpoolSettings =
+    {
+        "GlobalCharacterPool",
+        "GlobalControllerPool",
+        "GlobalEffectPool",
+        "GlobalObjectPool",
+        "GlobalUIPool"
+    };
+
     // public 과 상관없이 직렬화가 되면 유니티에서 볼 수 있음
     // [SerializeField] PoolSetting[] testSettings;
 
@@ -23,18 +25,13 @@ public class ObjectManager : ManagerBase
 
     List<PoolRequest> loadedPoolRequest = new();
 
-    Dictionary<string, ObjectPoolModule> prefabDictionary = new();
+    static Dictionary<string, ObjectPoolModule> poolDictionary = new();
 
 
     // IEnumerator 에는 반환값이 필요함, 그냥 return 이 아니라 yield return 을 써야함
     protected override IEnumerator OnConnected(GameManager newManager)
     {
-        RegistrationPool("GlobalCharacterPool");
-        RegistrationPool("GlobalControllerPool");
-        RegistrationPool("GlobalEffectPool");
-        RegistrationPool("GlobalObjectPool");
-        RegistrationPool("GlobalUIPool");
-
+        RegistrationPool(globalpoolSettings);
         InitializePool();
 
         yield return null;
@@ -53,6 +50,47 @@ public class ObjectManager : ManagerBase
         
     }
 
+    /*
+    public static GameObject GetObject(string wantName)
+    {
+        if(poolDictionary.TryGetValue(wantName, out ObjectPoolModule pool))
+        {
+            return pool.CreateObject();
+        }
+        
+        GameObject prefab = DataManager.LoadDataFile<GameObject>(wantName);
+        
+        if (prefab)
+        {
+            return Instantiate(DataManager.LoadDataFile<GameObject>(wantName));
+        }
+
+        return null;
+    }
+    */
+
+    public static GameObject CreateObject(string wantName, Transform parent = null)
+    {
+        GameObject result = null;
+
+        if (poolDictionary.TryGetValue(wantName, out ObjectPoolModule pool))
+        {
+            result = pool.CreateObject(parent);
+        }
+
+        else
+        {
+            GameObject prefab = DataManager.LoadDataFile<GameObject>(wantName);
+            if (prefab)
+            {
+                result = Instantiate(prefab, parent);
+            }
+        }
+
+        RegistrationObject(result);
+
+        return result;
+    }
     public static GameObject CreateObject(GameObject prefab, Transform parent = null)
     {
         if (prefab == null) return null;
@@ -62,6 +100,12 @@ public class ObjectManager : ManagerBase
         return result;
     }
 
+    public static GameObject CreateObject(string wantName, Vector3 position)
+    {
+        GameObject result = CreateObject(wantName);
+        if (result) result.transform.position = position;
+        return result;
+    }
     public static GameObject CreateObject(GameObject prefab, Vector3 position)
     {
         GameObject result = CreateObject(prefab);
@@ -69,6 +113,18 @@ public class ObjectManager : ManagerBase
         return result;
     }
 
+
+    public static GameObject CreateObject(string wantName, Vector3 position, Quaternion rotation)
+    {
+        GameObject result = CreateObject(wantName);
+        if (result)
+        {
+            result.transform.position = position;
+            result.transform.rotation = rotation;
+        }
+
+        return result;
+    }
     public static GameObject CreateObject(GameObject prefab, Vector3 position, Quaternion rotation)
     {
         GameObject result = CreateObject(prefab);
@@ -81,6 +137,19 @@ public class ObjectManager : ManagerBase
         return result;
     }
 
+
+    public static GameObject CreateObject(string wantName, Vector3 position, Quaternion rotation, Vector3 scale)
+    {
+        GameObject result = CreateObject(wantName);
+        if (result)
+        {
+            result.transform.position = position;
+            result.transform.rotation = rotation;
+            result.transform.localScale = scale;
+        }
+
+        return result;
+    }
     public static GameObject CreateObject(GameObject prefab, Vector3 position, Quaternion rotation, Vector3 scale)
     {
         GameObject result = CreateObject(prefab);
@@ -95,6 +164,24 @@ public class ObjectManager : ManagerBase
     }
 
 
+    public static GameObject CreateObject(string wantName, Transform parent, Vector3 position, Space space = Space.Self)
+    {
+        GameObject result = CreateObject(wantName, parent);
+        if (result)
+        {
+            switch (space)
+            {
+                case Space.World:
+                    result.transform.position = position; // 절대값을 기준으로
+                    break;
+
+                case Space.Self:
+                    result.transform.localPosition = position; // 부모를 기준으로
+                    break;
+            }
+        }
+        return result;
+    }
     public static GameObject CreateObject(GameObject prefab, Transform parent, Vector3 position, Space space = Space.Self)
     {
         GameObject result = CreateObject(prefab, parent);
@@ -114,6 +201,28 @@ public class ObjectManager : ManagerBase
         return result;
     }
 
+
+
+    public static GameObject CreateObject(string wantName, Transform parent, Vector3 position, Quaternion rotation, Space space = Space.Self)
+    {
+        GameObject result = CreateObject(wantName, parent);
+        if (result)
+        {
+            switch (space)
+            {
+                case Space.World:
+                    result.transform.position = position; // 절대값을 기준으로
+                    result.transform.rotation = rotation;
+                    break;
+
+                case Space.Self:
+                    result.transform.localPosition = position; // 부모를 기준으로
+                    result.transform.localRotation = rotation;
+                    break;
+            }
+        }
+        return result;
+    }
     // 오브젝트의 크기는 건들면 안됨
     // 부모가 x 200 y 100, scale x 1 y 1 인 직사각형일때 자식들은 정사각형이여도 scale x 0.5 y 1 이 되버리기 때문
     public static GameObject CreateObject(GameObject prefab, Transform parent, Vector3 position, Quaternion rotation, Space space = Space.Self)
@@ -131,6 +240,38 @@ public class ObjectManager : ManagerBase
                 case Space.Self:
                     result.transform.localPosition = position; // 부모를 기준으로
                     result.transform.localRotation = rotation;
+                    break;
+            }
+        }
+        return result;
+    }
+
+
+
+    public static GameObject CreateObject(string wantName, Transform parent, Vector3 position, Quaternion rotation, Vector3 scale, Space space = Space.Self)
+    {
+        GameObject result = CreateObject(wantName, parent);
+        if (result)
+        {
+            switch (space)
+            {
+                case Space.World:
+                    result.transform.position = position; // 부모를 기준으로
+                    result.transform.rotation = rotation;
+                    result.transform.localScale = scale;
+                    // result.transform.position = position.transform.lossyScale; // 절대값을 기준으로
+                    // result.transform.rotation = rotation.transform.lossyScale;
+                    // float scaledScaleX = scale.x * (originLocalScale.x / originlossyScale.x);
+                    // float scaledScaleX = scale.y * (originLocalScale.y / originlossyScale.y);
+                    // float scaledScaleX = scale.z * (originLocalScale.z / originlossyScale.z);
+                    // result.transform.localScale = scale; // 스케일은 절대값을 따질 수 없음 그래서 로컬스케일을 써야함
+                    // lossy
+                    break;
+
+                case Space.Self:
+                    result.transform.localPosition = position; // 부모를 기준으로
+                    result.transform.localRotation = rotation;
+                    result.transform.localScale = scale;
                     break;
             }
         }
@@ -186,9 +327,17 @@ public class ObjectManager : ManagerBase
     public static void DestroyObject(GameObject target)
     {
         if (!target) return;
+        UnRegistrationObject(target);
+        if (target.TryGetComponent(out PooledObject pool))
+        {
+            pool.OnEnqueue();
+        }
 
-        UnRegistrationObject(target); // 만들고
-        Destroy(target);
+        else
+        {
+            Destroy(target);
+        }
+
     }
 
     public static void UnRegistrationObject(GameObject target)
@@ -210,6 +359,7 @@ public class ObjectManager : ManagerBase
 
     public void RegistrationPool(string poolName)
     {
+
         PoolRequest currentRequest = DataManager.LoadDataFile<PoolRequest>(poolName);
         if (currentRequest == null) return;
         loadedPoolRequest.Add(currentRequest);
@@ -219,16 +369,24 @@ public class ObjectManager : ManagerBase
             string currentName = currentSetting.poolName;
             GameObject currentPrefab = currentSetting.target;
             if (currentPrefab == null) continue; // 없다면 건너뛰기
-            if (prefabDictionary.ContainsKey(currentName)) continue; // 이름이 같다면 건너뛰기
-            prefabDictionary.Add(currentName, currentPrefab);
+            if (poolDictionary.ContainsKey(currentName)) continue; // 이름이 같다면 건너뛰기
+            poolDictionary.Add(currentName, new(currentSetting));
         }
     }
 
-    public void InitializePool(string poolName)
+    public void RegistrationPool(params string[] poolNames)
+    {
+        foreach (string poolName in poolNames)
+        {
+            RegistrationPool(poolName);
+        }
+    }
+
+    public void InitializePool()
     {
         foreach(ObjectPoolModule currentPool in poolDictionary.Values)
         {
-            currentPool.InitializePool();
+            currentPool.Initialize();
         }
     }
 }

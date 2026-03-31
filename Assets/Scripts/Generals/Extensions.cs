@@ -42,7 +42,7 @@ public static class Extensions
         return result;
     }
 
-    public static T TryAddComponent<T>(this GameObject target) where T : Component // NRVO => 이름이 있는 반환값 최적화 => 컴파일러가 최적화해서 반환값을 바로 반환해주는 것
+    public static T TryAddComponent<T>(this Transform target) where T : Component // NRVO => 이름이 있는 반환값 최적화 => 컴파일러가 최적화해서 반환값을 바로 반환해주는 것
     {
         if (target == null) return null;
         else                return target.TryAddComponent<T>(); // NRVO
