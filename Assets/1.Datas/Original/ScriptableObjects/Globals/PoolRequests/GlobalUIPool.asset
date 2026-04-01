@@ -12,4 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e8b014275094fc4480765db16acf56d, type: 3}
   m_Name: GlobalUIPool
   m_EditorClassIdentifier: Assembly-CSharp::PoolRequest
-  settings: []
+  settings:
+  - poolName: PopUp
+    target: {fileID: 2164660642809956518, guid: 1f8d41bf13a5eb94e9abb57dd01acb0c, type: 3}
+    countInitial: 1
+    countAdditional: 1
+  - poolName: MovableScreen
+    target: {fileID: 1284202862942183706, guid: 527156c213e5ef244a3f6bf1ac0fad39, type: 3}
+    countInitial: 1
+    countAdditional: 1

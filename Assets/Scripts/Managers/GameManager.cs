@@ -126,26 +126,28 @@ public class GameManager : MonoBehaviour
 
 
         //             UI를 불러와서 게임매니저(this) 연결한다(connect)
-        yield return _ui.Connect(this); // 로딩하려면 UI필요
+        yield return UI.Initialize(this); // 로딩하려면 UI필요
         UIBase loadingUI = UIManager.ClaimOpenUI(UIType.Loading); // UI System 이 돌아가기 시작했으니 기능 실행해보기!
         IProgress<int> loadingProgress = loadingUI as IProgress<int>; // 이 유아이가 아이프로그래스라면
 
         loadingProgress?.Set(0, tatalLoadCount);
-        yield return _data.Connect(this); // 게임 데이터 불러오기
+        yield return Data.Connect(this); // 게임 데이터 불러오기
         loadingProgress?.AddCurrent(1);
-        yield return _objectM.Connect(this);
+        yield return ObjectM.Connect(this);
         loadingProgress?.AddCurrent(1);
-        yield return _save.Connect(this); // 저장
+        yield return UI.Connect(this);
         loadingProgress?.AddCurrent(1);
-        yield return _setting.Connect(this); // 세팅 이후 아래것들
+        yield return Save.Connect(this); // 저장
         loadingProgress?.AddCurrent(1);
-        yield return _language.Connect(this);
+        yield return Setting.Connect(this); // 세팅 이후 아래것들
         loadingProgress?.AddCurrent(1);
-        yield return _audio.Connect(this);
+        yield return Language.Connect(this);
         loadingProgress?.AddCurrent(1);
-        yield return _camera.Connect(this);
+        yield return Audio.Connect(this);
         loadingProgress?.AddCurrent(1);
-        yield return _input.Connect(this);
+        yield return Camera.Connect(this);
+        loadingProgress?.AddCurrent(1);
+        yield return Input.Connect(this);
         loadingProgress?.AddCurrent(1);
         yield return new WaitForSeconds(1.0f);
         UIManager.ClaimCloseUI(UIType.Loading);

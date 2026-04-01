@@ -73,6 +73,8 @@ public class ObjectManager : ManagerBase
     {
         GameObject result = null;
 
+        wantName = wantName.ToLower(); // 싹다 소문자화 시키기
+
         if (poolDictionary.TryGetValue(wantName, out ObjectPoolModule pool))
         {
             result = pool.CreateObject(parent);
@@ -359,14 +361,17 @@ public class ObjectManager : ManagerBase
 
     public void RegistrationPool(string poolName)
     {
+        poolName = poolName.ToLower();
 
         PoolRequest currentRequest = DataManager.LoadDataFile<PoolRequest>(poolName);
         if (currentRequest == null) return;
+        if (currentRequest.settings == null) return;
+
         loadedPoolRequest.Add(currentRequest);
         //        학생          다음학생    in     3학년 1반
         foreach (PoolSetting currentSetting in currentRequest.settings)
         {
-            string currentName = currentSetting.poolName;
+            string currentName = currentSetting.poolName.ToLower();
             GameObject currentPrefab = currentSetting.target;
             if (currentPrefab == null) continue; // 없다면 건너뛰기
             if (poolDictionary.ContainsKey(currentName)) continue; // 이름이 같다면 건너뛰기
@@ -376,6 +381,7 @@ public class ObjectManager : ManagerBase
 
     public void RegistrationPool(params string[] poolNames)
     {
+
         foreach (string poolName in poolNames)
         {
             RegistrationPool(poolName);

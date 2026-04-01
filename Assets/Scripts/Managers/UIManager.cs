@@ -5,12 +5,20 @@ using UnityEngine.Rendering;
 
 public enum UIType
 {
-    None, Loading, Title, LoadingText,
+    None, Loading, Title, LoadingText, Movable,
     _Length
 }
 
+// 팝업이 일어나는 이벤트 발생
+// 델리게이트 => 스킬을 무한이 배운다
+// A 스킬과 B스킬을 쓰면 맨마지막 결과인 B스킬만 나옴
+public delegate void PopUpEvent(string tilte, string context, string confirm);
+
 public class UIManager : ManagerBase
 {
+    // event => 등록할 수 있는데 실행은 여기서만
+    public static event PopUpEvent OnPopUp;
+
     Canvas _mainCanvas;
 
     public Canvas MainCanvas => _mainCanvas;
@@ -19,7 +27,7 @@ public class UIManager : ManagerBase
     Dictionary<UIType, UIBase> uiDictionary = new();
 
 
-    protected override IEnumerator OnConnected(GameManager newManager)
+     public IEnumerator Initialize(GameManager newManager)
     {
         _mainCanvas = GetComponentInChildren<Canvas>();
         // UIBase.FindUIBaseWithTag("MainCanvas"); => 글자로 찾는 방법인데 위에서부터 쭉 찾는거라 오래걸림
@@ -28,11 +36,26 @@ public class UIManager : ManagerBase
         yield return null;
     }
 
+    protected override IEnumerator OnConnected(GameManager newManager)
+    {
+        UIBase movableUI = CreateUI(UIType.Movable, "MovableScreen");
+        yield return null;
+
+        movableUI.SetChild(ObjectManager.CreateObject("PopUp"));
+        yield return null;
+    }
+
     protected override void OnDisconnected()
     {
 
     }
 
+    protected UIBase CreateUI(UIType wantType, string wantName)
+    {
+        GameObject instance = ObjectManager.CreateObject(wantName, _mainCanvas.transform);
+        UIBase result = instance?.GetComponent<UIBase>();
+        return SetUI(wantType, result);
+    }
     protected UIBase SetUI(UIType wantType, UIBase wantUI)
     {
         if (wantUI == null) return null; // null 이면 null
@@ -89,4 +112,14 @@ public class UIManager : ManagerBase
         return result;
     }
     public static UIBase ClaimToggleUI(UIType wantType) => GameManager.Instance?.UI?.ToggleUI(wantType);
+
+    public static void ClainPopUp(string title, string context, string confirm)
+    {
+        OnPopUp?.Invoke(title, context, confirm);
+    }
+    
+    public static void ClainErrorMessage(string context)
+    {
+        OnPopUp?.Invoke("Error", context, "Confirm");
+    }
 }
