@@ -1,7 +1,19 @@
+using System;
 using UnityEngine;
 
 public class UIBase : MonoBehaviour
 {
+    public virtual void Registration(UIManager manager)
+    {
+
+    }
+
+    public virtual void Unregistration(UIManager manager)
+    {
+
+    }
+
+
     // ISP => 인터페이스 분리원칙 // 그래서 UIs 폴더 만들때 인터페이스 폴더도 만듦
 
     // public 확장에는 열려있고
@@ -39,6 +51,9 @@ public class UIBase : MonoBehaviour
     {
         
     }
-
+    internal void UnRegistration(UIManager manager)
+    {
+        throw new NotImplementedException();
+    }
 
 }

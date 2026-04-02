@@ -39,15 +39,13 @@ public class UIManager : ManagerBase
     protected override IEnumerator OnConnected(GameManager newManager)
     {
         UIBase movableUI = CreateUI(UIType.Movable, "MovableScreen");
-        yield return null;
-
-        movableUI.SetChild(ObjectManager.CreateObject("PopUp"));
+       
         yield return null;
     }
 
     protected override void OnDisconnected()
     {
-
+        UnSetAllUI();
     }
 
     protected UIBase CreateUI(UIType wantType, string wantName)
@@ -63,9 +61,37 @@ public class UIManager : ManagerBase
         if (uiDictionary.TryGetValue(wantType, out UIBase origin)) return origin; // 입력한게 2가지라면 origin을 쓴다.
 
         uiDictionary.Add(wantType, wantUI); // 위 두가지에 해당하지 않는다면 입력된 값 그대로 출력
+        wantUI.Registration(this);
 
         return wantUI;
     }
+
+    protected void UnsetUI(UIType wantType)
+    {
+        if(uiDictionary.TryGetValue(wantType, out UIBase found))
+        {
+            UnsetUI(found);
+            uiDictionary.Remove(wantType);
+        }
+    }
+
+    protected void UnsetUI(UIBase wantUI)
+    {
+        if (!wantUI) return;
+
+        wantUI.Unregistration(this);
+    }
+
+    protected void UnSetAllUI()
+    {
+        foreach (UIBase ui in uiDictionary.Values)
+        {
+            UnsetUI(ui);
+        }
+
+        uiDictionary.Clear();
+    }
+
     public static UIBase ClaimSetUI(UIType wantType, UIBase wantUI) => GameManager.Instance?.UI?.SetUI(wantType, wantUI);
 
 
@@ -118,7 +144,7 @@ public class UIManager : ManagerBase
         OnPopUp?.Invoke(title, context, confirm);
     }
     
-    public static void ClainErrorMessage(string context)
+    public static void ClaimErrorMessage(string context)
     {
         OnPopUp?.Invoke("Error", context, "Confirm");
     }

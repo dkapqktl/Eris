@@ -89,6 +89,8 @@ public class ObjectManager : ManagerBase
             }
         }
 
+        if (!result) UIManager.ClaimErrorMessage(SystemMessage.ObjectNameNotFound(wantName));
+
         RegistrationObject(result);
 
         return result;

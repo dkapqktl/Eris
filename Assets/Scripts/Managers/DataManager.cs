@@ -118,6 +118,9 @@ public class DataManager : ManagerBase
 
     public static T LoadDataFile<T>(string fileName) where T : Object
     {
+        if (string.IsNullOrEmpty(fileName) ) return null;
+
+
         fileName = fileName.ToLower();
 
         if (dataDictionary.TryGetValue(typeof(T), out Dictionary<string, Object> innerDictionary))
@@ -128,6 +131,8 @@ public class DataManager : ManagerBase
                 // as ~ : result¸¦ T Ã³·³ ºÁ¶ó
             }
         }
+
+        UIManager.ClaimErrorMessage(SystemMessage.FileNameNotFound(fileName));
 
         return null;
     }
