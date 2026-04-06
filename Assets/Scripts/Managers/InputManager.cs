@@ -7,9 +7,11 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 // delegate 대리자는 누구나 등록하고 시전할 수 있다.
-public delegate void MouseDownEvent (Vector2 screenPosition, Vector3 worldPosition);
-public delegate void MouseUpEvent   (Vector2 screenPosition, Vector3 worldPosition);
+public delegate void MouseButtonEvent (bool value, Vector2 screenPosition, Vector3 worldPosition);
+// public delegate void MouseUpEvent   (Vector2 screenPosition, Vector3 worldPosition);
 public delegate void MouseMoveEvent (Vector2 screenPosition, Vector3 worldPosition);
+public delegate void ButtonEvent(bool value);
+public delegate void AxisEvent(Vector2 value);
 
 
 [RequireComponent(typeof(PlayerInput))] // 인풋매니저랑 플레이어인풋은 항상 같이 두겠다.
@@ -20,11 +22,14 @@ public delegate void MouseMoveEvent (Vector2 screenPosition, Vector3 worldPositi
 public class InputManager : ManagerBase
 {
     // event 대리자는 누구나 등록하지만 나만 시전 가능
-    public static event MouseDownEvent OnMouseLeftDown;
-    public static event MouseDownEvent OnMouseRightDown;
-    public static event MouseUpEvent OnMouseLeftUp;
-    public static event MouseUpEvent OnMouseRightUp;
+    public static event MouseButtonEvent OnMouseLeftButton;
+    public static event MouseButtonEvent OnMouseRightButton;
+    // public static event MouseUpEvent OnMouseLeftUp;
+    // public static event MouseUpEvent OnMouseRightUp;
     public static event MouseMoveEvent OnMouseMove;
+    public static event ButtonEvent OnCancel;
+    public static event ButtonEvent OnShowStatus;
+    public static event AxisEvent OnMove;
 
     PlayerInput targetInput;
     Dictionary<string, InputAction> actionDictionary = new(); // 인풋액션을 찾어라잉
@@ -94,11 +99,16 @@ public class InputManager : ManagerBase
     {
         if (actionDictionary == null || actionDictionary.Count == 0) return;
 
-        InitializeAction("CursorPositionChanged", CursorPositionChanged);
-        InitializeAction("MouseLeftButtonDown",  (context) => OnMouseLeftDown?.Invoke(cursorScreenPosition, cursorWorldPosition));
-        InitializeAction("MouseRightButtonDown", (context) => OnMouseRightDown?.Invoke(cursorScreenPosition, cursorWorldPosition)); 
-        InitializeAction("MouseLeftButtonUp",    (context) => OnMouseLeftUp?.Invoke(cursorScreenPosition, cursorWorldPosition));
-        InitializeAction("MouseRightButtonUp",   (context) => OnMouseRightUp?.Invoke(cursorScreenPosition, cursorWorldPosition));
+        InitializeAction("CursorPositionChanged", (context) => CursorPositionChanged(GetVector2Value(context)));
+        InitializeAction("Move", (context) => OnMove?.Invoke(GetVector2Value(context)));
+        InitializeAction("MouseLeftButtonDown",  (context) => OnMouseLeftButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition));
+        InitializeAction("MouseRightButtonDown", (context) => OnMouseRightButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition)); 
+        InitializeAction("MouseLeftButtonUp",    (context) => OnMouseLeftButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
+        InitializeAction("MouseRightButtonUp",   (context) => OnMouseRightButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
+
+        InitializeAction("Cancel", (context) => OnCancel?.Invoke(true));
+        InitializeAction("ShowInventoryDown", (context) => OnShowStatus?.Invoke(true));
+        InitializeAction("ShowInventoryUp", (context) => OnShowStatus?.Invoke(false));
     }
 
     void InitializeAction(string actionName, Action<InputAction.CallbackContext> actionMeThod)
@@ -110,11 +120,15 @@ public class InputManager : ManagerBase
         }
     }
 
-    void CursorPositionChanged(InputAction.CallbackContext context)
+    Vector2 GetVector2Value(InputAction.CallbackContext context)
     {
+        if(context.valueType != typeof(Vector2)) return Vector2.zero;
+        return context.ReadValue<Vector2>();
+    }
 
-
-        Vector2 screenPosition = context.ReadValue<Vector2>();
+    void CursorPositionChanged(Vector2 screenPosition)
+    {
+        // Vector2 screenPosition = context.ReadValue<Vector2>();
 
         Vector3 worldPosition;
 

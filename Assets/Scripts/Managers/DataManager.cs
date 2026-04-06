@@ -116,7 +116,7 @@ public class DataManager : ManagerBase
         innerDictionary.TryAdd(target.name.ToLower(), target);
      }
 
-    public static T LoadDataFile<T>(string fileName) where T : Object
+    protected static T GetDataFromDictionary<T>(string fileName) where T : Object
     {
         if (string.IsNullOrEmpty(fileName) ) return null;
 
@@ -132,10 +132,25 @@ public class DataManager : ManagerBase
             }
         }
 
-        UIManager.ClaimErrorMessage(SystemMessage.FileNameNotFound(fileName));
-
         return null;
     }
+
+    public static T LoadDataFile<T>(string fileName) where T : Object
+    {
+        T result = GetDataFromDictionary<T>(fileName);
+
+        if(!result)UIManager.ClaimErrorMessage(SystemMessage.FileNameNotFound(fileName));
+
+        return result;
+    }
+
+    public static bool TryLoadDataFile<T>(string fileName, out T result) where T : Object
+    {
+        result = GetDataFromDictionary<T>(fileName);
+        return result;
+    }
+
+
 
     // Action 행동은 언제나 함수 => 반환값이 없는 함수
     // Action<int> => void function(int a)

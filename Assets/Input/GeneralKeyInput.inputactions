@@ -25,7 +25,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "MouseLeftButtonDown",
+                    "name": "OnMouseLeftButton",
                     "type": "Button",
                     "id": "5f411079-b256-4387-83b7-e4b58a39ef79",
                     "expectedControlType": "",
@@ -34,7 +34,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "MouseRightButtonDown",
+                    "name": "MouseRightButton",
                     "type": "Button",
                     "id": "b5996b59-0b9d-4ad9-85ea-e1239354ff8d",
                     "expectedControlType": "",
@@ -55,6 +55,42 @@
                     "name": "MouseRightButtonUp",
                     "type": "Button",
                     "id": "07c6aca9-d673-428b-93fc-c8f04311ee6e",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "New action",
+                    "type": "Value",
+                    "id": "555fa1a5-cf90-4c18-9d74-2184682f6993",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "ShowInventoryDown",
+                    "type": "Button",
+                    "id": "2b5ff726-8bb0-4d0c-89dc-8bf2e879620f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ShowInventoryUp",
+                    "type": "Button",
+                    "id": "d3b1e3e7-7b0a-48ba-b1b1-1269cc749607",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Cancel",
+                    "type": "Button",
+                    "id": "2e739112-d1f3-4dea-aced-29c676192d2c",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -91,7 +127,7 @@
                     "interactions": "Press",
                     "processors": "",
                     "groups": "",
-                    "action": "MouseLeftButtonDown",
+                    "action": "OnMouseLeftButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -102,7 +138,7 @@
                     "interactions": "Press",
                     "processors": "",
                     "groups": "",
-                    "action": "MouseRightButtonDown",
+                    "action": "MouseRightButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -125,6 +161,105 @@
                     "processors": "",
                     "groups": "",
                     "action": "MouseLeftButtonUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "40522489-5480-4dc9-8d6d-8b2291693b96",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "WASD",
+                    "id": "474b1335-e0be-4dfd-9891-5d72c0b40f22",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "efa42e8c-6811-43f2-9da2-32b46c46660b",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "58df0e54-af6b-49f9-8bd3-26bc325e9d1d",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "8f3eb0d3-9058-4add-ab65-1fda18794f1a",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "043a34eb-ccc1-48c5-827c-60ecd7b34e04",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "New action",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "7f3cc336-4f4c-4506-b4a8-f42a6459e800",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "Press",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShowInventoryDown",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "4d7b1afd-d04c-460c-a020-5dd5228b16e6",
+                    "path": "<Keyboard>/tab",
+                    "interactions": "Press(behavior=1)",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ShowInventoryUp",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "1fb712ba-b564-4668-b667-f108c7f2994c",
+                    "path": "<Keyboard>/escape",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Cancel",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

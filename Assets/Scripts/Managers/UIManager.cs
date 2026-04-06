@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Rendering;
+using UnityEngine.UI;
+
 
 public enum UIType
 {
@@ -20,8 +21,10 @@ public class UIManager : ManagerBase
     public static event PopUpEvent OnPopUp;
 
     Canvas _mainCanvas;
-
     public Canvas MainCanvas => _mainCanvas;
+
+    GraphicRaycaster _raycaster;
+    public GraphicRaycaster Raycaster => _raycaster;
 
     // 찾아주세요! 이 타입이면 이 오브젝트 입니다.
     Dictionary<UIType, UIBase> uiDictionary = new();
@@ -29,7 +32,7 @@ public class UIManager : ManagerBase
 
      public IEnumerator Initialize(GameManager newManager)
     {
-        _mainCanvas = GetComponentInChildren<Canvas>();
+        SetMainCanvas(GetComponentInChildren<Canvas>());
         // UIBase.FindUIBaseWithTag("MainCanvas"); => 글자로 찾는 방법인데 위에서부터 쭉 찾는거라 오래걸림
         SetUI(UIType.Loading, GetComponentInChildren<UI_LoadingScreen>()); // <> => 어떤 타입을 원하는지? => 자료형!
         // Debug.Log(MainCanvas);
@@ -48,39 +51,27 @@ public class UIManager : ManagerBase
         UnSetAllUI();
     }
 
+    protected void SetMainCanvas(Canvas newCanvas)
+    {
+        _mainCanvas = newCanvas;
+        if(_mainCanvas)
+        {
+            _raycaster = _mainCanvas.GetComponent<GraphicRaycaster>();
+        }
+        else
+        {
+            _raycaster = null;
+        }
+    }
+
     protected UIBase CreateUI(UIType wantType, string wantName)
     {
         GameObject instance = ObjectManager.CreateObject(wantName, _mainCanvas.transform);
         UIBase result = instance?.GetComponent<UIBase>();
         return SetUI(wantType, result);
     }
-    protected UIBase SetUI(UIType wantType, UIBase wantUI)
-    {
-        if (wantUI == null) return null; // null 이면 null
 
-        if (uiDictionary.TryGetValue(wantType, out UIBase origin)) return origin; // 입력한게 2가지라면 origin을 쓴다.
 
-        uiDictionary.Add(wantType, wantUI); // 위 두가지에 해당하지 않는다면 입력된 값 그대로 출력
-        wantUI.Registration(this);
-
-        return wantUI;
-    }
-
-    protected void UnsetUI(UIType wantType)
-    {
-        if(uiDictionary.TryGetValue(wantType, out UIBase found))
-        {
-            UnsetUI(found);
-            uiDictionary.Remove(wantType);
-        }
-    }
-
-    protected void UnsetUI(UIBase wantUI)
-    {
-        if (!wantUI) return;
-
-        wantUI.Unregistration(this);
-    }
 
     protected void UnSetAllUI()
     {
@@ -91,10 +82,43 @@ public class UIManager : ManagerBase
 
         uiDictionary.Clear();
     }
+    protected void UnsetUI(UIType wantType)
+    {
+        if(uiDictionary.TryGetValue(wantType, out UIBase found))
+        {
+            UnsetUI(found);
+            uiDictionary.Remove(wantType);
+        }
+    }
+    protected void UnsetUI(UIBase wantUI)
+    {
+        if (!wantUI) return;
 
+        wantUI.Unregistration(this);
+    }
+    public static void ClaimUnsetUI(UIBase wantUI) => GameManager.Instance?.UI?.UnsetUI(wantUI);
+    public static void ClaimUnsetUI(GameObject wantObject) => ClaimUnsetUI(wantObject?.GetComponent<UIBase>());
+
+
+    protected UIBase SetUI(UIBase wantUI)
+    {
+        wantUI?.Registration(this);
+        return wantUI;
+    }
+    protected UIBase SetUI(UIType wantType, UIBase wantUI)
+    {
+        if (wantUI == null) return null; // null 이면 null
+
+        if (uiDictionary.TryGetValue(wantType, out UIBase origin)) return origin; // 입력한게 2가지라면 origin을 쓴다.
+
+        uiDictionary.Add(wantType, wantUI); // 위 두가지에 해당하지 않는다면 입력된 값 그대로 출력
+
+        return SetUI(wantUI);
+    }
+
+    public static UIBase ClaimSetUI(UIBase wantUI) => GameManager.Instance?.UI?.SetUI(wantUI);
+    public static UIBase ClaimSetUI(GameObject wantObject) => ClaimSetUI(wantObject?.GetComponent<UIBase>());
     public static UIBase ClaimSetUI(UIType wantType, UIBase wantUI) => GameManager.Instance?.UI?.SetUI(wantType, wantUI);
-
-
     protected UIBase GetUI(UIType wantType)
     {
         if (uiDictionary.TryGetValue(wantType, out UIBase result)) return result; // 있으면 result 반환

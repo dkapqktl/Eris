@@ -82,11 +82,11 @@ public class ObjectManager : ManagerBase
 
         else
         {
-            GameObject prefab = DataManager.LoadDataFile<GameObject>(wantName);
-            if (prefab)
+            if (DataManager.TryLoadDataFile<GameObject>(wantName, out GameObject prefab))
             {
-                result = Instantiate(prefab, parent);
+                if (prefab) result = Instantiate(prefab, parent);
             }
+      
         }
 
         if (!result) UIManager.ClaimErrorMessage(SystemMessage.ObjectNameNotFound(wantName));

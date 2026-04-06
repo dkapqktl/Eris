@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 2387898467255701464}
   - component: {fileID: 2878163321933711784}
   - component: {fileID: 2840760011384849789}
+  - component: {fileID: 3000672424284983946}
   m_Layer: 5
   m_Name: PopUp_Base (1)
   m_TagString: Untagged
@@ -212,6 +213,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cc235dd765d2af4c8a06a3fd0d29571, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PooledObject
+--- !u!114 &3000672424284983946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2164660642809956518}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7830830c1d6959e4d8e731ebd100889d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NewMonoBehaviourScript
+  titleText: {fileID: 1034466621579230926}
+  contextText: {fileID: 402960626459042156}
+  confirmText: {fileID: 2932483160127856081}
+  confirmButton: {fileID: 560336575545265539}
 --- !u!1 &2832861011363094929
 GameObject:
   m_ObjectHideFlags: 0
@@ -224,7 +241,7 @@ GameObject:
   - component: {fileID: 8435194612917593750}
   - component: {fileID: 2932483160127856081}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: ConfirmText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -361,7 +378,7 @@ GameObject:
   - component: {fileID: 3913782944739898137}
   - component: {fileID: 1034466621579230926}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: TitleText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -573,6 +590,7 @@ GameObject:
   - component: {fileID: 5876055286841561749}
   - component: {fileID: 2407917736839023385}
   - component: {fileID: 49461159939964528}
+  - component: {fileID: 2036501509325543997}
   m_Layer: 5
   m_Name: Image
   m_TagString: Untagged
@@ -638,6 +656,19 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2036501509325543997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8239396311288325749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5541d0f1dfbb1114195ed9913583813e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_DraggableWindow
+  rootTransform: {fileID: 1262580785345188620}
 --- !u!1 &8657687053142296717
 GameObject:
   m_ObjectHideFlags: 0
@@ -650,7 +681,7 @@ GameObject:
   - component: {fileID: 1887668923202204873}
   - component: {fileID: 402960626459042156}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: ContextText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
