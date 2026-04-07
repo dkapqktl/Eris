@@ -17,15 +17,19 @@ public class UI_MovableScreen : UIBase
         base.Registration(manager);
         InputManager.OnMouseMove -= MouseMove;
         InputManager.OnMouseMove += MouseMove;
+        InputManager.OnMouseLeftButton -= MouseLeft;
+        InputManager.OnMouseLeftButton += MouseLeft;
         UIManager.OnPopUp -= PopUp;
         UIManager.OnPopUp += PopUp;
     }
+
 
 
     public override void Unregistration(UIManager manager)
     {
         base.Unregistration(manager);
         InputManager.OnMouseMove -= MouseMove;
+        InputManager.OnMouseLeftButton -= MouseLeft;
         UIManager.OnPopUp -= PopUp;
     }
 
@@ -69,9 +73,15 @@ public class UI_MovableScreen : UIBase
         {
             currentDragTarget.SetMouseStartPosition(startPosition);
         }
+        Debug.Log(currentDragTarget);
 
     }
 
+    private void MouseLeft(bool value, Vector2 screenPosition, Vector3 worldPosition)
+    {
+        if (!value) currentDragTarget = null; // 클릭을 때면 이동 안시키기
+        // 이거 하기 전에는 클릭 한번하면 팝업창이 붙어서 안떨어졌음
+    }
     private void MouseMove(Vector2 screenPosition, Vector3 worldPosition)
     {
         if(currentDragTarget)
@@ -79,7 +89,6 @@ public class UI_MovableScreen : UIBase
             currentDragTarget.SetMouseCurrentPosition(screenPosition);
         }
     }
-
     private void PopUp(string tilte, string context, string confirm)
     {
 

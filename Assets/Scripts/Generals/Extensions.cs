@@ -1,6 +1,9 @@
-using UnityEngine;
 using System.Collections;
 using System.Threading.Tasks;
+using System.Xml.Schema;
+using Unity.Mathematics.Geometry;
+using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 // 게임으로 따지면 확장팩(DLC)
 // => 추가 컨텐츠
 // 원본에 없는것을 추가해주는 개념
@@ -57,7 +60,66 @@ public static class Extensions
     public static T TryAddComponent<T>(this Component target) where T : Component
     {
         if (target == null) return null;
-        else                return target.gameObject.TryAddComponent<T>(); // NRVO
+        else return target.gameObject.TryAddComponent<T>(); // NRVO
+    }
+
+
+
+    public static float GetPenetratedDostance(float aHalf, float bHalf, float aPos, float bPos)
+    {
+        float absAHalf = Mathf.Abs(aHalf);
+        float absBHalf = Mathf.Abs(bHalf);
+
+        float minSpace = absAHalf + absBHalf;
+        // 둘 사이의 거리가 얼마나 가까운지
+        float distance = aPos - bPos;
+        // x최소 거리와 둘사이의 거리 차이
+        float penetration = minSpace - Mathf.Abs(distance);
+
+        penetration *= Mathf.Sign(penetration);
+        return penetration;
+    }
+
+    public static Vector2 AABB(this Rect A, Rect B)
+    {
+        Vector2 result = Vector2.zero;
+        Vector2 aMin = A.min;
+        Vector2 aMax = A.max;
+        Vector2 aHalf = A.size * .5f;
+        Vector2 bMin = B.min;
+        Vector2 bMax = B.max;
+        Vector2 bHalf = B.size * .5f;
+
+        if (aMax.x > bMin.x && bMax.x > aMin.x) result.x = GetPenetratedDostance(aHalf.x, bHalf.x, A.position.x, B.position.x);
+        if (aMax.y > bMin.y && bMax.y > aMin.y) result.y = GetPenetratedDostance(aHalf.y, bHalf.y, A.position.y, B.position.y);
+
+        return result;
+    }
+
+    public static float GetOutboundDistance(float inMin, float outMin, float inMax, float outMax)
+    {
+        float result = 0.0f;
+
+        bool leftOut = inMin < outMin;
+        bool rightOut = inMax > outMax;
+
+
+        if (leftOut ^ rightOut)
+        {
+            if (leftOut) result = outMin - inMin;
+            if (rightOut) result = outMax - inMax;
+        }
+
+        return result;
+    }
+
+    public static Vector2 InversedAABB(this Rect target, Rect bound)
+    {
+        Vector2 result;
+        result.x = GetOutboundDistance(target.xMin, bound.xMin, target.xMax, bound.xMax);
+        result.y = GetOutboundDistance(target.yMin, bound.yMin, target.yMax, bound.yMax);
+        return result;
     }
 
 }
+

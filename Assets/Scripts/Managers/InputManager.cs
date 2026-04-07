@@ -1,16 +1,16 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 // delegate 대리자는 누구나 등록하고 시전할 수 있다.
-public delegate void MouseButtonEvent (bool value, Vector2 screenPosition, Vector3 worldPosition);
 // public delegate void MouseUpEvent   (Vector2 screenPosition, Vector3 worldPosition);
 public delegate void MouseMoveEvent (Vector2 screenPosition, Vector3 worldPosition);
+public delegate void MouseButtonEvent (bool value, Vector2 screenPosition, Vector3 worldPosition);
 public delegate void ButtonEvent(bool value);
+public delegate void VectorEvent (Vector2 value);
 public delegate void AxisEvent(Vector2 value);
 
 
@@ -29,6 +29,7 @@ public class InputManager : ManagerBase
     public static event MouseMoveEvent OnMouseMove;
     public static event ButtonEvent OnCancel;
     public static event ButtonEvent OnShowStatus;
+    public static event ButtonEvent OnShowInventory;
     public static event AxisEvent OnMove;
 
     PlayerInput targetInput;
@@ -107,8 +108,9 @@ public class InputManager : ManagerBase
         InitializeAction("MouseRightButtonUp",   (context) => OnMouseRightButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
 
         InitializeAction("Cancel", (context) => OnCancel?.Invoke(true));
-        InitializeAction("ShowInventoryDown", (context) => OnShowStatus?.Invoke(true));
-        InitializeAction("ShowInventoryUp", (context) => OnShowStatus?.Invoke(false));
+        InitializeAction("ShowStatus", (context) => OnShowStatus?.Invoke(true));
+        InitializeAction("ShowInventoryDown", (context) => OnShowInventory?.Invoke(true));
+        InitializeAction("ShowInventoryUp", (context) => OnShowInventory?.Invoke(false));
     }
 
     void InitializeAction(string actionName, Action<InputAction.CallbackContext> actionMeThod)
@@ -120,11 +122,13 @@ public class InputManager : ManagerBase
         }
     }
 
-    Vector2 GetVector2Value(InputAction.CallbackContext context)
+    T GetInputValue<T>(InputAction.CallbackContext context) where T : struct
     {
-        if(context.valueType != typeof(Vector2)) return Vector2.zero;
-        return context.ReadValue<Vector2>();
+        if(context.valueType != typeof(T)) return default;
+        return context.ReadValue<T>();
     }
+
+    Vector3 GetVector2Value(InputAction.CallbackContext context) => GetInputValue<Vector2>(context);
 
     void CursorPositionChanged(Vector2 screenPosition)
     {

@@ -21,7 +21,8 @@ public class MouseFollower : MonoBehaviour, IFunctionable
         // InputManager.OnMouseLeftButton += CreateToMouse; // 마우스 좌클릭시 커서위치를 따라가라
         // InputManager.OnMouseRightButton += DestroyOnMouse;
         // InputManager.OnMouseRightDown += DestroyOnMouse;
-        InputManager.OnMouseLeftButton += CreateToMouse;
+        InputManager.OnShowStatus += (value) => ObjectManager.CreateObject("asdfasdfasdf");
+        
     }
 
     private void CreateToMouse(bool value, Vector2 screenPosition, Vector3 worldPosition)

@@ -4,7 +4,7 @@ using UnityEngine.EventSystems;
 
 public delegate void DragStartEvent(UI_DraggableWindow dragTarget, Vector2 startPosition);
 
-public class UI_DraggableWindow : UIBase // IPointerDownHandler, IPointerMoveHandler
+public class UI_DraggableWindow : UIBase, IPointerDownHandler
 {
     // bool isDragging = false;
     // 
@@ -21,23 +21,34 @@ public class UI_DraggableWindow : UIBase // IPointerDownHandler, IPointerMoveHan
 
     [SerializeField] RectTransform rootTransform;
 
-    public void OnPointDown(PointerEventData eventData)
+    Vector2 currentScreenPosition;
+    public void OnPointerDown(PointerEventData eventData)
     {
         OnDragStart?.Invoke(this, eventData.position);
-        rootTransform.SetAsLastSibling();
-    }
-
-    public void OnPointUp(PointerEventData eventData)
-    {
+        
     }
 
 
     public void SetMouseStartPosition(Vector2 screenPosition)
     {
-        Debug.Log($"{gameObject} : {screenPosition}");
+        currentScreenPosition = screenPosition;
     }
     public void SetMouseCurrentPosition(Vector2 screenPosition)
     {
-        Debug.Log($"{gameObject} : {screenPosition}");
+        Vector2 screenDelta = screenPosition - currentScreenPosition;
+        
+        Rect rootRect = rootTransform.rect;
+
+        rootRect.position += screenDelta;
+
+        screenDelta += rootRect.InversedAABB(UIManager.UIBoundary);
+        // 일정영역을 나간만큼 다시 돌아와라
+
+        Vector3 positionDelta = (Vector3)screenDelta;
+
+        if (UIManager.UIScale > 0.0f) positionDelta /= UIManager.UIScale;
+
+        rootTransform.localPosition += positionDelta;
+        currentScreenPosition = screenPosition;
     }
 }

@@ -29,6 +29,11 @@ public class UIManager : ManagerBase
     // 찾아주세요! 이 타입이면 이 오브젝트 입니다.
     Dictionary<UIType, UIBase> uiDictionary = new();
 
+    Rect _uiBoundary;
+    public static Rect UIBoundary => GameManager.Instance?.UI?._uiBoundary ?? Rect.zero;
+
+    float _uiScale = 1.0f;
+    public static float UIScale => GameManager.Instance?.UI?._uiScale ?? 1.0f;
 
      public IEnumerator Initialize(GameManager newManager)
     {
@@ -57,6 +62,12 @@ public class UIManager : ManagerBase
         if(_mainCanvas)
         {
             _raycaster = _mainCanvas.GetComponent<GraphicRaycaster>();
+
+            if (MainCanvas.transform is RectTransform mainRectTransform)
+            {
+                _uiScale = mainRectTransform.lossyScale.x;
+                _uiBoundary = mainRectTransform.rect;
+            }
         }
         else
         {
