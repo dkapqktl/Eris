@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 public enum UIType
 {
-    None, Loading, Title, LoadingText, Movable,
+    None, Loading, Title, Option, LoadingText, Movable, Menu, Info,
     _Length
 }
 
@@ -23,14 +23,22 @@ public class UIManager : ManagerBase
     Canvas _mainCanvas;
     public Canvas MainCanvas => _mainCanvas;
 
+    UIBase _movableScreen;
+
     GraphicRaycaster _raycaster;
     public GraphicRaycaster Raycaster => _raycaster;
 
     // 찾아주세요! 이 타입이면 이 오브젝트 입니다.
     Dictionary<UIType, UIBase> uiDictionary = new();
-
+    
     Rect _uiBoundary;
     public static Rect UIBoundary => GameManager.Instance?.UI?._uiBoundary ?? Rect.zero;
+
+
+    UIType _currentScreenType = UIType.None;
+    public static UIType CurrentScreen => GameManager.Instance?.UI?._currentScreenType ?? UIType.None;
+
+
 
     float _uiScale = 1.0f;
     public static float UIScale => GameManager.Instance?.UI?._uiScale ?? 1.0f;
@@ -46,8 +54,27 @@ public class UIManager : ManagerBase
 
     protected override IEnumerator OnConnected(GameManager newManager)
     {
-        UIBase movableUI = CreateUI(UIType.Movable, "MovableScreen");
-       
+        _movableScreen = CreateUI(UIType.Movable, "MovableScreen");
+
+        GameObject screenSwitcher = new GameObject("ScreenSwitcher");
+        RectTransform switcherTransform = screenSwitcher.AddComponent<RectTransform>();
+        switcherTransform.SetParent(MainCanvas.transform);
+        switcherTransform.SetAsFirstSibling();
+
+        switcherTransform.anchorMin = Vector3.zero;
+        switcherTransform.anchorMax = Vector3.one;
+        switcherTransform.offsetMin = Vector3.zero;
+        switcherTransform.offsetMax = Vector3.zero;
+        switcherTransform.localScale = Vector3.one;
+
+        CreateUI(UIType.Title, "TitleScreen", switcherTransform);
+        CreateUI(UIType.Option, "OptionScreen", switcherTransform);
+
+        foreach(Transform currentTransform in switcherTransform)
+        {
+            currentTransform.gameObject.SetActive(false);
+        }
+
         yield return null;
     }
 
@@ -65,8 +92,10 @@ public class UIManager : ManagerBase
 
             if (MainCanvas.transform is RectTransform mainRectTransform)
             {
+                LayoutRebuilder.ForceRebuildLayoutImmediate(mainRectTransform);
                 _uiScale = mainRectTransform.lossyScale.x;
                 _uiBoundary = mainRectTransform.rect;
+                _uiBoundary.size *= _uiScale;
             }
         }
         else
@@ -75,13 +104,25 @@ public class UIManager : ManagerBase
         }
     }
 
-    protected UIBase CreateUI(UIType wantType, string wantName)
+    protected UIBase CreateUI(UIType wantType, string wantName, Transform parent)
     {
-        GameObject instance = ObjectManager.CreateObject(wantName, _mainCanvas.transform);
+        GameObject instance = ObjectManager.CreateObject(wantName, parent);
         UIBase result = instance?.GetComponent<UIBase>();
         return SetUI(wantType, result);
     }
+    protected UIBase CreateUI(UIType wantType, string wantName)
+    {
+        UIBase result = CreateUI(wantType, wantName, MainCanvas?.transform);
 
+        if(result?.GetComponentInChildren<UI_DraggableWindow>())
+        {
+            _movableScreen?.SetChild(result.gameObject);
+        }
+
+        return result;
+    }
+
+    public static UIBase ClaimCreateUI(UIType wantType, string wantName) => GameManager.Instance?.UI?.CreateUI(wantType, wantName);
 
 
     protected void UnSetAllUI()
@@ -173,6 +214,15 @@ public class UIManager : ManagerBase
         return result;
     }
     public static UIBase ClaimToggleUI(UIType wantType) => GameManager.Instance?.UI?.ToggleUI(wantType);
+
+    protected UIBase OpenScreen(UIType wantType)
+    {
+        CloseUI(CurrentScreen);
+        _currentScreenType = wantType;
+        return OpenUI(wantType);
+    }
+
+    public static UIBase ClaimOpenScreen(UIType wantType) => GameManager.Instance?.UI?.OpenScreen(wantType);
 
     public static void ClainPopUp(string title, string context, string confirm)
     {

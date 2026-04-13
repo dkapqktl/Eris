@@ -127,7 +127,7 @@ public class GameManager : MonoBehaviour
 
         //             UI를 불러와서 게임매니저(this) 연결한다(connect)
         yield return UI.Initialize(this); // 로딩하려면 UI필요
-        UIBase loadingUI = UIManager.ClaimOpenUI(UIType.Loading); // UI System 이 돌아가기 시작했으니 기능 실행해보기!
+        UIBase loadingUI = UIManager.ClaimOpenScreen(UIType.Loading); // UI System 이 돌아가기 시작했으니 기능 실행해보기!
         IProgress<int> loadingProgress = loadingUI as IProgress<int>; // 이 유아이가 아이프로그래스라면
 
         loadingProgress?.Set(0, tatalLoadCount);
@@ -149,8 +149,8 @@ public class GameManager : MonoBehaviour
         loadingProgress?.AddCurrent(1);
         yield return Input.Connect(this);
         loadingProgress?.AddCurrent(1);
-        yield return new WaitForSeconds(1.0f);
-        UIManager.ClaimCloseUI(UIType.Loading);
+        yield return null;
+        UIManager.ClaimOpenScreen(UIType.Title);
         isLoading = false;
         /* 없애도 됨
         if (_ui == null)
