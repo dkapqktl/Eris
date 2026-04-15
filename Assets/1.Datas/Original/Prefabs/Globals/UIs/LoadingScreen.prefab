@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4312208728549683551}
   - component: {fileID: 6328044820034647162}
   - component: {fileID: 9195798454157119325}
+  - component: {fileID: 3056855256475339977}
   m_Layer: 5
   m_Name: LoadingScreen
   m_TagString: Untagged
@@ -67,7 +68,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1955448553306655712, guid: a0f20be6d47147d4b9ebd1534b6aafa1, type: 3}
+  m_Sprite: {fileID: -1360278922966745465, guid: bea28343939f7394c872738e31589581, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -89,9 +90,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb9f22ab8b8339043bb3d38ff170c039, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_LoadingScreen
+  requiredUI: []
   progressBar: {fileID: 8322454890282421544}
   progressText: {fileID: 2967083012922473857}
   statusText: {fileID: 8359269686950727961}
+--- !u!95 &3056855256475339977
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8823361893875028890}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 9d2ab88d2a9da6f4fb4d6ffc70e899a2, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &5002099180013980632
 PrefabInstance:
   m_ObjectHideFlags: 0

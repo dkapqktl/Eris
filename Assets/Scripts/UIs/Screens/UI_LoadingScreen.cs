@@ -2,9 +2,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 
 public class UI_LoadingScreen : UI_ScreenBase, IOpenable, IProgress<int>, IStatus<string>
-{
-    // 프로퍼티를 만들때 원본이 되는 변수를 만들어줬었으나 get; set; 만 있는 경우 그냥 변수처럼 사용가능 // set만 protected 인 변수처럼 활용
-    public bool IsOpen => gameObject.activeSelf;
+{   
 
     public int Current { get; set; }
 
@@ -42,7 +40,7 @@ public class UI_LoadingScreen : UI_ScreenBase, IOpenable, IProgress<int>, IStatu
     public int Set(int newCurrent)
     {
         Current = Mathf.Min(newCurrent, Max);
-        progressBar.value = Progress;
+        if (progressBar) progressBar.value = Progress;
         progressText.SetText($"{Progress*100.0f : 0.00}%"); // 0.00 => C언어에서 .2f 같은것.
         return Current;
     }

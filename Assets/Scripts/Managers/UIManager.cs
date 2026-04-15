@@ -1,12 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 
 public enum UIType
 {
-    None, Loading, Title, Option, LoadingText, Movable, Menu, Info,
+    None, Loading, Title, Option, LoadingText, Movable, Menu, Info, GameQuit, Target, Inventory,
+    _Length
+}
+
+public enum ScreenChangeType
+{
+    None,
+    ScreenChanger, FadeChanger,
     _Length
 }
 
@@ -20,20 +28,33 @@ public class UIManager : ManagerBase
     // event => 등록할 수 있는데 실행은 여기서만
     public static event PopUpEvent OnPopUp;
 
+    readonly KeyValuePair<UIType, string>[] glovalScreenArray =
+    {
+        new (UIType.Title, "TitleScreen"),
+        new (UIType.Option, "OptionScreen")
+    };
+
     Canvas _mainCanvas;
     public Canvas MainCanvas => _mainCanvas;
 
     UIBase _movableScreen;
+
+    RectTransform switcherTransform;
+    RectTransform createdTransform;
+    RectTransform changerTransform;
 
     GraphicRaycaster _raycaster;
     public GraphicRaycaster Raycaster => _raycaster;
 
     // 찾아주세요! 이 타입이면 이 오브젝트 입니다.
     Dictionary<UIType, UIBase> uiDictionary = new();
-    
+
+    Dictionary<ScreenChangeType, UI_ScreenChanger> screenChangerDictionary = new();
+
     Rect _uiBoundary;
     public static Rect UIBoundary => GameManager.Instance?.UI?._uiBoundary ?? Rect.zero;
 
+    UI_ScreenChanger currentScreenChanger;
 
     UIType _currentScreenType = UIType.None;
     public static UIType CurrentScreen => GameManager.Instance?.UI?._currentScreenType ?? UIType.None;
@@ -43,7 +64,7 @@ public class UIManager : ManagerBase
     float _uiScale = 1.0f;
     public static float UIScale => GameManager.Instance?.UI?._uiScale ?? 1.0f;
 
-     public IEnumerator Initialize(GameManager newManager)
+    public IEnumerator Initialize(GameManager newManager)
     {
         SetMainCanvas(GetComponentInChildren<Canvas>());
         // UIBase.FindUIBaseWithTag("MainCanvas"); => 글자로 찾는 방법인데 위에서부터 쭉 찾는거라 오래걸림
@@ -52,27 +73,56 @@ public class UIManager : ManagerBase
         yield return null;
     }
 
+    public RectTransform CreateFullScreen(string wantName)
+    {
+        GameObject instance = new GameObject(wantName);
+        RectTransform result = instance.AddComponent<RectTransform>();
+        result.SetParent(MainCanvas.transform);
+        result.SetAsFirstSibling();
+
+        result.anchorMin = Vector3.zero;
+        result.anchorMax = Vector3.one;
+        result.offsetMin = Vector3.zero;
+        result.offsetMax = Vector3.zero;
+        result.localScale = Vector3.one;
+
+        return result;
+    }
+
     protected override IEnumerator OnConnected(GameManager newManager)
     {
-        _movableScreen = CreateUI(UIType.Movable, "MovableScreen");
+        createdTransform = CreateFullScreen("CreateUI");
+        _movableScreen = CreateUI(UIType.Movable, "MovableScreen", MainCanvas?.transform);
 
-        GameObject screenSwitcher = new GameObject("ScreenSwitcher");
-        RectTransform switcherTransform = screenSwitcher.AddComponent<RectTransform>();
-        switcherTransform.SetParent(MainCanvas.transform);
-        switcherTransform.SetAsFirstSibling();
+        switcherTransform = CreateFullScreen("ScreenSwitcher");
 
-        switcherTransform.anchorMin = Vector3.zero;
-        switcherTransform.anchorMax = Vector3.one;
-        switcherTransform.offsetMin = Vector3.zero;
-        switcherTransform.offsetMax = Vector3.zero;
-        switcherTransform.localScale = Vector3.one;
-
-        CreateUI(UIType.Title, "TitleScreen", switcherTransform);
-        CreateUI(UIType.Option, "OptionScreen", switcherTransform);
-
-        foreach(Transform currentTransform in switcherTransform)
+        foreach (var currentPair in glovalScreenArray)
         {
-            currentTransform.gameObject.SetActive(false);
+            UIBase created = CreateUI(currentPair.Key, currentPair.Value, switcherTransform);
+            if (created is IOpenable asOpenable) asOpenable.Close();
+        }
+
+        changerTransform = CreateFullScreen("ScreenChanger");
+        changerTransform.SetAsLastSibling();
+
+        for (ScreenChangeType currentChanger = (ScreenChangeType)1; // int i = 0
+            currentChanger < ScreenChangeType._Length;             // i < 3
+            currentChanger++)                                      // i++
+        {
+
+            GameObject instance = ObjectManager.CreateObject("ScreenChanger", changerTransform);
+            if (instance?.TryGetComponent(out UI_ScreenChanger asChanger) ?? false)
+            {
+                screenChangerDictionary.Add(currentChanger, asChanger);
+            }
+
+            instance?.SetActive(false);
+        }
+
+        {
+            ClaimScreenChangeEffectStart(ScreenChangeType.ScreenChanger);
+            yield return new WaitForSeconds(3);
+            ClaimScreenChangeEffectEnd();
         }
 
         yield return null;
@@ -86,7 +136,7 @@ public class UIManager : ManagerBase
     protected void SetMainCanvas(Canvas newCanvas)
     {
         _mainCanvas = newCanvas;
-        if(_mainCanvas)
+        if (_mainCanvas)
         {
             _raycaster = _mainCanvas.GetComponent<GraphicRaycaster>();
 
@@ -112,9 +162,9 @@ public class UIManager : ManagerBase
     }
     protected UIBase CreateUI(UIType wantType, string wantName)
     {
-        UIBase result = CreateUI(wantType, wantName, MainCanvas?.transform);
+        UIBase result = CreateUI(wantType, wantName, createdTransform ?? MainCanvas?.transform);
 
-        if(result?.GetComponentInChildren<UI_DraggableWindow>())
+        if (result?.GetComponentInChildren<UI_DraggableWindow>())
         {
             _movableScreen?.SetChild(result.gameObject);
         }
@@ -136,7 +186,7 @@ public class UIManager : ManagerBase
     }
     protected void UnsetUI(UIType wantType)
     {
-        if(uiDictionary.TryGetValue(wantType, out UIBase found))
+        if (uiDictionary.TryGetValue(wantType, out UIBase found))
         {
             UnsetUI(found);
             uiDictionary.Remove(wantType);
@@ -184,9 +234,7 @@ public class UIManager : ManagerBase
         UIBase result = GetUI(wantType);
         // result 는 IOpenable 인 opener 인가
         if (result is IOpenable asOpenable) asOpenable.Open();
-        // 아래걸 한줄로 만들면 위가 됨
-        // IOpenable opener = result as IOpenable;
-        // if(opener != null) opener.Open();
+        if (result) EventSystem.current.SetSelectedGameObject(result.gameObject);
         return result;
     }
     public static UIBase ClaimOpenUI(UIType wantType) => GameManager.Instance?.UI?.OpenUI(wantType);
@@ -197,7 +245,7 @@ public class UIManager : ManagerBase
         // CloseUI(UIType wantType) => 이런방식은 매개변수 생성
         // UIBase result => 이런식이 지역변수
         // asOpenable.Close(); => asOpenable 의(.) 닫기(Close()) 기능
-       
+
         UIBase result = GetUI(wantType);
         //              자료형    이름     => 변수생성
         if (result is IOpenable asOpenable) asOpenable.Close();
@@ -224,6 +272,28 @@ public class UIManager : ManagerBase
 
     public static UIBase ClaimOpenScreen(UIType wantType) => GameManager.Instance?.UI?.OpenScreen(wantType);
 
+    protected void ScreenChangeEffectStart(ScreenChangeType wantType)
+    {
+        if(screenChangerDictionary.TryGetValue(wantType, out UI_ScreenChanger result))
+        {
+            if (!result) return;
+
+            result.gameObject.SetActive(true);
+            result?.ChangeStart();
+            currentScreenChanger = result;
+        }
+    }
+    public static void ClaimScreenChangeEffectStart(ScreenChangeType wantType) => GameManager.Instance?.UI?.ScreenChangeEffectStart(wantType);
+
+    protected void ScreenChangeEffectEnd()
+    {
+        if (currentScreenChanger == null) return;
+
+        GameObject targetobject = currentScreenChanger.gameObject;
+        currentScreenChanger.ChangeEnd(() => targetobject.SetActive(false)); // 끝났으면 꺼라
+        currentScreenChanger = null;
+    }
+    public static void ClaimScreenChangeEffectEnd() => GameManager.Instance?.UI?.ScreenChangeEffectEnd();
     public static void ClainPopUp(string title, string context, string confirm)
     {
         OnPopUp?.Invoke(title, context, confirm);

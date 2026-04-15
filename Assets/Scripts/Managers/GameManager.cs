@@ -152,55 +152,7 @@ public class GameManager : MonoBehaviour
         yield return null;
         UIManager.ClaimOpenScreen(UIType.Title);
         isLoading = false;
-        /* ¾ø¾Öµµ µÊ
-        if (_ui == null)
-        {
-            _ui = gameObject.AddComponent<UIManager>();
-            _ui.Connect(this);
-        }
-
-        if(_data == null)
-        {
-            _data = gameObject.AddComponent<DataManager>();
-            _data.Connect(this);
-        }
-
-        if (_save == null)
-        {    
-            _save = gameObject.AddComponent<SaveManager>();
-            _save.Connect(this);
-        }
-
-        if (_setting == null)
-        {
-            _setting = gameObject.AddComponent<SettingManager>();
-            _setting.Connect(this);
-        }
-
-        if (_language == null)
-        {
-            _language = gameObject.AddComponent<LanguageManager>();
-            _language.Connect(this);
-        }
-
-        if (_audio == null)
-        {
-            _audio = gameObject.AddComponent<AudioManager>();
-            _audio.Connect(this);
-        }
-
-        if (_camera == null)
-        {
-            _camera = gameObject.AddComponent<CameraManager>();
-            _camera.Connect(this);
-        }
-
-        if (_input == null)
-        {
-            _input = gameObject.AddComponent<InputManager>();
-            _input.Connect(this);
-        }
-        */
+       
     }
 
     void DeleteManager()
@@ -231,6 +183,15 @@ public class GameManager : MonoBehaviour
         return targetVariable;
     }
 
+    public static void QuitGame()
+    {
+#if UNITY_EDITOR
+        UnityEditor.EditorApplication.isPlaying = false;
+#else
+        Application.Quit();
+#endif
+
+    }
     public static void Pause()
     {
         Instance.isPlaying = false;
