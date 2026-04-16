@@ -12,7 +12,6 @@ public class UI_ScreenChanger : OpenableUIBase
         else OnAnimEnd();
     }
 
-    // Update is called once per frame
     public void ChangeEnd(Action newFunction = null)
     {
         AnimEndFunction = newFunction;

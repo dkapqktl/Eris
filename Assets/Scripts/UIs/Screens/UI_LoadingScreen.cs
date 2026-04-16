@@ -56,4 +56,5 @@ public class UI_LoadingScreen : UI_ScreenBase, IOpenable, IProgress<int>, IStatu
     public void Toggle() => gameObject.SetActive(!IsOpen);
 
 
+
 }

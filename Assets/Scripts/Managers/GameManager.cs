@@ -150,7 +150,8 @@ public class GameManager : MonoBehaviour
         yield return Input.Connect(this);
         loadingProgress?.AddCurrent(1);
         yield return null;
-        UIManager.ClaimOpenScreen(UIType.Title);
+
+        UIManager.ClaimOpenScreen(UIType.Title, ScreenChangeType.ScreenChanger);
         isLoading = false;
        
     }
@@ -190,7 +191,6 @@ public class GameManager : MonoBehaviour
 #else
         Application.Quit();
 #endif
-
     }
     public static void Pause()
     {
