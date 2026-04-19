@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class UI_Button_GameExit : MonoBehaviour
+public class UI_Buottn_LoadUI : MonoBehaviour
 {
     [SerializeField] UIType wantType;
     [SerializeField] bool wantToggle;

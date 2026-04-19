@@ -32,8 +32,7 @@ public class UI_PopUp : UIBase, ISystemMessagePossible, IConfirmable
     public void SetConfirmAction(Action newAction)
     {
         ConfirmAction -= newAction;
-        ConfirmAction += newAction;
-        
+        ConfirmAction += newAction; 
     }
 
     public void SetSystemMessage(string title, string context, string confirm)

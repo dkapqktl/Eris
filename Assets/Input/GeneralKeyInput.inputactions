@@ -61,7 +61,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "New action",
+                    "name": "Move",
                     "type": "Value",
                     "id": "555fa1a5-cf90-4c18-9d74-2184682f6993",
                     "expectedControlType": "Vector2",
@@ -70,18 +70,9 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "ShowInventoryDown",
+                    "name": "ShowInventoryButton",
                     "type": "Button",
                     "id": "2b5ff726-8bb0-4d0c-89dc-8bf2e879620f",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "ShowInventoryUp",
-                    "type": "Button",
-                    "id": "d3b1e3e7-7b0a-48ba-b1b1-1269cc749607",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -180,7 +171,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
+                    "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -191,7 +182,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
+                    "action": "Move",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -202,7 +193,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
+                    "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -213,7 +204,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
+                    "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -224,7 +215,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
+                    "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -235,7 +226,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "New action",
+                    "action": "Move",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -243,21 +234,10 @@
                     "name": "",
                     "id": "7f3cc336-4f4c-4506-b4a8-f42a6459e800",
                     "path": "<Keyboard>/tab",
-                    "interactions": "Press",
+                    "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "ShowInventoryDown",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4d7b1afd-d04c-460c-a020-5dd5228b16e6",
-                    "path": "<Keyboard>/tab",
-                    "interactions": "Press(behavior=1)",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ShowInventoryUp",
+                    "action": "ShowInventoryButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

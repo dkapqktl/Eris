@@ -8,6 +8,7 @@ using UnityEngine.UI;
 public enum UIType
 {
     None, Loading, Title, Option, LoadingText, Movable, Menu, Info, GameQuit, Target, Inventory, Ingame,
+    LoadList,
     _Length
 }
 
@@ -31,8 +32,11 @@ public class UIManager : ManagerBase
     readonly KeyValuePair<UIType, string>[] glovalScreenArray =
     {
         new (UIType.Title, "TitleScreen"),
-        new (UIType.Option, "OptionScreen"),
         new (UIType.Ingame, "IngameScreen"),
+        new (UIType.Option, "OptionUI"),
+        new (UIType.GameQuit, "Exit_UI"),
+        new (UIType.LoadList, "LoadUI"),
+        new (UIType.Inventory, "InventoryUI")
     };
 
     Canvas _mainCanvas;

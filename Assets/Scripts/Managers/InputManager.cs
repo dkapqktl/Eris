@@ -29,7 +29,7 @@ public class InputManager : ManagerBase
     public static event MouseMoveEvent OnMouseMove;
     public static event ButtonEvent OnCancel;
     public static event ButtonEvent OnShowStatus;
-    public static event ButtonEvent OnShowInventory;
+    public static event ButtonEvent ShowInventoryButton;
     public static event AxisEvent OnMove;
 
     PlayerInput targetInput;
@@ -109,8 +109,7 @@ public class InputManager : ManagerBase
 
         InitializeAction("Cancel", (context) => OnCancel?.Invoke(true));
         InitializeAction("ShowStatus", (context) => OnShowStatus?.Invoke(true));
-        InitializeAction("ShowInventoryDown", (context) => OnShowInventory?.Invoke(true));
-        InitializeAction("ShowInventoryUp", (context) => OnShowInventory?.Invoke(false));
+        InitializeAction("ShowInventoryButton", (context) => ShowInventoryButton?.Invoke(true));
     }
 
     void InitializeAction(string actionName, Action<InputAction.CallbackContext> actionMeThod)

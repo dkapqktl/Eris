@@ -15,4 +15,9 @@ public class UI_Button_OpenUI : MonoBehaviour
     {
         UIManager.ClaimCloseUI(wantType);
     }
+
+    public void Exit()
+    {
+        GameManager.QuitGame();
+    }
 }
