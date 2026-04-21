@@ -4,16 +4,25 @@ public class UI_InGameScreen : UI_ScreenBase
 {
     private void OnEnable()
     {
+        
+        GameManager.UnPause();
         InputManager.OnCancel -= CancelMenu;
         InputManager.OnCancel += CancelMenu;
+        
+        InputManager.OnShowInfo -= InfoMenu;
+        InputManager.OnShowInfo += InfoMenu;
 
         InputManager.OnShowInventoryButton -= InventoruMenu;
         InputManager.OnShowInventoryButton += InventoruMenu;
+
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
+        GameManager.UnPause();
         InputManager.OnCancel -= CancelMenu;
+        InputManager.OnShowInfo -= InfoMenu;
         InputManager.OnShowInventoryButton -= InventoruMenu;
     }
 
@@ -31,35 +40,29 @@ public class UI_InGameScreen : UI_ScreenBase
             if (type == UIType.Ingame) continue;
             if (type == UIType.GameQuit) continue;
 
-            var ui = UIManager.ClaimGetUI(type);
+            var ui = UIManager.ClaimGetUI(type); // 위에 블랙리스트에 해당하지 않는걸 가져와
 
-            if (ui != null && ui.isActiveAndEnabled)
-            {
-                UIManager.ClaimCloseUI(type);
-                return;
+            if (ui != null && ui.isActiveAndEnabled) // 유아이가 널이 아니고 켜져있다면
+            { 
+                UIManager.ClaimCloseUI(type); // 그 유아이 닫어
+                return; // 그리고 종료
             }
         }
 
-        if (UIManager.ClaimGetUI(UIType.GameQuit).isActiveAndEnabled)
-        {
-            UIManager.ClaimCloseUI(UIType.GameQuit);
-        }
-        else
-        {
-            UIManager.ClaimOpenUI(UIType.GameQuit);
-        }
+        UIManager.ClaimToggleUI(UIType.InGameMenu); // 해당 키 누르면 게임종료 창 열어
     }
 
     void InventoruMenu(bool value)
     {
-        if (UIManager.ClaimGetUI(UIType.Inventory).isActiveAndEnabled)
+        if(!UIManager.ClaimGetUI(UIType.InGameMenu).isActiveAndEnabled)
         {
-            UIManager.ClaimCloseUI(UIType.Inventory);
+            UIManager.ClaimToggleUI(UIType.Inventory); // 해당 키 누르면 인벤토리 열어
         }
-        else
-        {
-            UIManager.ClaimOpenUI(UIType.Inventory);
-        }
+    }
+
+    void InfoMenu(bool value)
+    {
+        UIManager.ClaimToggleUI(UIType.Info); // 해당 키 누르면 인벤토리 열어
     }
 
 }

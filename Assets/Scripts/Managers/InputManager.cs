@@ -11,7 +11,7 @@ public delegate void MouseMoveEvent (Vector2 screenPosition, Vector3 worldPositi
 public delegate void MouseButtonEvent (bool value, Vector2 screenPosition, Vector3 worldPosition);
 public delegate void ButtonEvent(bool value);
 public delegate void VectorEvent (Vector2 value);
-public delegate void AxisEvent(Vector2 value);
+public delegate void AxisEvent(float value);
 
 
 [RequireComponent(typeof(PlayerInput))] // 인풋매니저랑 플레이어인풋은 항상 같이 두겠다.
@@ -29,8 +29,9 @@ public class InputManager : ManagerBase
     public static event MouseMoveEvent OnMouseMove;
     public static event ButtonEvent OnCancel;
     public static event ButtonEvent OnShowStatus;
-    public static event ButtonEvent ShowInventoryButton;
-    public static event AxisEvent OnMove;
+    public static event ButtonEvent OnShowInventoryButton;
+    public static event ButtonEvent OnShowInfo;
+    public static event VectorEvent OnMove;
 
     PlayerInput targetInput;
     Dictionary<string, InputAction> actionDictionary = new(); // 인풋액션을 찾어라잉
@@ -101,7 +102,12 @@ public class InputManager : ManagerBase
         if (actionDictionary == null || actionDictionary.Count == 0) return;
 
         InitializeAction("CursorPositionChanged", (context) => CursorPositionChanged(GetVector2Value(context)));
-        InitializeAction("Move", (context) => OnMove?.Invoke(GetVector2Value(context)));
+        InitializeActionMove
+        (
+            "Move", 
+            (context) => OnMove?.Invoke(GetVector2Value(context)),
+            (context) => OnMove?.Invoke(Vector2.zero)
+        );
         InitializeAction("MouseLeftButtonDown",  (context) => OnMouseLeftButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition));
         InitializeAction("MouseRightButtonDown", (context) => OnMouseRightButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition)); 
         InitializeAction("MouseLeftButtonUp",    (context) => OnMouseLeftButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
@@ -109,7 +115,8 @@ public class InputManager : ManagerBase
 
         InitializeAction("Cancel", (context) => OnCancel?.Invoke(true));
         InitializeAction("ShowStatus", (context) => OnShowStatus?.Invoke(true));
-        InitializeAction("ShowInventoryButton", (context) => ShowInventoryButton?.Invoke(true));
+        InitializeAction("ShowInventoryButton", (context) => OnShowInventoryButton?.Invoke(true));
+        InitializeAction("ShowInfo", (context) => OnShowInfo?.Invoke(true));
     }
 
     void InitializeAction(string actionName, Action<InputAction.CallbackContext> actionMeThod)
@@ -118,6 +125,16 @@ public class InputManager : ManagerBase
         if (actionDictionary.TryGetValue(actionName, out InputAction cursorPositionChange))
         {
             cursorPositionChange.performed += actionMeThod;
+        }
+    }
+
+    void InitializeActionMove(string actionName, Action<InputAction.CallbackContext> performedAction, Action<InputAction.CallbackContext> canceledAction)
+    {
+        if (actionDictionary == null) return;
+        if (actionDictionary.TryGetValue(actionName, out InputAction cursorPositionChange))
+        {
+            cursorPositionChange.performed += performedAction;
+            cursorPositionChange.canceled += canceledAction;
         }
     }
 

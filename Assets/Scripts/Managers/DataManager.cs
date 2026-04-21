@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.AddressableAssets; // UnityEngine에 AddressableAssets 파일 불러오기
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 // 이름 쓰기 귀찮을때 사용하는게 using => namespace 같은것
 /*
@@ -20,6 +21,11 @@ public class DataManager : ManagerBase
     // 딕셔너리 안에 딕셔너리
     //         어떤 종류인지
     static Dictionary<System.Type, Dictionary<string, Object>> dataDictionary = new();
+
+    event System.Action DisconectEvent;
+
+    // List<AsyncOperationHandle<Object>> finders = new();
+
 
     // 프로퍼티는 변수 모양이지만 함수
     //              int GetLoadCount => 100; 이게 실제 모양임
@@ -92,7 +98,8 @@ public class DataManager : ManagerBase
 
     protected override void OnDisconnected()
     {
-
+        DisconectEvent?.Invoke();
+        DisconectEvent = null;
     }
 
     bool TryGetFileFromResources<T>(string path, out T result) where T : Object
@@ -163,9 +170,10 @@ public class DataManager : ManagerBase
             SaveDataFile(loaded);
             actionForEachLoad();
         }); // 불러오기를 시키고
-        await finder.Task; // 파인더를 사용한다.
-        finder.WaitForCompletion(); // 끝날때까지 기다린다.
-        finder.Release();
+        Task result = finder.Task; ;
+        await result; // 파인더를 사용한다
+        // 데이터 매니저가 끝난다면 릴리스 시킨다.
+        DisconectEvent += () => finder.Release();
     }
 
     // async 함수는 비동기 함수 => 다른 함수와 같이 돌아갈 수 있는 함수
@@ -177,7 +185,7 @@ public class DataManager : ManagerBase
         var finder =  Addressables.LoadAssetAsync<GameObject>(address);
         await finder.Task;
         SaveDataFile(finder.Result);
-        finder.Release();
+        DisconectEvent += () => finder.Release();
 
 
         // Tan => ATan => 비동기, 동기화하지 않는다

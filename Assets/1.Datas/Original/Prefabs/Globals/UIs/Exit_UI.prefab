@@ -301,6 +301,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_ExitUI
   requiredUI: []
+  closeWithScreen: 
 --- !u!1 &1335098866887680453
 GameObject:
   m_ObjectHideFlags: 0
@@ -587,7 +588,7 @@ GameObject:
   - component: {fileID: 7282573629924294571}
   - component: {fileID: 1641357626220267201}
   - component: {fileID: 8574602494484302874}
-  - component: {fileID: 6328856523887725316}
+  - component: {fileID: 5462962226098239566}
   m_Layer: 0
   m_Name: Button_N
   m_TagString: Untagged
@@ -697,8 +698,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 6328856523887725316}
-        m_TargetAssemblyTypeName: UI_Button_GameExit, Assembly-CSharp
+      - m_Target: {fileID: 5462962226098239566}
+        m_TargetAssemblyTypeName: UI_Button_OpenUI, Assembly-CSharp
         m_MethodName: Close
         m_Mode: 1
         m_Arguments:
@@ -709,7 +710,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &6328856523887725316
+--- !u!114 &5462962226098239566
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -718,11 +719,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3245733855330516477}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a161d240c1a05444ba4e2a98acd33dbb, type: 3}
+  m_Script: {fileID: 11500000, guid: defb19cbc3fc34d49ae419f8306905b9, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_Button_GameExit
+  m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenUI
   wantType: 8
   wantToggle: 1
+  openOnTop: 1
 --- !u!1 &3944518375842994267
 GameObject:
   m_ObjectHideFlags: 0
@@ -847,7 +849,7 @@ GameObject:
   - component: {fileID: 2328271913732733794}
   - component: {fileID: 6701125069663055208}
   - component: {fileID: 8205134561638272731}
-  - component: {fileID: 7281618724911067138}
+  - component: {fileID: 3024972154976107302}
   m_Layer: 0
   m_Name: Button_Y
   m_TagString: Untagged
@@ -957,8 +959,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 7281618724911067138}
-        m_TargetAssemblyTypeName: UI_Button_GameExit, Assembly-CSharp
+      - m_Target: {fileID: 3024972154976107302}
+        m_TargetAssemblyTypeName: UI_Button_OpenUI, Assembly-CSharp
         m_MethodName: Exit
         m_Mode: 1
         m_Arguments:
@@ -969,7 +971,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &7281618724911067138
+--- !u!114 &3024972154976107302
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -978,8 +980,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6155071017549356645}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a161d240c1a05444ba4e2a98acd33dbb, type: 3}
+  m_Script: {fileID: 11500000, guid: defb19cbc3fc34d49ae419f8306905b9, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_Button_GameExit
+  m_EditorClassIdentifier: Assembly-CSharp::UI_Button_OpenUI
   wantType: 8
   wantToggle: 1
+  openOnTop: 1

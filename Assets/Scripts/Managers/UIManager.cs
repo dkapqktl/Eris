@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public enum UIType
 {
     None, Loading, Title, Option, LoadingText, Movable, Menu, Info, GameQuit, Target, Inventory, Ingame,
-    LoadList,
+    LoadList, Tutorial, InGameMenu, 
     _Length
 }
 
@@ -36,7 +36,10 @@ public class UIManager : ManagerBase
         new (UIType.Option, "OptionUI"),
         new (UIType.GameQuit, "Exit_UI"),
         new (UIType.LoadList, "LoadUI"),
-        new (UIType.Inventory, "InventoryUI")
+        new (UIType.Tutorial, "TutorialScreen"),
+        new (UIType.Inventory, "InventoryUI"),
+        new (UIType.InGameMenu, "InGameMenuUI"),
+        new (UIType.Info, "InfoUI")
     };
 
     Canvas _mainCanvas;
@@ -275,6 +278,7 @@ public class UIManager : ManagerBase
 
     protected void OpenScreen(UIType wantScreen, ScreenChangeType changeType)
     {
+        GameManager.UnPause();
         // 람다 : 프로잭트 내에서 한번만 사용 할 함수
         ClaimScreenChangeEffect(changeType, () => OpenScreen(wantScreen));
     }

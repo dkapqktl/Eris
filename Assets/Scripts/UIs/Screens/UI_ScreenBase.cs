@@ -28,6 +28,7 @@ public struct UIClaim
 public class UI_ScreenBase : UIBase, IOpenable
 {
     [SerializeField] UIClaim[] requiredUI;
+    [SerializeField] protected UIType[] closeWithScreen;
 
     public bool IsOpen => gameObject.activeSelf;
     public void Open() => gameObject.SetActive(true);
@@ -46,16 +47,15 @@ public class UI_ScreenBase : UIBase, IOpenable
         }
     }
 
-    private void OnEnable()
+    protected virtual void OnDisable()
     {
-        InputManager.OnCancel -= ToggleMenu;
-        InputManager.OnCancel += ToggleMenu;
+        if (closeWithScreen != null) // 함께 꺼질 스크린이 널이 아니라면
+        {
+            foreach (UIType currentUI in closeWithScreen) // 설정해논게 켜져 있을 경우
+            {
+                UIManager.ClaimCloseUI(currentUI); // 다 꺼라
+            }
+        }
     }
 
-    private void OnDisable()
-    {
-        InputManager.OnCancel -= ToggleMenu;
-    }
-
-    void ToggleMenu(bool value) => UIManager.ClaimToggleUI(UIType.Menu);
 }

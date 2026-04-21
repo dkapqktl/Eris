@@ -1,7 +1,8 @@
 using UnityEngine;
 
-public class UI_OptionUI : UI_ScreenBase
+public class UI_OptionUI : OpenableUIBase
 {
+    
     private void OnEnable()
     {
         InputManager.OnCancel -= CancelMenu;

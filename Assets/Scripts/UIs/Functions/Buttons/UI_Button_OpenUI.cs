@@ -4,11 +4,20 @@ public class UI_Button_OpenUI : MonoBehaviour
 {
     [SerializeField] UIType wantType;
     [SerializeField] bool wantToggle;
+    [SerializeField] bool openOnTop = true;
 
     public void Open()
     {
-        if (wantToggle) UIManager.ClaimToggleUI(wantType);
-        else UIManager.ClaimOpenUI(wantType);
+        UIBase opened = null;
+
+        if (wantToggle) opened = UIManager.ClaimToggleUI(wantType);
+        else opened = UIManager.ClaimOpenUI(wantType);
+
+        if (openOnTop && opened)
+        {
+            opened.transform.SetAsLastSibling();
+        }
+
     }
 
     public void Close()

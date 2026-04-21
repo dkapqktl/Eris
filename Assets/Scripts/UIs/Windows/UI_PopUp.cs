@@ -11,6 +11,8 @@ public class UI_PopUp : UIBase, ISystemMessagePossible, IConfirmable
     [SerializeField] Button confirmButton;
     Action ConfirmAction;
 
+    
+
     public override void Registration(UIManager manager)
     {
         base.Registration(manager);

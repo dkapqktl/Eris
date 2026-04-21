@@ -57,10 +57,16 @@ public class GameManager : MonoBehaviour
     public static event UpdateEvent OnUpdateCharacter;        // 캐릭터 업데이트
     public static event UpdateEvent OnUpdateObject;           // 오브젝트 업데이트
 
+    public static event UpdateEvent OnPhysicsCharacter;        // 물리 캐릭터 업데이트
+    public static event UpdateEvent OnPhysicsObject;           // 물리 오브젝트 업데이트
+
     public static event DestroyEvent OnDestroyObject;           // 오브젝트 제거
     public static event DestroyEvent OnDestroyCharacter;        // 캐릭터 제거
     public static event DestroyEvent OnDestroyController;       // 컨트롤러 제거
     public static event DestroyEvent OnDestroyManager;          // 매니저 제거
+
+    // public static event DestroyEvent OnPhysicsCharacter;        // 캐릭터 업데이트
+    // public static event DestroyEvent OnPhysicsObject;           // 오브젝트 업데이트
 
     bool isLoading = true;
     bool isPlaying = true;
@@ -186,21 +192,23 @@ public class GameManager : MonoBehaviour
 
     public static void QuitGame()
     {
-#if UNITY_EDITOR
+        #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
-#else
+        #else
         Application.Quit();
-#endif
+        #endif
     }
     public static void Pause()
     {
         Instance.isPlaying = false;
+        Time.timeScale = 0;
     }
 
 
     public static void UnPause()
     {
         Instance.isPlaying = true;
+        Time.timeScale = 1;
     }
 
 
@@ -252,5 +260,15 @@ public class GameManager : MonoBehaviour
         InvokeDestroyEvent(ref OnDestroyManager);
 
 
+    }
+
+    void FixedUpdate()
+    {
+        if (isLoading || !isPlaying) return;
+
+        float deltaTime = Time.fixedDeltaTime; // fixedDeltaTime의 기본값은 0.02초
+
+        OnPhysicsCharacter?.Invoke(deltaTime);
+        OnPhysicsObject?.Invoke(deltaTime);
     }
 }
