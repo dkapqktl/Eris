@@ -1,14 +1,10 @@
+using NUnit.Framework.Constraints;
 using UnityEngine;
 
 public class ControllerBase : MonoBehaviour, IFunctionable
 {
     CharacterBase _character;
     public CharacterBase Character => _character;
-
-    public void Start()
-    {
-        GameManager.OnInitializeController += RegistrationFunctions;
-    }
 
     public virtual void RegistrationFunctions()
     {
@@ -54,15 +50,15 @@ public class ControllerBase : MonoBehaviour, IFunctionable
 
     public void CommandMoveToDirection(Vector3 direction)
     {
-        if (Character is IRunnable target) target.MoveToDirection(direction);
+        if (Character && Character.GetModule<MovementModule>() is IRunnable target) target.MoveToDirection(direction);
     }
     public void CommandMoveToDestination(Vector3 destination, float tolerance)
     {
-        if (Character is IRunnable target) target.MoveToDestination(destination, tolerance);
+        if (Character && Character.GetModule<MovementModule>() is IRunnable target) target.MoveToDestination(destination, tolerance);
     }
     public void CommandStop()
     {
-
+        if (Character && Character.GetModule<MovementModule>() is IRunnable target) target.StopMovement();
     }
 
 

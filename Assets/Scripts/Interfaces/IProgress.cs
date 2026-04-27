@@ -18,5 +18,5 @@ public interface IProgress<T> // <T> => 클레스를 만들때 원해는 타입으로 만들 수 
     public T Set(T newCurrent, T newMax);
 
     public T AddCurrent(T value);
-    public T AddMax(T value); 
+    public T AddMax(T value);
 }

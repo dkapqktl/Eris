@@ -31,6 +31,7 @@ public class ObjectManager : ManagerBase
     // IEnumerator 에는 반환값이 필요함, 그냥 return 이 아니라 yield return 을 써야함
     protected override IEnumerator OnConnected(GameManager newManager)
     {
+        RegistrationInHierarchy();
         RegistrationPool(globalpoolSettings);
         InitializePool();
 
@@ -361,6 +362,16 @@ public class ObjectManager : ManagerBase
         }
     }
 
+    public void RegistrationInHierarchy()
+    {
+        foreach (MonoBehaviour current in FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+        {
+            if (current is IFunctionable currentFunctionable)
+            {
+                currentFunctionable.RegistrationFunctions();
+            }
+        }
+    }
     public void RegistrationPool(string poolName)
     {
         poolName = poolName.ToLower();

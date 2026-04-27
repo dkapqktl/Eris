@@ -11,6 +11,8 @@ public delegate void DestroyEvent();
 // public delegate void OnDisableEvent();
 
 
+
+
 public class GameManager : MonoBehaviour
 {
     // static : 프로그램에서 딱 하나뿐
@@ -65,8 +67,7 @@ public class GameManager : MonoBehaviour
     public static event DestroyEvent OnDestroyController;       // 컨트롤러 제거
     public static event DestroyEvent OnDestroyManager;          // 매니저 제거
 
-    // public static event DestroyEvent OnPhysicsCharacter;        // 캐릭터 업데이트
-    // public static event DestroyEvent OnPhysicsObject;           // 오브젝트 업데이트
+    [SerializeField] UIType startScreen;
 
     bool isLoading = true;
     bool isPlaying = true;

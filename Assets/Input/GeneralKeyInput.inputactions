@@ -25,7 +25,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "MouseLeftButtonDown",
+                    "name": "MouseLeftButton",
                     "type": "Button",
                     "id": "5f411079-b256-4387-83b7-e4b58a39ef79",
                     "expectedControlType": "",
@@ -34,27 +34,9 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "MouseRightButtonDown",
+                    "name": "MouseRightButton",
                     "type": "Button",
                     "id": "b5996b59-0b9d-4ad9-85ea-e1239354ff8d",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "MouseLeftButtonUp",
-                    "type": "Button",
-                    "id": "8d1cb8e7-a628-405a-94a4-65a3880bc09c",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "MouseRightButtonUp",
-                    "type": "Button",
-                    "id": "07c6aca9-d673-428b-93fc-c8f04311ee6e",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -136,7 +118,7 @@
                     "interactions": "Press",
                     "processors": "",
                     "groups": "",
-                    "action": "MouseLeftButtonDown",
+                    "action": "MouseLeftButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -147,29 +129,7 @@
                     "interactions": "Press",
                     "processors": "",
                     "groups": "",
-                    "action": "MouseRightButtonDown",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "4eb7aa49-c34f-4961-ac9c-b7ef0d4ac266",
-                    "path": "<Mouse>/rightButton",
-                    "interactions": "Press(behavior=1)",
-                    "processors": "",
-                    "groups": "",
-                    "action": "MouseRightButtonUp",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "97416a33-bf67-40e7-bdf7-bf80485e1626",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "Press(behavior=1)",
-                    "processors": "",
-                    "groups": "",
-                    "action": "MouseLeftButtonUp",
+                    "action": "MouseRightButton",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
