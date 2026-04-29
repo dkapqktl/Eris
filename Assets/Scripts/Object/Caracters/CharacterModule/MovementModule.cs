@@ -11,6 +11,7 @@ public class MovementModule : CharacterModule, IRunnable
 
     public override void OnRegistration(CharacterBase newOwner)
     {
+
         base.OnRegistration(newOwner);
         GameManager.OnPhysicsCharacter -= MovementUpdate;
         GameManager.OnPhysicsCharacter += MovementUpdate;

@@ -1,9 +1,12 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public delegate void MovementEvent(Vector3 move);
 public delegate void LookAtEvent(Vector3 direction);
 public delegate void DamageEvent(GameObject damageCause, ControllerBase instigator, float damage);
+public delegate void DeathEvent(GameObject target, float damage, float hp);
+
 
 public class CharacterBase : MonoBehaviour
 {
@@ -20,7 +23,14 @@ public class CharacterBase : MonoBehaviour
     public void DamageNotify(GameObject damageCauser, ControllerBase instigator, float damage)
         => OnDamage?.Invoke(damageCauser, instigator, damage);
 
-     
+    public DeathEvent OnDeath;
+    public void DeathNotify(GameObject target, float damage, float hp)
+        => OnDeath?.Invoke(target, damage, hp);
+
+
+
+
+
     ControllerBase _controller;
     public ControllerBase Controller => _controller;
 
@@ -29,6 +39,8 @@ public class CharacterBase : MonoBehaviour
 
     public virtual string DisplayName => "character";
 
+    // 이 타입에는 이게 있을거다
+    //           키(단어)        값(정의)
     Dictionary<System.Type, CharacterModule> moduleDictionary = new();
 
     public void AddModule(System.Type wantType, CharacterModule wantModule)
@@ -45,7 +57,7 @@ public class CharacterBase : MonoBehaviour
 
         foreach(CharacterModule currentModule in target.GetComponentsInChildren<CharacterModule>())
         {
-            AddModule(currentModule.RegistrationType, currentModule);
+            AddModule(currentModule.RegistrationType, currentModule); // 타입과 컴포넌트
         }
     }
 
@@ -78,13 +90,13 @@ public class CharacterBase : MonoBehaviour
     //확장은 가능한데 수정은 불가능한 원칙
     public virtual void OnPossessed(ControllerBase newController) { }
     //                 빙의되다, 소유되다
-    public ControllerBase Possessed(ControllerBase form) // Possessed 이 함수는 form을 입력 받는다
+    public ControllerBase Possessed(ControllerBase from) // Possessed 이 함수는 form을 입력 받는다
     {
         // if(_controller) 컨트롤러가 이미 있었다면
         // Unpossessed(); 해지한다.
         if (Controller) Unpossessed();
-        _controller = form; // 컨트롤러는 그 입력받은 프롬이다
-        AddAllModuleFromObject(gameObject);
+        _controller = from; // 컨트롤러는 그 입력받은 프롬이다
+        AddAllModuleFromObject(gameObject); // 실행하고있는 컴포넌트를 소유한 게임오브젝트
         OnPossessed(Controller);
         return Controller; // 그리고 컨트롤러를 반환해라
 

@@ -35,7 +35,7 @@ public class AnimationModule : CharacterModule
         if (!anim) return;
         if(isRotationByMovement && moveDelta.sqrMagnitude > 0)
         {
-            AnimationByLookRotation(moveDelta);`
+            AnimationByLookRotation(moveDelta);
         }
         anim.SetFloat("MoveSpeed", moveDelta.magnitude / Time.fixedDeltaTime);
     }
