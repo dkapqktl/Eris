@@ -13,7 +13,6 @@ public class AnimationModule : CharacterModule
         newOwner.OnLookAt += AnimationByLookRotation;
         newOwner.OnMovement -= AnimationByMovement;
         newOwner.OnMovement += AnimationByMovement;
-
     }
 
     public override void OnUnRegistration(CharacterBase oldOwner)

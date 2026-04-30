@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -38,6 +39,7 @@ public class CharacterBase : MonoBehaviour
     protected Vector3 LookRotation => _lookRotation;
 
     public virtual string DisplayName => "character";
+
 
     // 이 타입에는 이게 있을거다
     //           키(단어)        값(정의)
