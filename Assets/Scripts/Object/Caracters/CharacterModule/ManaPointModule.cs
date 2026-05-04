@@ -3,25 +3,25 @@ using UnityEngine;
 
 public class ManaPointModule : CharacterModule
 {
-    public event Action OnDeath;
+
+    HitPointModule deadCheck;
 
     [SerializeField] private bool invincibility;
     [SerializeField] private float _maxMP = 100f;
 
     public float MaxMP => _maxMP;
-    public float MinMP => 0f;
+    public float minMP => 0f;
 
 
     private float _curMP;
     public float CurMP => _curMP;
 
-
-    public bool IsDead => _curMP <= MinMP;
-
     private float recoverTimer = 0f;
 
-    [SerializeField] private float recoverInterval;
-    [SerializeField] private float recoverPercent;
+    private bool isDead => deadCheck.IsDead;
+
+    [SerializeField] private float recoverInterval = 0.1f;
+    [SerializeField] private float recoverPercent = 0.005f;
 
 
     public sealed override Type RegistrationType => typeof(HitPointModule);
@@ -42,47 +42,32 @@ public class ManaPointModule : CharacterModule
 
     public void UseMP(float value)
     {
-        if (_curMP >= MinMP) return;
+        if (_curMP >= minMP) return;
         if (_curMP < value) return;
         _curMP -= value;
     }
 
-    public void RegenerationMP()
-    {
-        if (IsDead) return;
+    public float IncreaseMP(float value) => _maxMP += value;    // Increase : 증가하다
 
-        _curMP += _maxMP * recoverPercent;
-        _curMP = Mathf.Min(_curMP, _maxMP);
-    }
+    public float DecreaseMP(float value) => Mathf.Max(_maxMP - value, minMP);    // Decrease : 감소하다
 
+    public bool canRecover => !isDead && _curMP >= _maxMP;
     public void Recover(float recover)
     {
-        if (IsDead) return;
+        if (!canRecover) return;
 
         _curMP += recover;
-        _curMP = Mathf.Clamp(_curMP, MinMP, MaxMP);
+        _curMP = Mathf.Clamp(_curMP += recover, minMP, MaxMP);
     }
-
-    // Increase : 증가하다
-    public float IncreaseMP(float value)
+    public void RegenerationMP()
     {
-        _maxMP += value;
-        return _maxMP;
-    }
+        if (!canRecover) return;
 
-    // Decrease : 감소하다
-    public float DecreaseMP(float value)
-    {
-        _maxMP -= value;
-        if (_maxMP <= 1f) _maxMP = 1f;
-        if (_curMP > _maxMP) _curMP = _maxMP;
-        return _maxMP;
+        _curMP = Mathf.Min(_curMP + (_maxMP * recoverPercent), _maxMP);
     }
-
     public void RecoverMPUpdate(float deltaTime)
     {
-        if (IsDead) return;
-        if (_curMP >= _maxMP) return;
+        if (!canRecover) return;
 
         recoverTimer += deltaTime;
 
@@ -91,7 +76,7 @@ public class ManaPointModule : CharacterModule
             recoverTimer = 0f;
             RegenerationMP();
         }
-
     }
+
 
 }

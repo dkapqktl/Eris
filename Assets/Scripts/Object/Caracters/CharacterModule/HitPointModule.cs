@@ -2,117 +2,100 @@ using System;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
+using UnityEngine.UIElements;
+using static UnityEngine.Rendering.DebugUI;
+
+public delegate void ChangeHPEvent();
 
 public class HitPointModule : CharacterModule
 {
-    [SerializeField] private float _maxHP = 100f;
-    public float MaxHP => _maxHP;
-    public float MinHP => 0f;
+    public event ChangeHPEvent OnChangedHP;
 
-    private float _curHP;
-    public float CurHP => _curHP;
-
+    BattleModule isBattle;
+    public sealed override Type RegistrationType => typeof(HitPointModule);
 
     [SerializeField] private bool invincibility;
 
-    public bool IsDead => _curHP <= MinHP;
-    public sealed override Type RegistrationType =>  typeof(HitPointModule);
-
-    private float regenTimer = 0f;
-    [SerializeField] private float regenInterval = 5f;
-    [SerializeField] private float regenPercent = 0.05f;
-
-    BattleModule isBattle;
+    [SerializeField] private float _maxhp = 30;
+    public float maxHP => _maxhp;
 
 
-    public override void OnRegistration(CharacterBase newOwner) 
+    private float _curhp;
+    public float curHP => _curhp;
+
+
+    private float basicHP = 10;
+    public float _minhp => 0f;
+
+
+    public bool IsDead => _curhp <= _minhp;
+
+
+    private float hpRegenTimer = 0f; // 시간 카운트
+    [SerializeField] private float hpRegenInterval = 5f; // 회복시간 주기
+    [SerializeField] private float hpRegenPercent = 0.05f; // 회복 퍼센티지
+
+    public override void OnRegistration(CharacterBase newOwner)
     {
-        base.OnRegistration(newOwner);
-        _curHP = _maxHP;
-        GameManager.OnUpdateCharacter -= RegenHPUpdate;
-        GameManager.OnUpdateCharacter += RegenHPUpdate;
+        base.OnRegistration(newOwner); // 캐릭터 생성시 아래것도 해줘
+        _curhp = _maxhp; // 시작시 현재체력은 설정해둔 체력으로
+        GameManager.OnUpdateCharacter -= RegenHPUpdate; // 게임메니저 업데이트에 리젠HP 업데이트
+        GameManager.OnUpdateCharacter += RegenHPUpdate; // 게임메니저 업데이트에 리젠HP 업데이트
     }
 
     public override void OnUnRegistration(CharacterBase oldOwner)
     {
-        base.OnRegistration(oldOwner);
-        GameManager.OnUpdateCharacter -= RegenHPUpdate;
+        base.OnRegistration(oldOwner); // 캐릭터 없앨때 아래것도 해줘
+        GameManager.OnUpdateCharacter -= RegenHPUpdate; // 게임메니저 업데이트에 리젠HP 업데이트 제거
     }
-
-
 
     public void TakeDamage(GameObject causer, ControllerBase instigator, float damage)
     {
-        if (IsDead || invincibility) return; // 죽거나 무적 상태가 아니라면 끝
+        if (IsDead || invincibility) return; // 죽거나 무적 상태라면 리턴
 
-        _curHP -= damage; // 현재 체력에서 데미지만큼 빼
-        _curHP = Mathf.Clamp(_curHP, MinHP, MaxHP);
-        // 현재 체력이 최소체력 이하면 최소체력 반영
-        // 현재 체력이 최대체력 이상이면 최대체력 반영
+        _curhp = Mathf.Clamp(_curhp - damage, _minhp, _maxhp);
 
-        Owner.DamageNotify(causer, instigator, damage);
+        Owner.DamageNotify(causer, instigator, damage); // 데미지를 쓰는넘들에게 알림
 
         if (IsDead)
         {
-            _curHP = MinHP;
-            Owner.DeathNotify(gameObject, damage, _curHP);
+            Owner.DeathNotify(gameObject, damage, _curhp); // 죽음을 쓰는넘들에게 정보 알림
         }
     }
 
+    public float IncreaseHP(float value) => _maxhp += value;    // Increase : 증가하다
+
+    public float DecreaseHP(float value) => Mathf.Max(basicHP, _maxhp - value);    // Decrease : 감소하다
+    
+
+
+    public bool CanHeal() => !IsDead && _curhp < _maxhp;
     public void Heal(float heal)
     {
-        if (IsDead) return;
-
-        _curHP += heal; // 현재 체력에서 힐만큼 더해
-        _curHP = Mathf.Clamp(_curHP, MinHP, MaxHP);
+        if (!CanHeal()) return; // 나중에 확장성을 이대로 두시오!
+        _curhp = Mathf.Min((_curhp + heal), _maxhp);
     }
-
-
-
     public void RegenerationHP()
     {
-        if (IsDead) return;
-        if (_curHP >= _maxHP) return;
+        if (!CanHeal()) return;
+        if (isBattle != null && isBattle.isInBattle) return;
 
-        _curHP += _maxHP * regenPercent;
-        _curHP = Mathf.Min(_curHP, _maxHP);
+        _curhp = Mathf.Min((_curhp + (_maxhp * hpRegenPercent)), _maxhp);
     }
-
-
-    // Increase : 증가하다
-    public float IncreaseHP(float value)
-    {
-        _maxHP += value;
-        return _maxHP;
-    }
-
-    // Decrease : 감소하다
-    public float DecreaseHP(float value)
-    {
-        _maxHP -= value;
-        if (_maxHP <= 1f) _maxHP = 1f;
-        if (_curHP > _maxHP) _curHP = _maxHP;
-        return _maxHP;
-    }
-    // public float SetHP(float value);
-
-    // public bool OutCheck()
-
-
-
     public void RegenHPUpdate(float deltaTime)
     {
-        if (IsDead) return;
-        if (_curHP >= _maxHP) return;
+        if (!CanHeal()) return;
         if(isBattle != null && isBattle.isInBattle) return;
 
-        regenTimer += deltaTime;
+        // 위 조건 만족시 리젠타이머에 시간을 더한다
+        hpRegenTimer += deltaTime;
 
-        if (regenTimer >= regenInterval)
+        if (hpRegenTimer >= hpRegenInterval) // regenInterval 이 5초라 5초마다 한번씩 회복한다.
         {
-            regenTimer = 0f;
+            hpRegenTimer = 0f;
             RegenerationHP();
         }
-
     }
+
+
 }
