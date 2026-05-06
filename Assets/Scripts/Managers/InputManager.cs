@@ -37,10 +37,9 @@ public class InputManager : ManagerBase
     Dictionary<string, InputAction> actionDictionary = new(); // 인풋액션을 찾어라잉
     List<RaycastResult> cursorHitList = new();
 
+    GameObject cursorHoverObject;
     Vector2 cursorScreenPosition;
     Vector3 cursorWorldPosition;
-
-    public bool is2D = true;
 
     protected override IEnumerator OnConnected(GameManager newManager)
     {
@@ -64,20 +63,63 @@ public class InputManager : ManagerBase
 
     public void UpdateEvent(float deltaTime)
     {
-        RefreshGameObjectUnderCursor();
+        RefreshGameObjectUnderCursor(cursorScreenPosition);
     }
 
-    void RefreshGameObjectUnderCursor()
+    void RefreshGameObjectUnderCursor(Vector2 screenPosition)
     {
         cursorHitList.Clear();
-        if(is2D)
-        { 
-            GameManager.Instance.Camera.GetRaycastResult2D(cursorScreenPosition, cursorHitList);
+        GameManager.Instance.Camera.GetRaycastResult(screenPosition, cursorHitList);
+
+        Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
+        GameObject firstObject = null;
+
+        if(cursorHitList.Count > 0 && cursorHitList[0].element != null)
+        {
+            firstObject = cursorHitList[0].gameObject;
+        }
+
+        if (GameManager.is2D)
+        {
+            worldPosition.z = 0;
+            float GetValue(RaycastResult target)
+            {
+                return target.sortingOrder + target.sortingLayer * 100000;
+            }
+
+            RaycastResult nearest = cursorHitList.GetMaximum<RaycastResult>(GetValue);
+            firstObject = nearest.gameObject;
+            worldPosition = nearest.worldPosition;
         }
         else
         {
-            GameManager.Instance.Camera.GetRaycastResult3D(cursorScreenPosition, cursorHitList);
+            float GetDistance(RaycastResult target)
+            {
+                return target.distance;
+            }
+
+            RaycastResult nearest = cursorHitList.GetMinimum<RaycastResult>(GetDistance);
+            firstObject = nearest.gameObject;
+            worldPosition = nearest.worldPosition;
         }
+
+            float firstDistance = float.MaxValue;
+        Vector3 firstPosition = worldPosition;
+
+        foreach (RaycastResult currentResult in cursorHitList)
+        {
+            float currentDistance = currentResult.distance;
+
+            if (currentDistance < firstDistance)
+            {
+                firstObject = currentResult.gameObject;
+                firstDistance = currentDistance;
+                firstPosition = currentResult.worldPosition;
+            }
+        }
+
+        cursorScreenPosition = screenPosition;
+        cursorWorldPosition = worldPosition;
     }
 
     public GameObject GetGameObjectUnderCursor()
@@ -152,24 +194,9 @@ public class InputManager : ManagerBase
     {
         // Vector2 screenPosition = context.ReadValue<Vector2>();
 
-        Vector3 worldPosition;
 
-        if (is2D)
-        {
-            worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
-            worldPosition.z = 0;
-        }
-        else
-        {
-            worldPosition = Vector3.zero;
-        }
+        RefreshGameObjectUnderCursor(screenPosition); // 마우스 위치 바꼈으니 새로고침
 
-        cursorScreenPosition = screenPosition;
-        cursorWorldPosition = worldPosition;
-
-
-        // OnMouseMove가 ?없을수도 있는데 있다면 Invoke를 실행해라
-        OnMouseMove?.Invoke(screenPosition, worldPosition);
+        OnMouseMove?.Invoke(cursorScreenPosition, cursorWorldPosition);
     }
-
 }

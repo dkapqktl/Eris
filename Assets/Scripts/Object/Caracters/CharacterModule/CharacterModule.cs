@@ -16,5 +16,4 @@ public class CharacterModule : MonoBehaviour
     public virtual void OnRegistration(CharacterBase newOwner) { _owner = newOwner; }
     public virtual void OnUnRegistration(CharacterBase oldOwner) { _owner = null; }
 
-
 }

@@ -69,6 +69,7 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] UIType startScreen;
 
+    public static bool is2D = true;
     bool isLoading = true;
     bool isPlaying = true;
 

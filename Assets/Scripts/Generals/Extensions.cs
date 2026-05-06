@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using System.Xml.Schema;
 using Unity.Mathematics.Geometry;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using static UnityEngine.GraphicsBuffer;
 // 게임으로 따지면 확장팩(DLC)
 // => 추가 컨텐츠
@@ -49,6 +50,30 @@ public static class Extensions
     {
         if (target == null) return null;
         else                return target.TryAddComponent<T>(); // NRVO
+    }
+
+    public static T GetMaximum<T>(this IEnumerable targetList, System.Func<T, float> Evalueator)
+        => targetList.GetExtream(float.MinValue, Evalueator, (a, b) => a < b);
+
+    public static T GetMinimum<T>(this IEnumerable targetList, System.Func<T, float> Evalueator)
+        => targetList.GetExtream(float.MinValue, Evalueator, (a, b) => a < b);
+    public static T GetExtream<T>(this IEnumerable targetList, float defaultScore, System.Func<T, float> Evalueator, System.Func<float, float, bool> Comparison)
+    {
+        T result = default;
+        float firstScore = defaultScore;
+
+        foreach (T currentTarget in targetList)
+        {
+            float currentDistance = Evalueator(currentTarget);
+
+            if (Comparison(currentDistance, firstScore))
+            {
+                result = currentTarget;
+                firstScore = currentDistance;
+            }
+        }
+
+        return result;
     }
 
     public static IEnumerator WiatForTask(this Task targetTask) // Task => 비동기 작업 => 끝날때 까지 기다리는 함수
