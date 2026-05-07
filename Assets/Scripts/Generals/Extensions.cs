@@ -53,7 +53,7 @@ public static class Extensions
     }
 
     public static T GetMaximum<T>(this IEnumerable targetList, System.Func<T, float> Evalueator)
-        => targetList.GetExtream(float.MinValue, Evalueator, (a, b) => a < b);
+        => targetList.GetExtream(float.MinValue, Evalueator, (a, b) => a > b);
 
     public static T GetMinimum<T>(this IEnumerable targetList, System.Func<T, float> Evalueator)
         => targetList.GetExtream(float.MinValue, Evalueator, (a, b) => a < b);

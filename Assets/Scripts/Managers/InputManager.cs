@@ -103,20 +103,7 @@ public class InputManager : ManagerBase
             worldPosition = nearest.worldPosition;
         }
 
-            float firstDistance = float.MaxValue;
-        Vector3 firstPosition = worldPosition;
-
-        foreach (RaycastResult currentResult in cursorHitList)
-        {
-            float currentDistance = currentResult.distance;
-
-            if (currentDistance < firstDistance)
-            {
-                firstObject = currentResult.gameObject;
-                firstDistance = currentDistance;
-                firstPosition = currentResult.worldPosition;
-            }
-        }
+        Debug.Log($"{worldPosition} \t: {firstObject}");
 
         cursorScreenPosition = screenPosition;
         cursorWorldPosition = worldPosition;
