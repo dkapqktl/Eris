@@ -9,6 +9,7 @@ using UnityEngine.InputSystem;
 // public delegate void MouseUpEvent   (Vector2 screenPosition, Vector3 worldPosition);
 public delegate void MouseMoveEvent (Vector2 screenPosition, Vector3 worldPosition);
 public delegate void MouseButtonEvent (bool value, Vector2 screenPosition, Vector3 worldPosition);
+public delegate void MouseHoverEvent (GameObject newTarget, GameObject oldTarget);
 public delegate void ButtonEvent(bool value);
 public delegate void VectorEvent (Vector2 value);
 public delegate void AxisEvent(float value);
@@ -24,6 +25,7 @@ public class InputManager : ManagerBase
     // event 대리자는 누구나 등록하지만 나만 시전 가능
     public static event MouseButtonEvent OnMouseLeftButton;
     public static event MouseButtonEvent OnMouseRightButton;
+    public static event MouseHoverEvent OnMouseHover;
     // public static event MouseUpEvent OnMouseLeftUp;
     // public static event MouseUpEvent OnMouseRightUp;
     public static event MouseMoveEvent OnMouseMove;
@@ -103,10 +105,16 @@ public class InputManager : ManagerBase
             worldPosition = nearest.worldPosition;
         }
 
-        Debug.Log($"{worldPosition} \t: {firstObject}");
+        GameObject lastHoverObject = cursorHoverObject;
 
         cursorScreenPosition = screenPosition;
         cursorWorldPosition = worldPosition;
+        cursorHoverObject = firstObject;
+        
+        if (lastHoverObject != firstObject)
+        {
+            OnMouseHover?.Invoke(firstObject, lastHoverObject);
+        }
     }
 
     public GameObject GetGameObjectUnderCursor()

@@ -201,6 +201,17 @@
                 },
                 {
                     "name": "",
+                    "id": "92320850-466e-4b16-be18-c5323f1c73bc",
+                    "path": "<Touchscreen>/delta",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Move",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "7f3cc336-4f4c-4506-b4a8-f42a6459e800",
                     "path": "<Keyboard>/tab",
                     "interactions": "",
