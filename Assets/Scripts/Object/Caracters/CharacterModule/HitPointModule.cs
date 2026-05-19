@@ -20,7 +20,7 @@ public class HitPointModule : CharacterModule
     public float maxHP => _maxhp;
 
 
-    private float _curhp;
+    private float _curhp = 30;
     public float curHP => _curhp;
 
 
@@ -61,19 +61,33 @@ public class HitPointModule : CharacterModule
         {
             Owner.DeathNotify(gameObject, damage, _curhp); // 죽음을 쓰는넘들에게 정보 알림
         }
+
+        OnChangedHP?.Invoke();
     }
 
-    public float IncreaseHP(float value) => _maxhp += value;    // Increase : 증가하다
+    public float IncreaseHP(float value)
+    {
+        _maxhp += value;
+        OnChangedHP?.Invoke();
+        return _maxhp;
+    }    // Increase : 증가하다
 
-    public float DecreaseHP(float value) => Mathf.Max(basicHP, _maxhp - value);    // Decrease : 감소하다
-    
+    public float DecreaseHP(float value)
+    {
+        _maxhp = Mathf.Max(basicHP, _maxhp - value);
+        if (_curhp >= _maxhp) _curhp = _maxhp;
 
+        OnChangedHP?.Invoke();
+        return _maxhp;
+    }    // Decrease : 감소하다
 
     public bool CanHeal() => !IsDead && _curhp < _maxhp;
     public void Heal(float heal)
     {
         if (!CanHeal()) return; // 나중에 확장성을 이대로 두시오!
         _curhp = Mathf.Min((_curhp + heal), _maxhp);
+
+        OnChangedHP?.Invoke();
     }
     public void RegenerationHP()
     {
@@ -81,6 +95,8 @@ public class HitPointModule : CharacterModule
         if (isBattle != null && isBattle.isInBattle) return;
 
         _curhp = Mathf.Min((_curhp + (_maxhp * hpRegenPercent)), _maxhp);
+
+        OnChangedHP?.Invoke();
     }
     public void RegenHPUpdate(float deltaTime)
     {

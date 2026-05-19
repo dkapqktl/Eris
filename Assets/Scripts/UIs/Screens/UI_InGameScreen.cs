@@ -15,6 +15,8 @@ public class UI_InGameScreen : UI_ScreenBase
         InputManager.OnShowInventoryButton -= InventoruMenu;
         InputManager.OnShowInventoryButton += InventoruMenu;
 
+        
+
     }
 
     protected override void OnDisable()
