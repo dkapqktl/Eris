@@ -198,6 +198,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2084192808689058199}
   - component: {fileID: 1633778260582044282}
+  - component: {fileID: 7853551639585971135}
   m_Layer: 5
   m_Name: HP_Bar
   m_TagString: Untagged
@@ -265,7 +266,7 @@ MonoBehaviour:
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
   m_Interactable: 1
-  m_TargetGraphic: {fileID: 0}
+  m_TargetGraphic: {fileID: 6095321477629406602}
   m_FillRect: {fileID: 7704053474439326276}
   m_HandleRect: {fileID: 0}
   m_Direction: 2
@@ -276,6 +277,21 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7853551639585971135
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3868837550545146534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 227d3b8926b35fa4f8d5830e033e3940, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::UI_HPBar
+  backgroundRect: {fileID: 8698256147474876623}
+  slider: {fileID: 1633778260582044282}
+  hpText: {fileID: 6658112342572736576}
 --- !u!1 &3878986826716436221
 GameObject:
   m_ObjectHideFlags: 0
@@ -392,7 +408,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 30/30
+  m_text: curHP/maxHP
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}

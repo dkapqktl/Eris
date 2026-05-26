@@ -1,34 +1,47 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
 using UnityEngine.UI;
 
 public class UI_HPBar : UIBase
 {
-    HitPointModule HP;
+    private HitPointModule HP;
 
     [SerializeField] private RectTransform backgroundRect;
-    [SerializeField] private Image fillImage;
+    [SerializeField] private Slider slider;
+    [SerializeField] private TextMeshProUGUI hpText;
 
-
-    void OnEnable()
-    {  
-        if(HP is not null) HP.OnChangedHP += UpdateBar;
+    private void Awake()
+    {
+        //매니저가 로딩 끝나고 나서 초기화 할 거 써놓기!
+        GameManager.OnInitializeManager += HPBarStart;
     }
 
-    void OnDisable()
+    void HPBarStart()
     {
-        if (HP is not null) HP.OnChangedHP -= UpdateBar;
+        HP = CharacterBase.localPlayer.GetModule<HitPointModule>();
+        if (HP is null) return;
+        HP.OnChangedHP += UpdateBar;
+        UpdateBar();
+    }
+
+    void OnDestroy()
+    {
+        if (HP is null) return;
+        HP.OnChangedHP -= UpdateBar;
     }
 
     public void UpdateBar()
     {
         // Max HP에 따라 바 길이 증가
         Vector2 size = backgroundRect.sizeDelta;
-        size.x = HP.maxHP;
-        if (HP.maxHP >= 980) { size.x = 980; }
-        else backgroundRect.sizeDelta = size;
+        size.y = Mathf.Min(HP.maxHP, 980);
+        backgroundRect.sizeDelta = size;
 
         // 현재 체력 Fill
-        fillImage.fillAmount = HP.curHP / HP.maxHP;
+        slider.value = HP.maxHP > 0 ? HP.curHP / HP.maxHP : 0f;
+
+        // HP 텍스트 수치
+        hpText.text = $"{(int)HP.curHP} / {(int)HP.maxHP}";
     }
 }

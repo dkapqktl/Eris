@@ -73,10 +73,88 @@ PrefabInstance:
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 4361142354616627106, guid: 703faa74168ec064aa9e575da504e2c1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1373419506530844212}
+    - targetCorrespondingSourceObject: {fileID: 4361142354616627106, guid: 703faa74168ec064aa9e575da504e2c1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1058725612108584909}
+    - targetCorrespondingSourceObject: {fileID: 4361142354616627106, guid: 703faa74168ec064aa9e575da504e2c1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1171228698182651181}
+    - targetCorrespondingSourceObject: {fileID: 4361142354616627106, guid: 703faa74168ec064aa9e575da504e2c1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2961674887715895046}
     - targetCorrespondingSourceObject: {fileID: 1000938599205859929, guid: 703faa74168ec064aa9e575da504e2c1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5423792306660003088}
   m_SourcePrefab: {fileID: 100100000, guid: 703faa74168ec064aa9e575da504e2c1, type: 3}
+--- !u!1 &1782885665743987210 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4361142354616627106, guid: 703faa74168ec064aa9e575da504e2c1, type: 3}
+  m_PrefabInstance: {fileID: 2610951766637530536}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1373419506530844212
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782885665743987210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d77346d255ce3ce48a7dd36ebbcefea8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HitPointModule
+  invincibility: 0
+  _maxhp: 30
+  hpRegenInterval: 5
+  hpRegenPercent: 0.05
+--- !u!114 &1058725612108584909
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782885665743987210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 80ae559b94529c9408d62460c0b5adb9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BattleModule
+--- !u!114 &1171228698182651181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782885665743987210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1234c888cce6f7049886a9863292fa1a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ManaPointModule
+  invincibility: 0
+  _maxMP: 100
+  recoverInterval: 0.1
+  recoverPercent: 0.005
+--- !u!114 &2961674887715895046
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782885665743987210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef88b487d53614347b709251072cfa27, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AttackModule
+  _attackPower: 0
+  _magicPower: 0
+  _attackSpeed: 0
+  _criticalMultiple: 0
+  _criticalChance: 0
 --- !u!1 &3017405798314655729 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1000938599205859929, guid: 703faa74168ec064aa9e575da504e2c1, type: 3}
@@ -94,7 +172,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 68ab1fe99ffe96749a5a0bc85bffed69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AnimationModule
-  _owner: {fileID: 0}
   anim: {fileID: 6410690869372418224}
   isRotationByMovement: 1
 --- !u!95 &6410690869372418224 stripped

@@ -15,7 +15,8 @@ public class UI_InGameScreen : UI_ScreenBase
         InputManager.OnShowInventoryButton -= InventoruMenu;
         InputManager.OnShowInventoryButton += InventoruMenu;
 
-        
+        InputManager.OnDev -= DevInfo;
+        InputManager.OnDev += DevInfo;
 
     }
 
@@ -26,6 +27,7 @@ public class UI_InGameScreen : UI_ScreenBase
         InputManager.OnCancel -= CancelMenu;
         InputManager.OnShowInfo -= InfoMenu;
         InputManager.OnShowInventoryButton -= InventoruMenu;
+        InputManager.OnDev -= DevInfo;
     }
 
     void CancelMenu(bool value)
@@ -54,6 +56,14 @@ public class UI_InGameScreen : UI_ScreenBase
         UIManager.ClaimToggleUI(UIType.InGameMenu); // 해당 키 누르면 게임종료 창 열어
     }
 
+    void DevInfo(bool value)
+    {
+        if (!UIManager.ClaimGetUI(UIType.InGameMenu).isActiveAndEnabled)
+        {
+            UIManager.ClaimToggleUI(UIType.DevInfo); // 해당 키 누르면 인벤토리 열어
+        }
+    }
+
     void InventoruMenu(bool value)
     {
         if(!UIManager.ClaimGetUI(UIType.InGameMenu).isActiveAndEnabled)
@@ -64,7 +74,10 @@ public class UI_InGameScreen : UI_ScreenBase
 
     void InfoMenu(bool value)
     {
-        UIManager.ClaimToggleUI(UIType.Info); // 해당 키 누르면 인벤토리 열어
+        if (!UIManager.ClaimGetUI(UIType.InGameMenu).isActiveAndEnabled)
+        {
+            UIManager.ClaimToggleUI(UIType.Info); // 해당 키 누르면 인포 열어
+        }
     }
 
 }

@@ -29,7 +29,7 @@ public class CharacterBase : MonoBehaviour
         => OnDeath?.Invoke(target, damage, hp);
 
 
-
+    public static CharacterBase localPlayer;
 
 
     ControllerBase _controller;
@@ -98,6 +98,7 @@ public class CharacterBase : MonoBehaviour
         // Unpossessed(); 해지한다.
         if (Controller) Unpossessed();
         _controller = from; // 컨트롤러는 그 입력받은 프롬이다
+        if(_controller is PlayerController) localPlayer = this; //나를 조종하는 것이 플레이어라면 내가 플레이어 캐릭터다!
         AddAllModuleFromObject(gameObject); // 실행하고있는 컴포넌트를 소유한 게임오브젝트
         OnPossessed(Controller);
         return Controller; // 그리고 컨트롤러를 반환해라

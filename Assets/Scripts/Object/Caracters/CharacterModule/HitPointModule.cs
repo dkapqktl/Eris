@@ -65,14 +65,30 @@ public class HitPointModule : CharacterModule
         OnChangedHP?.Invoke();
     }
 
-    public float IncreaseHP(float value)
+    public float CurIncreaseHP(float value)
+    {
+        _curhp += value;
+        if (_curhp > _maxhp) _maxhp = _curhp;
+        OnChangedHP?.Invoke();
+        return _curhp;
+    }
+
+    public float CurDecreaseHP(float value)
+    {
+        if (IsDead) return 0;
+        _curhp -= MathF.Min(_curhp, value);
+        OnChangedHP?.Invoke();
+        return _curhp;
+    }
+
+    public float MaxIncreaseHP(float value)
     {
         _maxhp += value;
         OnChangedHP?.Invoke();
         return _maxhp;
     }    // Increase : 증가하다
 
-    public float DecreaseHP(float value)
+    public float MaxDecreaseHP(float value)
     {
         _maxhp = Mathf.Max(basicHP, _maxhp - value);
         if (_curhp >= _maxhp) _curhp = _maxhp;

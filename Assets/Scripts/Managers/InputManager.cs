@@ -33,6 +33,7 @@ public class InputManager : ManagerBase
     public static event ButtonEvent OnShowStatus;
     public static event ButtonEvent OnShowInventoryButton;
     public static event ButtonEvent OnShowInfo;
+    public static event ButtonEvent OnDev;
     public static event VectorEvent OnMove;
 
     PlayerInput targetInput;
@@ -155,6 +156,7 @@ public class InputManager : ManagerBase
         InitializeAction("ShowStatus", (context) => OnShowStatus?.Invoke(true));
         InitializeAction("ShowInventoryButton", (context) => OnShowInventoryButton?.Invoke(true));
         InitializeAction("ShowInfo", (context) => OnShowInfo?.Invoke(true));
+        InitializeAction("DevMode", (context) => OnDev?.Invoke(true));
     }
 
     void InitializeAction(string actionName, Action<InputAction.CallbackContext> actionMethod, Action<InputAction.CallbackContext> cancelMethod = null)

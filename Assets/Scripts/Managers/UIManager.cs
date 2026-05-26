@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public enum UIType
 {
     None, Loading, Title, Option, LoadingText, Movable, Menu, Info, GameQuit, Target, Inventory, Ingame,
-    LoadList, Tutorial, InGameMenu, HoverInfo,
+    LoadList, Tutorial, InGameMenu, DevInfo,
     _Length
 }
 
@@ -40,7 +40,7 @@ public class UIManager : ManagerBase
         new (UIType.Inventory, "InventoryUI"),
         new (UIType.InGameMenu, "InGameMenuUI"),
         new (UIType.Info, "InfoUI"),
-        new (UIType.HoverInfo, "TargetHoverInfo")
+        new (UIType.DevInfo, "DevInfo_UI")
 
 
     };
