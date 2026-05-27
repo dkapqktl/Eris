@@ -14,6 +14,5 @@ public class ItemContainer : InfoContainer
     public ItemType type;
     public int maxStack;
     public float weight;
-
-
+   
 }

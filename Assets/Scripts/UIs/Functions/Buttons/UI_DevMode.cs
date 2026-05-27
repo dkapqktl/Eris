@@ -5,8 +5,10 @@ public class UI_DevMode : MonoBehaviour
 {
 
     private HitPointModule HP;
+    private Inventory Inven;
 
-    [SerializeField] private float Amount;
+    public float amount;
+    public int itemAmount;
 
     private void Awake()
     {
@@ -22,21 +24,39 @@ public class UI_DevMode : MonoBehaviour
 
     public void CurHPPlus()
     {
-        HP.CurIncreaseHP(Amount);
+        HP.CurIncreaseHP(amount);
     }
 
     public void CurHPMinus()
     {
-        HP.CurDecreaseHP(Amount);
+        HP.CurDecreaseHP(amount);
     }
 
     public void MaxHPPlus()
     {
-        HP.MaxIncreaseHP(Amount);
+        HP.MaxIncreaseHP(amount);
     }
 
     public void MaxHPMinus()
     {
-        HP.MaxDecreaseHP(Amount);
+        HP.MaxDecreaseHP(amount);
+    }
+
+    public void HealPotionPlus()
+    {
+        ItemContainer potion = DataManager.LoadDataFile<ItemContainer>("LesserHealPotion");
+        Inven.AddItem(potion, itemAmount);
+    }
+
+    public void InvenPlus()
+    {
+        if (Inven == null) return;
+        Inven.rows += 1;
+    }
+    public void InvenMinus()
+    {
+        if (Inven == null || Inven.rows <= 1) return;
+        // if (Inven.columns == 5 || )
+        Inven.rows -= 1;
     }
 }

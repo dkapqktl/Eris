@@ -70,6 +70,9 @@ public class DataManager : ManagerBase
         yield return LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad).WiatForTask(); // WiatForTask => Task가 끝날때 까지 기다리는 함수
         loadString = "Load Pool Requests";
         yield return LoadAllFromAssetBundle<PoolRequest>("Global", ProgressOnLoad).WiatForTask(); // WiatForTask => Task가 끝날때 까지 기다리는 함수
+        loadString = "load Items";
+        yield return LoadAllFromAssetBundle<ItemContainer>("Global", ProgressOnLoad).WiatForTask(); // WiatForTask => Task가 끝날때 까지 기다리는 함수
+
 
 
         /*
