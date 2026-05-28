@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -67,8 +68,9 @@ public class Inventory : MonoBehaviour
         return default;
     }
 
+    // IEnumerable => 원하는 자료형을 반복적으로 내보내는 자료형, < > 안에 들어있는 타입을 요구할 때마다 하나씩 나오는 구조
     // 처음 시작할때 모든 인벤토리를 가져오기. (처음시작시 빈 슬롯들도 가져와야함)
-    public ItemSlot[] GetAllSlot() 
+    public IEnumerable<ItemSlot> GetAllSlot() 
     {
         // 2차원 배열에서 Length : 전체 길이
         // GetLength(0) : 0번째 차원의 길이 => 행의 길이(가로)
@@ -79,8 +81,8 @@ public class Inventory : MonoBehaviour
         // 3 4 5   ( 1 , 0 ) ( 1 , 1 ) ( 1 , 2 )
         // 6 7 8   ( 2 , 0 ) ( 2 , 1 ) ( 2 , 2 )
         // width(위의 경우 한줄의 길이는 3) * x + y
-        
-        ItemSlot[] result = new ItemSlot[slots.Length];
+
+        // ItemSlot[] result = new ItemSlot[slots.Length]; // IEnumerable와 yield return를 쓰면 저장할 필요없어 주석처리함
 
         int height = slots.GetLength(0); // GetLength(0) 의 (0)은 (x,y)에서 x의 값임
         int width = slots.GetLength(1); // GetLength(1) 의 (1)은 (x,y)에서 y의 값임
@@ -90,12 +92,28 @@ public class Inventory : MonoBehaviour
 
             for (int column = 0; column < width; column++)
             {
-                result[width * row + column] = slots[row,column];
+                // 널이라면 다음애 하기
+                if (slots[row, column] is null) continue;
+                // yield return => 결과를 내보내고 나서 기다리기
+                yield return slots[row,column];
             }
         }
+    }
 
-        return result;
+    public IEnumerable<ItemSlot> GetAllSlotReverse()
+    {
+        int height = slots.GetLength(0);
+        int width = slots.GetLength(1);
 
+        for (int row = (height - 1); row >= 0; row--)
+        {
+
+            for (int column = (width - 1); column >= 0; column--)
+            {
+                if (slots[row, column] is null) continue;
+                yield return slots[row, column];
+            }
+        }
     }
 
     public ItemSlot FindItem(ItemContainer target)
@@ -120,39 +138,68 @@ public class Inventory : MonoBehaviour
     }
 
 
-    public ItemSlot FindFirstEmpty()
+    public IEnumerable<ItemSlot> FindFirstEmptySlot()
     {
-        return default;
+        foreach (ItemSlot currentSlot in GetAllSlot())
+        {
+            if (currentSlot.GetIsEmpty()) yield return currentSlot;
+        }
     }
-    public ItemSlot FindLastEmpty()
-    {
-        return default;
+
+    public IEnumerable<ItemSlot> FindLastEmptySlot()
+    { 
+        foreach (ItemSlot currentSlot in GetAllSlotReverse())
+        {
+            if (currentSlot.GetIsEmpty()) yield return currentSlot;
+        }
     }
-    public ItemSlot FindFirstItem(ItemContainer target)
+    public IEnumerable<ItemSlot> FindFirstItem(ItemContainer target)
     {
-        return default;
+        foreach (ItemSlot currentSlot in GetAllSlot())
+        {
+            if (currentSlot.GetItem() == target) yield return currentSlot;
+        }
     }
-    public ItemSlot FindLastItem(ItemContainer target)
+    public IEnumerable<ItemSlot> FindLastItem(ItemContainer target)
     {
-        return default;
+        foreach (ItemSlot currentSlot in GetAllSlotReverse())
+        {
+            if (currentSlot.GetItem() == target) yield return currentSlot;
+        }
     }
 
 
 
-    // 바닥에 아이템이 999개가 있을때 아이템을 5개만 줍는다 하면 나머지는 사라지면 안되고 994개가 남아야함
-    // int로 반환값을 받아야하고 리턴은 그 남은 수량을 반환해야함
     public int AddItem(ItemContainer wantItem, int amount = 1)
     {
-        slots[0, 0].AddItem(wantItem, amount);
-        return default;
+        amount = AddItemOnExistSlots(wantItem, amount);
+        if (amount <= 0) return 0;
+
+        return AddItemOnEmptySlots(wantItem, amount);
     }
     public int AddItemOnExistSlots(ItemContainer wantItem, int amount)
     {
-        return default;
+        foreach (ItemSlot currenttSlot in FindFirstItem(wantItem))
+        {
+            if (amount <= 0) return 0;
+            amount = currenttSlot.AddItem(wantItem, amount);
+            currenttSlot.NoticeChanged();
+        }
+
+        return amount;
     }
     public int AddItemOnEmptySlots(ItemContainer wantItem, int amount)
+    // 바닥에 아이템이 999개가 있을때 아이템을 5개만 줍는다 하면 나머지는 사라지면 안되고 994개가 남아야함
+    // int로 반환값을 받아야하고 리턴은 그 남은 수량을 반환해야함
     {
-        return default;
+        foreach (ItemSlot currenttSlot in FindFirstEmptySlot())
+        {
+            if (amount <= 0) return 0;
+            amount = currenttSlot.AddItem(wantItem, amount);
+            currenttSlot.NoticeChanged();
+        }
+
+        return amount;
     }
     public int AddItemToLocation(ItemContainer wantItem, int amount, int row, int column)
     {
@@ -168,19 +215,29 @@ public class Inventory : MonoBehaviour
 
     public int RemoveItem(System.Predicate<ItemContainer> condition)
     {
-        return default;
+        return 0;
     }
     public int RemoveItem(ItemContainer wantItem)
     {
-        return default;
+        return 0;
     }
     public int RemoveItem(ItemContainer wantItem, int amount)
     {
-        return default;
+        amount = RemoveItemOnExistSlots(wantItem, amount);
+        if (amount <= 0) return 0;
+
+        return RemoveItemOnExistSlots(wantItem, amount);
     }
     public int RemoveItemOnExistSlots(ItemContainer wantItem, int amount)
     {
-        return default;
+        foreach (ItemSlot currenttSlot in FindLastItem(wantItem))
+        {
+            if (amount <= 0) return 0;
+            amount = currenttSlot.RemoveItem(wantItem, amount);
+            currenttSlot.NoticeChanged();
+        }
+
+        return amount;
     }
     public int RemoveItemToLocation(int row, int column)
     {

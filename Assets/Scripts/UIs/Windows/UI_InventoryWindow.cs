@@ -4,9 +4,10 @@ using UnityEngine.UI;
 
 public class UI_InventoryWindow : OpenableUIBase
 {
-    [SerializeField] Inventory targetInventory;
-    [SerializeField] LayoutGroup layout;
-    [SerializeField] string itemSlotPrefabName;
+
+    [SerializeField] protected Inventory targetInventory;
+    [SerializeField] protected LayoutGroup layout;
+    [SerializeField] protected string itemSlotPrefabName;
 
     public override void Registration(UIManager manager)
     {
@@ -33,17 +34,15 @@ public class UI_InventoryWindow : OpenableUIBase
         }
 
         // 이후 아이템 슬롯을 전부 가져오기
-        ItemSlot[] inventorySlots = newInventory.GetAllSlot();
-        
         // 인벤토리 슬롯을 하나하나 만들어주기
-        foreach(ItemSlot currentSlot in inventorySlots)
+        foreach(ItemSlot currentSlot in newInventory.GetAllSlot())
         {
             if (currentSlot is null) continue; // 슬롯이 없다면 다음으로 넘어가기
 
             // 오브잭트를 만들어라, 아이템슬롯이라는 프리팹으로 위치는 layout.transform 에 해당 배열 위치에 생성 그리고 인스턴스에 저장
             GameObject instance = ObjectManager.CreateObject(itemSlotPrefabName, layout.transform);
 
-            if (instance != null) continue; // 인스턴스가 없으면 넘어가라
+            if (instance == null) continue; // 인스턴스가 없으면 넘어가라
             if (instance.TryGetComponent(out UI_ItemSlotInfo createdSlot)) // 인스턴스의 컴포넌트를 가져오는데 UI_ItemSlotInfo가 있는지? 있다면 createdSlot에 임시저장하고 아래 수행
             {
                 createdSlot.ConnectSlot(currentSlot);

@@ -14,10 +14,22 @@ public class UI_ItemSlotInfo : UIBase
 
     public void ConnectSlot(ItemSlot targetSlot)
     {
+        DisConnectSlot(); // 기존연결은 끊기
         if (targetSlot is null) return;
         connectedSlot = targetSlot; // 타겟슬롯이 있다면 일단 저장하기
 
+        // 아이템 슬롯이 바뀌면 이벤트발생! 비쥬얼 업데이트 하기
+        connectedSlot.OnItemSlotChanged -= VisualUpdate;
+        connectedSlot.OnItemSlotChanged += VisualUpdate;
+
         VisualUpdate(connectedSlot);
+    }
+
+    public void DisConnectSlot()
+    {
+        if (connectedSlot is null) return;
+        connectedSlot.OnItemSlotChanged -= VisualUpdate;
+        connectedSlot = null;
     }
 
     protected virtual void VisualUpdate(ItemSlot targetSlot)
@@ -50,7 +62,8 @@ public class UI_ItemSlotInfo : UIBase
             else 
             {
                 bool isMax = targetSlot.GetIsMax(); // 아이템 스텍이 꽉찻을때 트루 // 이걸 통해 멕스일때 어떻게 텍스트출력할지 등 설정 할 수 있음
-                amountText.color = Color.yellow; 
+                if(isMax) amountText.color = Color.yellow; 
+                else amountText.color = Color.white;
                 amountText.SetText($"{targetStack}");
             }
         }

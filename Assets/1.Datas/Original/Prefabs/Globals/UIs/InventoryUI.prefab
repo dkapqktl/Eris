@@ -308,8 +308,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7953540100721143430}
-  - component: {fileID: 4219112909406553497}
-  - component: {fileID: 78791764137856281}
+  - component: {fileID: 5959961807257481055}
   m_Layer: 5
   m_Name: InventoryUI
   m_TagString: Untagged
@@ -339,7 +338,7 @@ RectTransform:
   m_AnchoredPosition: {x: -416.2898, y: -7.6384}
   m_SizeDelta: {x: 667.4205, y: 915.2769}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &4219112909406553497
+--- !u!114 &5959961807257481055
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -348,26 +347,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5333820887383103277}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e97058398c059a542b59f7c704f909e5, type: 3}
+  m_Script: {fileID: 11500000, guid: f43c9eb207149974697c9aee00f11c90, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::UI_InventoryWindow
-  targetInventory: {fileID: 78791764137856281}
+  m_EditorClassIdentifier: Assembly-CSharp::UI_PlayerInventory
+  targetInventory: {fileID: 0}
   layout: {fileID: 7072799119069582118}
   itemSlotPrefabName: ItemSlot (1)
---- !u!114 &78791764137856281
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5333820887383103277}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 76fda0fadbda72d498a6556976d072fd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Inventory
-  columns: 5
-  rows: 6
 --- !u!1 &6367671850477455055
 GameObject:
   m_ObjectHideFlags: 0
