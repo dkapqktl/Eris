@@ -1,5 +1,7 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_DevMode : MonoBehaviour
 {
@@ -7,8 +9,10 @@ public class UI_DevMode : MonoBehaviour
     private HitPointModule HP;
     private Inventory Inven;
 
-    public float amount;
-    public int itemAmount;
+    public TMP_InputField inputAmount;
+
+    public float devCurHP;
+    public float devMaxHP;
 
     private void Awake()
     {
@@ -22,36 +26,57 @@ public class UI_DevMode : MonoBehaviour
         Inven = CharacterBase.localPlayer.GetComponent<Inventory>();
     }
 
-    public void RemoveItem()
+    public void ResetHP()
     {
-        Inven.RemoveItem(, itemAmount);
+        if (devCurHP > 0)
+        {
+            HP.CurDecreaseHP(devCurHP);
+            HP.MaxDecreaseHP(devMaxHP);
+        }
+        else
+        {
+            HP.CurIncreaseHP(-devCurHP);
+            HP.MaxIncreaseHP(-devMaxHP);
+        }
+
+        devCurHP = 0;
+    }
+
+    public void DevFullHP()
+    {
+        HP.FullHP();
     }
 
 
-    public void CurHPPlus()
+    public void MaxHPPlus(int value)
     {
-        HP.CurIncreaseHP(amount);
+        float originMaxHP = HP.maxHP;
+        HP.MaxIncreaseHP(float.Parse(inputAmount.text));
+        float afterMaxHP = HP.maxHP;
+        devMaxHP += afterMaxHP - originMaxHP;
     }
 
-    public void CurHPMinus()
+    public void MaxHPMinus(int value)
     {
-        HP.CurDecreaseHP(amount);
-    }
-
-    public void MaxHPPlus()
-    {
-        HP.MaxIncreaseHP(amount);
-    }
-
-    public void MaxHPMinus()
-    {
-        HP.MaxDecreaseHP(amount);
+        float originCurHP = HP.curHP;
+        float originMaxHP = HP.maxHP;
+        HP.MaxDecreaseHP(float.Parse(inputAmount.text));
+        float afterCurHP = HP.curHP;
+        float afterMaxHP = HP.maxHP;
+        devCurHP += afterCurHP - originCurHP;
+        devMaxHP += afterMaxHP - originMaxHP;
     }
 
     public void HealPotionPlus()
     {
         ItemContainer potion = DataManager.LoadDataFile<ItemContainer>("LesserHealPotion");
-        Inven.AddItem(potion, itemAmount);
+        Inven.AddItem(potion, int.Parse(inputAmount.text));
+    }
+
+    public void HealPotionMinus()
+    {
+        ItemContainer potion = DataManager.LoadDataFile<ItemContainer>("LesserHealPotion");
+        Inven.RemoveItem(potion, int.Parse(inputAmount.text));
     }
 
     public void InvenPlus()

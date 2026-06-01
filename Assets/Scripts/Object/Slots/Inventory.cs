@@ -219,12 +219,24 @@ public class Inventory : MonoBehaviour
     }
     public int RemoveItem(ItemContainer wantItem)
     {
-        return 0;
+        int result = 0;
+
+        foreach (ItemSlot currentSlot in FindLastItem(wantItem))
+        {
+            result += currentSlot.RemoveItem(wantItem);
+            currentSlot.NoticeChanged();
+        }
+
+        return result;
     }
     public int RemoveItem(ItemContainer wantItem, int amount)
     {
-        amount = RemoveItemOnExistSlots(wantItem, amount);
-        if (amount <= 0) return 0;
+        foreach (ItemSlot currentSlot in FindLastItem(wantItem))
+        {
+            if (amount <= 0) return 0;
+            amount = currentSlot.RemoveItem(wantItem, amount);
+            currentSlot.NoticeChanged();
+        }
 
         return RemoveItemOnExistSlots(wantItem, amount);
     }

@@ -2,6 +2,7 @@ using System;
 using Unity.VisualScripting;
 using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.UIElements;
 using static UnityEngine.Rendering.DebugUI;
 
@@ -19,14 +20,11 @@ public class HitPointModule : CharacterModule
     [SerializeField] private float _maxhp = 30;
     public float maxHP => _maxhp;
 
-
     private float _curhp = 30;
     public float curHP => _curhp;
 
-
     private float basicHP = 10;
     public float _minhp => 0f;
-
 
     public bool IsDead => _curhp <= _minhp;
 
@@ -105,6 +103,16 @@ public class HitPointModule : CharacterModule
 
         OnChangedHP?.Invoke();
     }
+
+
+    public float FullHP()
+    {
+        if (_curhp == maxHP) return _curhp;
+        _curhp = _maxhp;
+        OnChangedHP?.Invoke();
+        return _curhp;
+    }
+
     public void RegenerationHP()
     {
         if (!CanHeal()) return;
