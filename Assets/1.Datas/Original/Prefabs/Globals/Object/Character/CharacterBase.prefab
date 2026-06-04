@@ -170,8 +170,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76fda0fadbda72d498a6556976d072fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Inventory
-  columns: 5
-  rows: 3
+  maxInventorySize: 25
+  currentInventorySize: 10
 --- !u!1 &3017405798314655729 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1000938599205859929, guid: 703faa74168ec064aa9e575da504e2c1, type: 3}

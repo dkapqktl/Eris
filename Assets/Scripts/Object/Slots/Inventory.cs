@@ -1,7 +1,10 @@
+using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UIElements;
+
+public delegate void InventoryEvent();
+
+
 
 public class Inventory : MonoBehaviour
 {
@@ -9,13 +12,27 @@ public class Inventory : MonoBehaviour
     //  세로      가로
     //   행       열
 
+    /* 2차원 배열
     public int columns;
     public int rows;
-
     ItemSlot[,] slots;
+    */
+
+    public int maxInventorySize = 25;
+    public int currentInventorySize = 10;
+ 
+    ItemSlot[] slots; // 1차원 배열
+
+    public event InventoryEvent OnInventoryChanged;
+
+    public void Awake()
+    {
+        Initialize();
+    }
 
     public void Initialize()
     {
+        /* 2차원 배열
         slots = new ItemSlot[rows, columns];
 
         for (int row = 0; row < rows; row++)
@@ -26,8 +43,14 @@ public class Inventory : MonoBehaviour
                 slots[row, column] = new ItemSlot();
             }
         }
-    }
+        */
 
+        slots = new ItemSlot[maxInventorySize];
+        for (int array = 0; array < maxInventorySize; array++)
+        {
+            slots[array] = new ItemSlot();
+        }
+    }
     public void Sort(System.Comparison<ItemContainer> Method)
     {
         System.Array.Sort(slots);
@@ -45,6 +68,48 @@ public class Inventory : MonoBehaviour
     public bool InsertAll(Inventory Other, ItemContainer target)
     {
         return default;
+    }
+
+    public void IncreaseInventory(int wantIncrease)
+    {
+        if (slots == null) return;
+        currentInventorySize += wantIncrease;
+
+        /* 맥스인벤토리사이즈가 없다 할 경우 인벤토리 늘리기
+        if (slots == null) return;
+
+        ItemSlot[] tempSlot = slots;
+
+        slots = new ItemSlot[slots.Length + wantIncrease];
+
+        for (int i = 0; i < tempSlot.Length; i++)
+        {
+            slots[i] = tempSlot[i];
+        }
+        */
+
+        OnInventoryChanged?.Invoke();
+    }
+
+
+    public void DecreaseInventory(int wantDecrease)
+    {
+        if (slots == null || slots.Length <= 1) return;
+
+        currentInventorySize = Mathf.Max(1, currentInventorySize - wantDecrease);
+
+        /* 
+        ItemSlot[] tempSlot = slots;
+
+        slots = new ItemSlot[slots.Length - wantDecrease];
+
+        for (int i = 0; i < tempSlot.Length; i++)
+        {
+            slots[i] = tempSlot[i];
+        }
+        */
+
+        OnInventoryChanged?.Invoke();
     }
 
 
@@ -84,6 +149,8 @@ public class Inventory : MonoBehaviour
 
         // ItemSlot[] result = new ItemSlot[slots.Length]; // IEnumerable와 yield return를 쓰면 저장할 필요없어 주석처리함
 
+
+        /* 2차원 배열
         int height = slots.GetLength(0); // GetLength(0) 의 (0)은 (x,y)에서 x의 값임
         int width = slots.GetLength(1); // GetLength(1) 의 (1)은 (x,y)에서 y의 값임
 
@@ -92,19 +159,30 @@ public class Inventory : MonoBehaviour
 
             for (int column = 0; column < width; column++)
             {
-                // 널이라면 다음애 하기
+                // 널이라면 다음에 하기
                 if (slots[row, column] is null) continue;
                 // yield return => 결과를 내보내고 나서 기다리기
                 yield return slots[row,column];
             }
         }
+        */
+
+        int array = Mathf.Min(slots.Length, currentInventorySize);
+
+        for (int i = 0; i < array; i++)
+        {
+            if (slots[i] is null) continue;
+            // yield return => 결과를 내보내고 나서 기다리기
+            yield return slots[i];
+        }
     }
 
     public IEnumerable<ItemSlot> GetAllSlotReverse()
     {
+        /* 2차원 배열
         int height = slots.GetLength(0);
         int width = slots.GetLength(1);
-
+        
         for (int row = (height - 1); row >= 0; row--)
         {
 
@@ -113,6 +191,16 @@ public class Inventory : MonoBehaviour
                 if (slots[row, column] is null) continue;
                 yield return slots[row, column];
             }
+        }
+        */
+
+        int array = Mathf.Min(slots.Length, currentInventorySize);
+
+        for (int i = array - 1; i >= 0 ; i--)
+        {
+            if (slots[i] is null) continue;
+            // yield return => 결과를 내보내고 나서 기다리기
+            yield return slots[i];
         }
     }
 
@@ -124,13 +212,21 @@ public class Inventory : MonoBehaviour
     {
         return default;
     }
-    public ItemSlot FindItem(int wantRows, int wantColumns)
+    public ItemSlot GetSlot(int wantArray)
     {
+        /* 2차원 배열
         if (wantRows < 0  ||  wantColumns < 0) return null;
         if (wantRows    >= slots.GetLength(0)) return null; // 배열이 0 1 2 3 4 일때 0~4 까지 5번째 칸이 있는거지 5 라는 칸은 없음 그렇기 때문에 GetLength(0) 는 5를 나타내어 = 까지도 넣어야함
-        if (wantColumns >= slots.GetLength(0)) return null;
-
+        if (wantColumns >= slots.GetLength(1)) return null;
+        
         return slots[wantRows, wantColumns];
+        */
+
+        // 1차원 배열
+        if (wantArray < 0) return null;
+        if (wantArray >= slots.Length) return null; // 배열이 0 1 2 3 4 일때 0~4 까지 5번째 칸이 있는거지 5 라는 칸은 없음 그렇기 때문에 GetLength(0) 는 5를 나타내어 = 까지도 넣어야함
+
+        return slots[wantArray];
     }
     public ItemSlot FindItem(string containWord)
     {
@@ -206,9 +302,17 @@ public class Inventory : MonoBehaviour
         return default;
     }
 
+    /* 2차원 배열
     public ItemSlot[,] Clear()
     {
         ItemSlot[,] origin = slots;
+        Initialize();
+        return origin;
+    }
+    */
+    public ItemSlot[] Clear()
+    {
+        ItemSlot[] origin = slots;
         Initialize();
         return origin;
     }
@@ -275,5 +379,4 @@ public class Inventory : MonoBehaviour
     {
         return default;
     }
-
 }

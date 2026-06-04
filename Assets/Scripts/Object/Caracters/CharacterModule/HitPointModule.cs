@@ -74,7 +74,7 @@ public class HitPointModule : CharacterModule
     public float CurDecreaseHP(float value)
     {
         if (IsDead) return 0;
-        _curhp -= MathF.Min(_curhp, value);
+        _curhp -= Mathf.Min(_curhp, value);
         OnChangedHP?.Invoke();
         return _curhp;
     }

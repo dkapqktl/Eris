@@ -5,6 +5,7 @@ public class UI_ScreenChanger : OpenableUIBase
 {
     [SerializeField] Animator anim;
     Action AnimEndFunction;
+
     public void ChangeStart(Action newFunction = null)
     {
         AnimEndFunction = newFunction;

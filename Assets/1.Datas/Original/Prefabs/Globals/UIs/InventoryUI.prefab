@@ -336,7 +336,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: -416.2898, y: -7.6384}
-  m_SizeDelta: {x: 667.4205, y: 915.2769}
+  m_SizeDelta: {x: 700, y: 900}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &5959961807257481055
 MonoBehaviour:
@@ -350,7 +350,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f43c9eb207149974697c9aee00f11c90, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_PlayerInventory
-  targetInventory: {fileID: 0}
   layout: {fileID: 7072799119069582118}
   itemSlotPrefabName: ItemSlot (1)
 --- !u!1 &6367671850477455055
@@ -402,17 +401,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.GridLayoutGroup
   m_Padding:
-    m_Left: 20
-    m_Right: 20
-    m_Top: 20
-    m_Bottom: 20
-  m_ChildAlignment: 1
+    m_Left: 0
+    m_Right: 0
+    m_Top: 0
+    m_Bottom: 0
+  m_ChildAlignment: 0
   m_StartCorner: 0
   m_StartAxis: 0
-  m_CellSize: {x: 100, y: 100}
-  m_Spacing: {x: 20, y: 20}
+  m_CellSize: {x: 99, y: 99}
+  m_Spacing: {x: 5, y: 5}
   m_Constraint: 1
-  m_ConstraintCount: 5
+  m_ConstraintCount: 6
 --- !u!1 &7595190080172214362
 GameObject:
   m_ObjectHideFlags: 0

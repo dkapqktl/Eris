@@ -9,7 +9,9 @@ public class UI_DevMode : MonoBehaviour
     private HitPointModule HP;
     private Inventory Inven;
 
-    public TMP_InputField inputAmount;
+    public TMP_InputField hpInputAmount;
+    public TMP_InputField inventoryInputAmount;
+    public TMP_InputField potionInputAmount;
 
     public float devCurHP;
     public float devMaxHP;
@@ -28,18 +30,16 @@ public class UI_DevMode : MonoBehaviour
 
     public void ResetHP()
     {
-        if (devCurHP > 0)
+        if (devMaxHP > 0)
         {
-            HP.CurDecreaseHP(devCurHP);
             HP.MaxDecreaseHP(devMaxHP);
         }
         else
         {
-            HP.CurIncreaseHP(-devCurHP);
             HP.MaxIncreaseHP(-devMaxHP);
         }
 
-        devCurHP = 0;
+        devMaxHP = 0;
     }
 
     public void DevFullHP()
@@ -48,46 +48,68 @@ public class UI_DevMode : MonoBehaviour
     }
 
 
-    public void MaxHPPlus(int value)
+    public void MaxHPPlus()
     {
         float originMaxHP = HP.maxHP;
-        HP.MaxIncreaseHP(float.Parse(inputAmount.text));
+
+        if (float.TryParse(hpInputAmount.text, out float asFloat))
+        {
+            HP.MaxIncreaseHP(asFloat);
+        }
+
         float afterMaxHP = HP.maxHP;
         devMaxHP += afterMaxHP - originMaxHP;
     }
 
-    public void MaxHPMinus(int value)
+    public void MaxHPMinus()
     {
-        float originCurHP = HP.curHP;
         float originMaxHP = HP.maxHP;
-        HP.MaxDecreaseHP(float.Parse(inputAmount.text));
-        float afterCurHP = HP.curHP;
+
+        if (float.TryParse(hpInputAmount.text, out float asFloat))
+        {
+            HP.MaxDecreaseHP(asFloat);
+        }
+
         float afterMaxHP = HP.maxHP;
-        devCurHP += afterCurHP - originCurHP;
         devMaxHP += afterMaxHP - originMaxHP;
     }
 
     public void HealPotionPlus()
     {
         ItemContainer potion = DataManager.LoadDataFile<ItemContainer>("LesserHealPotion");
-        Inven.AddItem(potion, int.Parse(inputAmount.text));
+
+        if (int.TryParse(potionInputAmount.text, out int asInteger))
+        {
+            Inven.AddItem(potion, asInteger);
+        }
     }
 
     public void HealPotionMinus()
     {
         ItemContainer potion = DataManager.LoadDataFile<ItemContainer>("LesserHealPotion");
-        Inven.RemoveItem(potion, int.Parse(inputAmount.text));
+
+        if (int.TryParse(potionInputAmount.text, out int asInteger))
+        {
+            Inven.RemoveItem(potion, asInteger);
+        }
     }
 
-    public void InvenPlus()
+    public void InvenAdd()
     {
         if (Inven == null) return;
-        Inven.rows += 1;
+
+        if (int.TryParse(inventoryInputAmount.text, out int asInteger))
+        {
+            Inven.IncreaseInventory(asInteger);
+        }
     }
-    public void InvenMinus()
+    public void InvenRemove()
     {
-        if (Inven == null || Inven.rows <= 1) return;
-        // if (Inven.columns == 5 || )
-        Inven.rows -= 1;
+        if (Inven == null || Inven.currentInventorySize <= 1) return;
+
+        if (int.TryParse(inventoryInputAmount.text, out int asInteger))
+        {
+            Inven.DecreaseInventory(asInteger);
+        }
     }
 }

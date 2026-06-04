@@ -45,6 +45,7 @@ public class CharacterBase : MonoBehaviour
     //           키(단어)        값(정의)
     Dictionary<System.Type, CharacterModule> moduleDictionary = new();
 
+
     public void AddModule(System.Type wantType, CharacterModule wantModule)
     {
         if(moduleDictionary.TryAdd(wantType, wantModule))
