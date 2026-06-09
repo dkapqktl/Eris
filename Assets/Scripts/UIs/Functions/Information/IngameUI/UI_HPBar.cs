@@ -35,13 +35,13 @@ public class UI_HPBar : UIBase
     {
         // Max HP에 따라 바 길이 증가
         Vector2 size = backgroundRect.sizeDelta;
-        size.y = Mathf.Min(HP.maxHP, 980);
+        size.y = Mathf.Min(HP.MaxHP, 980);
         backgroundRect.sizeDelta = size;
 
         // 현재 체력 Fill
-        slider.value = HP.maxHP > 0 ? HP.curHP / HP.maxHP : 0f;
+        slider.value = HP.MaxHP > 0 ? HP.curHP / HP.MaxHP : 0f;
 
         // HP 텍스트 수치
-        hpText.text = $"{(int)HP.curHP} / {(int)HP.maxHP}";
+        hpText.text = $"{(int)HP.curHP} / {(int)HP.MaxHP}";
     }
 }

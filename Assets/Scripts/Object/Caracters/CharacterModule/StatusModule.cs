@@ -1,54 +1,96 @@
 using Unity.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
+using System;
+
+public delegate void StatusChangeEvent();
 
 public class StatusModule : CharacterModule
 {
     HitPointModule HP;
     AttackModule Damage;
 
-    private float _level;
-    public float Level => _level;
+    public sealed override Type RegistrationType => typeof(StatusModule);
 
-    private float _strength;
-    public float Strength => _strength;
-    GetMaxHP => _maxHP + (_strength* 10)
+    public event StatusChangeEvent OnStatusChanged;
 
-    private float _agility;
-    public float agility => _agility;
+    private int baseStrength;
+    private int _strength => baseStrength; // 나중에 아이템 만들면 아이템쪽에 addSTR 같은거 만들어서 baseStrength + item.addSTR 이렇게
+    public int Strength => _strength;
 
-    private float _intelligence;
-    public float Intelligence => _intelligence;
 
-    public void LevelSystem()
+    private int baseDexterity;
+    private int _dexterity => baseDexterity;
+    public int Dexterity => _dexterity;
+
+
+    private int baseIntelligence;
+    private int _intelligence => baseIntelligence;
+    public int Intelligence => _intelligence;
+
+
+    private int _statusPoint;
+    public int StatusPoint => _statusPoint;
+
+    public int AllStatus => baseStrength + baseDexterity + baseIntelligence;
+    public bool CanUseStatusPoint => _statusPoint > 0;
+    public bool CanUseReset => AllStatus > 0;
+
+    public void AddStatusPoint(int addPoint)
     {
-        if (_level >= 50) _level = 50;
-        statusPoint();
+        if (addPoint <= 0) return;
+
+        _statusPoint += addPoint;
     }
 
-    public void statusPoint()
+    public bool UseStatusPoint()
     {
+        if (_statusPoint <= 0) return false;
+
+        _statusPoint--;
+
+        return true;
     }
 
-    // public void STR(float addSTR)
-    // {
-    //     if (HP == null) return;
-    //     _strength += addSTR;
-    //     float addHP = (_strength - beforeSTR) * 10;
-    //     HP.MaxIncreaseHP(addHP);
-    //     beforeSTR = _strength;
-    // }
-
-    public void buttonSTR(float addSTR)
+    public void IncreaseStrength()
     {
-        HP.MaxIncreaseHP(addSTR));
-    }
-    
-    //if (Damage == null) return;
-    //    float addDamage = (_strength - beforeSTR) * 10;
-    //    Damage.
-    //
+        if (!UseStatusPoint()) return;
 
+        baseStrength++;
 
+        OnStatusChanged?.Invoke();
     }
+
+    public void IncreaseDexterity()
+    {
+        if (!UseStatusPoint()) return;
+
+        baseDexterity++;
+
+        OnStatusChanged?.Invoke();
+    }
+
+    public void IncreaseIntelligence()
+    {
+        if (!UseStatusPoint()) return;
+
+        baseIntelligence++;
+
+        OnStatusChanged?.Invoke();
+    }
+
+    public void ResetStatusPoint()
+    {
+        if (!CanUseReset) return;
+
+        int statusPoint = AllStatus;
+        baseStrength = 0;
+        baseDexterity = 0;
+        baseIntelligence = 0;
+
+        AddStatusPoint(statusPoint);
+
+        OnStatusChanged?.Invoke();
+    }
+
 }

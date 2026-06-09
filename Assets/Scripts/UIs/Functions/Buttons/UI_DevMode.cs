@@ -50,27 +50,27 @@ public class UI_DevMode : MonoBehaviour
 
     public void MaxHPPlus()
     {
-        float originMaxHP = HP.maxHP;
+        float originMaxHP = HP.MaxHP;
 
         if (float.TryParse(hpInputAmount.text, out float asFloat))
         {
             HP.MaxIncreaseHP(asFloat);
         }
 
-        float afterMaxHP = HP.maxHP;
+        float afterMaxHP = HP.MaxHP;
         devMaxHP += afterMaxHP - originMaxHP;
     }
 
     public void MaxHPMinus()
     {
-        float originMaxHP = HP.maxHP;
+        float originMaxHP = HP.MaxHP;
 
         if (float.TryParse(hpInputAmount.text, out float asFloat))
         {
             HP.MaxDecreaseHP(asFloat);
         }
 
-        float afterMaxHP = HP.maxHP;
+        float afterMaxHP = HP.MaxHP;
         devMaxHP += afterMaxHP - originMaxHP;
     }
 

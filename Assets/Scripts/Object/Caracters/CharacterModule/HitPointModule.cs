@@ -10,23 +10,28 @@ public delegate void ChangeHPEvent();
 
 public class HitPointModule : CharacterModule
 {
-    public event ChangeHPEvent OnChangedHP;
+    public ChangeHPEvent OnChangedHP;
 
     BattleModule isBattle;
+    StatusModule isStatus;
+    LevelSystemModule isLevel;
+
     public sealed override Type RegistrationType => typeof(HitPointModule);
 
     [SerializeField] private bool invincibility;
 
-    [SerializeField] private float _maxhp = 30;
-    public float maxHP => _maxhp;
+    [SerializeField] private float baseMaxHP = 10;
+    
+    public float MaxHP => baseMaxHP + (isStatus.Strength * 5) + (isLevel.level * 10);
 
-    private float _curhp = 30;
-    public float curHP => _curhp;
+    private float _curHP = 30;
+    public float curHP => _curHP;
 
     private float basicHP = 10;
-    public float _minhp => 0f;
 
-    public bool IsDead => _curhp <= _minhp;
+    public float _minhp = 0f;
+
+    public bool IsDead => _curHP <= _minhp;
 
 
     private float hpRegenTimer = 0f; // 시간 카운트
@@ -36,9 +41,15 @@ public class HitPointModule : CharacterModule
     public override void OnRegistration(CharacterBase newOwner)
     {
         base.OnRegistration(newOwner); // 캐릭터 생성시 아래것도 해줘
-        _curhp = _maxhp; // 시작시 현재체력은 설정해둔 체력으로
+        _curHP = MaxHP; // 시작시 현재체력은 설정해둔 체력으로
         GameManager.OnUpdateCharacter -= RegenHPUpdate; // 게임메니저 업데이트에 리젠HP 업데이트
         GameManager.OnUpdateCharacter += RegenHPUpdate; // 게임메니저 업데이트에 리젠HP 업데이트
+
+        if(newOwner)
+        {
+            StatusModule status = newOwner.GetModule<StatusModule>();
+            status.OnStatusChanged += BroadCastChangedHP;
+        }
     }
 
     public override void OnUnRegistration(CharacterBase oldOwner)
@@ -51,66 +62,67 @@ public class HitPointModule : CharacterModule
     {
         if (IsDead || invincibility) return; // 죽거나 무적 상태라면 리턴
 
-        _curhp = Mathf.Clamp(_curhp - damage, _minhp, _maxhp);
+        _curHP = Mathf.Clamp(_curHP - damage, _minhp, MaxHP);
 
         Owner.DamageNotify(causer, instigator, damage); // 데미지를 쓰는넘들에게 알림
 
         if (IsDead)
         {
-            Owner.DeathNotify(gameObject, damage, _curhp); // 죽음을 쓰는넘들에게 정보 알림
+            Owner.DeathNotify(gameObject, damage, _curHP); // 죽음을 쓰는넘들에게 정보 알림
         }
 
-        OnChangedHP?.Invoke();
+        BroadCastChangedHP();
     }
 
-    public float CurIncreaseHP(float value)
-    {
-        _curhp += value;
-        if (_curhp > _maxhp) _maxhp = _curhp;
-        OnChangedHP?.Invoke();
-        return _curhp;
-    }
+    // public float CurIncreaseHP(float value) // 현재 체력 증가
+    // {
+    //     _curHP = Mathf.Min(MaxHP, _curHP + value);
+    //     OnChangedHP?.Invoke();
+    //     return _curHP;
+    // }
+    // 
+    // public float CurDecreaseHP(float value)
+    // {
+    //     if (IsDead) return 0;
+    //     _curHP -= Mathf.Min(_curHP, value);
+    //     OnChangedHP?.Invoke();
+    //     return _curHP;
+    // }
 
-    public float CurDecreaseHP(float value)
-    {
-        if (IsDead) return 0;
-        _curhp -= Mathf.Min(_curhp, value);
-        OnChangedHP?.Invoke();
-        return _curhp;
-    }
+    public void BroadCastChangedHP() => OnChangedHP?.Invoke();
 
-    public float MaxIncreaseHP(float value)
+    public void MaxIncreaseHP(float value)
     {
-        _maxhp += value;
-        OnChangedHP?.Invoke();
-        return _maxhp;
+        baseMaxHP += value;
+        BroadCastChangedHP();
     }    // Increase : 증가하다
 
-    public float MaxDecreaseHP(float value)
+    public void MaxDecreaseHP(float value)
     {
-        _maxhp = Mathf.Max(basicHP, _maxhp - value);
-        if (_curhp >= _maxhp) _curhp = _maxhp;
+        baseMaxHP = Mathf.Max(basicHP, baseMaxHP - value);
+        if (_curHP >= MaxHP) _curHP = MaxHP;
 
-        OnChangedHP?.Invoke();
-        return _maxhp;
+        BroadCastChangedHP();
     }    // Decrease : 감소하다
 
-    public bool CanHeal() => !IsDead && _curhp < _maxhp;
-    public void Heal(float heal)
+    public bool CanHeal() => !IsDead && _curHP < MaxHP;
+    public void Heal(float addHeal, float multiHeal)
     {
         if (!CanHeal()) return; // 나중에 확장성을 이대로 두시오!
-        _curhp = Mathf.Min((_curhp + heal), _maxhp);
+        float add = _curHP + addHeal; // 20회복 이런거일때
+        float multiply = MaxHP * multiHeal; // 최대체력의 20% 회복일때
+        _curHP = Mathf.Min(add + multiply, MaxHP); // 현재체력이 맥스체력을 넘지 않게
 
-        OnChangedHP?.Invoke();
+        BroadCastChangedHP();
     }
 
 
     public float FullHP()
     {
-        if (_curhp == maxHP) return _curhp;
-        _curhp = _maxhp;
-        OnChangedHP?.Invoke();
-        return _curhp;
+        if (_curHP == MaxHP) return _curHP;
+        _curHP = MaxHP;
+        BroadCastChangedHP();
+        return _curHP;
     }
 
     public void RegenerationHP()
@@ -118,9 +130,9 @@ public class HitPointModule : CharacterModule
         if (!CanHeal()) return;
         if (isBattle != null && isBattle.isInBattle) return;
 
-        _curhp = Mathf.Min((_curhp + (_maxhp * hpRegenPercent)), _maxhp);
+        _curHP = Mathf.Min((_curHP + (MaxHP * hpRegenPercent)), MaxHP);
 
-        OnChangedHP?.Invoke();
+        BroadCastChangedHP();
     }
     public void RegenHPUpdate(float deltaTime)
     {

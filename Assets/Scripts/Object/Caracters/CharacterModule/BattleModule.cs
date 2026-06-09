@@ -1,8 +1,11 @@
+using System;
 using UnityEngine;
 using UnityEngine.UIElements;
 
 public class BattleModule : CharacterModule
 {
+    public sealed override Type RegistrationType => typeof(BattleModule);
+
     private float inBattleTime;
     private const float inBattleDuration = 10f;
 

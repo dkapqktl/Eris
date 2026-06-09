@@ -1,27 +1,42 @@
 using UnityEngine;
+using System;
 
 public class AttackModule : CharacterModule
 {
-    [SerializeField] private float _attackDamage = 1f;
-    public float AttackDamage => _attackDamage;
+    public sealed override Type RegistrationType => typeof(AttackModule);
 
-    [SerializeField] private float _avilityPower = 1f;
-    public float AvilityPower => _avilityPower;
+    StatusModule status;
 
-    [SerializeField] private float _attackSpeed = 10f;
-    public float AttackSpeed => _attackSpeed;
 
-    [SerializeField] private float _criticalMultiple = 1.25f;
-    public float CriticalMultiple => _criticalMultiple;
+    [SerializeField] private float baseAD = 1f;
+    private float AttackDamage => baseAD + (status.Strength * 2);
+    public float ViewAttackDamage => AttackDamage;
 
-    [SerializeField] private float _criticalChance = 0f;
-    public float CriticalChance => _criticalChance;
 
-    [SerializeField] private float _defense = 0f;
-    public float Defense => _defense;
+    [SerializeField] private float baseAP = 1f;
+    private float AvilityPower => baseAP + (status.Intelligence * 2);
+    public float ViewAvilityPower => AvilityPower;
 
-    [SerializeField] private float _adPenetration = 0f;
+
+    [SerializeField] private float baseAttackSpeed = 10f;
+    private float AttackSpeed => baseAttackSpeed + (status.Dexterity * 0.5f);
+    public float ViewAttackSpeed => AttackSpeed;
+
+
+    [SerializeField] private float baseCriticalMultiple = 1.25f;
+    private float CriticalMultiple => baseCriticalMultiple + (status.Dexterity * 0.005f);
+    public float ViewCriticalMultiple => CriticalMultiple;
+
+
+    [SerializeField] private float baseCriticalChance = 0f;
+
+    private float CriticalChance => baseCriticalChance + (status.Dexterity * 0.5f);
+    public float ViewCriticalChance => CriticalChance;
+
+
+    [SerializeField] private float _adPenetration = 0f; // °üÅë·Â
     public float ADPenetration => _adPenetration;
+
 
     [SerializeField] private float _apPenetration = 0f;
     public float APPenetration => _apPenetration;
@@ -29,11 +44,12 @@ public class AttackModule : CharacterModule
     [SerializeField] private float _buff = 0f;
     public float Buff => _buff;
 
+
     public float AD(float adAddBuff, float adMultiplierBuff)
     {
         float adDamage;
 
-        adDamage = _attackDamage + adAddBuff * adMultiplierBuff;
+        adDamage = AttackDamage + adAddBuff * adMultiplierBuff;
 
         return adDamage;
     }
@@ -47,17 +63,17 @@ public class AttackModule : CharacterModule
     {
         int criticalvalue = Random.Range(1, 100);
 
-        if (_criticalChance <= criticalvalue) return true;
+        if (CriticalChance <= criticalvalue) return true;
         else return false;
     }
 
     public float CriticalDamage()
     {
         float criticalDeal;
-        if (_criticalChance == 0f) return 1f;
+        if (CriticalChance == 0f) return 1f;
 
-        if (CriticalRandom()) criticalDeal = (_attackDamage + _avilityPower) * _criticalMultiple;
-        else return criticalDeal = (_attackDamage + _avilityPower);
+        if (CriticalRandom()) criticalDeal = (AttackDamage + AvilityPower) * CriticalMultiple;
+        else return criticalDeal = (AttackDamage + AvilityPower);
 
         return criticalDeal;
     }
@@ -67,7 +83,7 @@ public class AttackModule : CharacterModule
         float finalDamage;
         float Criticalsuccess;
 
-        if (CriticalRandom()) Criticalsuccess = (_attackPower + _magicPower) * _criticalMultiple;
+        if (CriticalRandom()) Criticalsuccess = (_attackPower + _magicPower) * CriticalMultiple;
         else Criticalsuccess = (_attackPower + _magicPower);
 
         finalDamage = Criticalsuccess;
