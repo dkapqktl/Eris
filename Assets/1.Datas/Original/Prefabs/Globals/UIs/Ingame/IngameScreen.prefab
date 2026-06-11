@@ -341,7 +341,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99d60f306431f494b97d2c95bb301f8d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_InGameScreen
-  requiredUI: []
+  requiredUI:
+  - prefabName: ItemCursorSlot
+    uiType: 16
+    isOpen: 0
+    isOverlay: 1
   closeWithScreen: 0e0000000d000000080000000a00000003000000060000000c000000
 --- !u!1 &3906814327879851304
 GameObject:

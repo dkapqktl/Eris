@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public enum UIType
 {
     None, Loading, Title, Option, LoadingText, Movable, Menu, Info, GameQuit, Target, Inventory, Ingame,
-    LoadList, Tutorial, InGameMenu, DevInfo,
+    LoadList, Tutorial, InGameMenu, DevInfo, ItemCursorSlot,
     _Length
 }
 
@@ -50,6 +50,7 @@ public class UIManager : ManagerBase
 
     UIBase _movableScreen;
 
+    RectTransform overlayTransform;
     RectTransform switcherTransform;
     RectTransform createdTransform;
     RectTransform changerTransform;
@@ -116,6 +117,9 @@ public class UIManager : ManagerBase
         changerTransform = CreateFullScreen("ScreenChanger");
         changerTransform.SetAsLastSibling();
 
+        changerTransform = CreateFullScreen("OverlayTransform");
+        changerTransform.SetAsLastSibling();
+
         for (ScreenChangeType currentChanger = (ScreenChangeType)1; // int i = 0
             currentChanger < ScreenChangeType._Length;             // i < 3
             currentChanger++)                                      // i++
@@ -159,12 +163,19 @@ public class UIManager : ManagerBase
         }
     }
 
+    protected UIBase CreateOverlay(UIType wantType, string wantName)
+    {
+        return CreateUI(wantType, wantName, overlayTransform ?? MainCanvas?.transform);
+    }
+    public static UIBase ClaimOverlay(UIType wantType, string wantName) => GameManager.Instance?.UI?.CreateOverlay(wantType, wantName);
+
     protected UIBase CreateUI(UIType wantType, string wantName, Transform parent)
     {
         GameObject instance = ObjectManager.CreateObject(wantName, parent);
         UIBase result = instance?.GetComponent<UIBase>();
         return SetUI(wantType, result);
     }
+
     protected UIBase CreateUI(UIType wantType, string wantName)
     {
         UIBase result = CreateUI(wantType, wantName, createdTransform ?? MainCanvas?.transform);

@@ -1,10 +1,14 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using static UnityEditor.Progress;
 
+public delegate void StatusEvent();
 
 public class UI_Button_StatusUI : MonoBehaviour
 {
+    public event StatusEvent OnStatusEvent;
+
     private StatusModule status;
 
     [SerializeField] private Button strButton;
@@ -13,7 +17,21 @@ public class UI_Button_StatusUI : MonoBehaviour
     [SerializeField] private Button resetButton;
 
 
-    private void UpdateButtons()
+    private void Awake()
+    {
+        //매니저가 로딩 끝나고 나서 초기화 할 거 써놓기!
+        GameManager.OnInitializeManager += CharacterStart;
+    }
+
+    void CharacterStart()
+    {
+        status = CharacterBase.localPlayer.GetModule<StatusModule>();
+        status.OnStatusChanged += UpdateButtons;
+    }
+
+
+
+    public void UpdateButtons()
     {
         bool canUseStatusButton = status.CanUseStatusPoint;
         bool canUseResetButton = status.CanUseReset;
@@ -27,7 +45,9 @@ public class UI_Button_StatusUI : MonoBehaviour
 
     public void STRButton()
     {
-        status.IncreaseStrength();
+
+        if (InputManager.IsShift) { status.FiveIncreaseStrength(); }
+        else { status.IncreaseStrength(); }
 
         UpdateButtons();
     }
@@ -52,6 +72,4 @@ public class UI_Button_StatusUI : MonoBehaviour
 
         UpdateButtons();
     }
-
-
 }

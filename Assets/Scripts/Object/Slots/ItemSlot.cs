@@ -27,7 +27,13 @@ public class ItemSlot
 
     public ItemContainer GetItem()   => item;
 
+    public int GetStackable(ItemContainer wantItem) => Containable(wantItem) ? wantItem.maxStack - currentStack : 0;
+
+    public int GetStackable() => GetStackable(item);
+
     public int GetStack()            => currentStack;
+
+    public int GetHalfStack() => Mathf.CeilToInt(currentStack * 0.5f);
 
     public bool GetIsMax()           => item ? currentStack >= item.maxStack : false;
     
@@ -82,4 +88,128 @@ public class ItemSlot
 
         return 0;
     }
+
+    public void ExchangeItem(ItemSlot wantSlot)
+    {
+        // 아이템과 현재 스택을 상대와 서로 공유하기
+        if (wantSlot is null) return;
+
+        ItemContainer wasItem = item;
+        int wasStack = currentStack;
+        // 아이템을 가져오기
+        item = wantSlot.item;
+        currentStack = wantSlot.currentStack;
+        // 원래 가지고 있었던 것으로 갱신
+        wantSlot.item = wasItem;
+        wantSlot.currentStack = wasStack;
+    }
+
+    public int GiveItem(ItemSlot wantSlot) => GiveItem(wantSlot, currentStack);
+    public int GiveHalfItem(ItemSlot wantSlot) => GiveItem(wantSlot, GetHalfStack());
+    public int GiveSingleItem(ItemSlot wantSlot) => GiveItem(wantSlot, 1);
+    public int GiveItem(ItemSlot wantSlot, int amount)
+    {
+        if (wantSlot is null) return amount;
+        if (!item) return amount;
+        if (currentStack <= 0 || amount <= 0) return amount;
+
+        ItemContainer targetItem = item;
+
+        amount = Mathf.Min(amount, wantSlot.GetStackable(targetItem));
+
+        amount -= RemoveItem(targetItem, amount);
+
+        amount = wantSlot.AddItem(targetItem, amount);
+
+        return amount;
+    }
+
+    public void LeftClick(ItemSlot wantSlot) // 마우스로 옮기는 기능
+    {
+
+        if (wantSlot is null) return;
+
+        // 절반을 떼어서 커서슬롯에 놓기(본인)
+        // 절반 떼오는 조건이 무엇인지 확인 한 후
+        if(InputManager.IsShift) // 쉬프트를 눌렀을때, 절반만 옮기는 기능
+        {
+            // 대상에 아이탬이 없는 경우
+            if(wantSlot.GetIsEmpty())
+            {
+                // 너두? 나두!
+                if (GetIsEmpty()) return;
+                else if (wantSlot.Containable(item))
+                {
+                    GiveHalfItem(wantSlot); // 상대에게 나의 아이템 절반(올림)을 준다.
+                }
+            }
+
+            else if (Containable(wantSlot.item))  // Containable(wantSlot.item) = 아이템을 가져올 수 있는지 확인
+            {
+                // 아이템 원하는 만큼 빼는데, 못 뺏다 싶은 값을 내보내주고
+                wantSlot.GiveHalfItem(this);
+                
+            }
+        }
+
+        /*
+        else if (InputManager.IsCtrl)
+        {
+            if (wantSlot.GetIsEmpty())
+            {
+                // 너두? 나두!
+                if (GetIsEmpty()) return;
+                else if (wantSlot.Containable(item))
+                {
+                    GiveItem(wantSlot, 1);
+                }
+            }
+
+            else if (Containable(wantSlot.item))
+            {
+                wantSlot.GiveItem(this, 1);
+            }
+        }
+        */
+
+        else
+        {
+            if (wantSlot.Containable(item))
+            {
+                GiveItem(wantSlot);
+            }
+
+            else
+            {
+                ExchangeItem(wantSlot);
+            }
+        }
+
+        NoticeChanged();
+        wantSlot.NoticeChanged();
+    }
+
+
+    public void RightClick(ItemSlot wantSlot)
+    {
+        if (wantSlot is null) return;
+
+        if (InputManager.IsShift || wantSlot.GetIsEmpty())
+        {
+            if (wantSlot.Containable(item)) GiveSingleItem(wantSlot);
+            else return;
+        }
+
+        else if (Containable(wantSlot.item))
+        {
+            wantSlot.GiveSingleItem(this);
+        }
+
+        else return;
+
+        NoticeChanged();
+        wantSlot.NoticeChanged();
+
+    }
+    
 }

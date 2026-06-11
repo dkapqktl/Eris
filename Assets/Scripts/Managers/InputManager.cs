@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -26,8 +27,6 @@ public class InputManager : ManagerBase
     public static event MouseButtonEvent OnMouseLeftButton;
     public static event MouseButtonEvent OnMouseRightButton;
     public static event MouseHoverEvent OnMouseHover;
-    // public static event MouseUpEvent OnMouseLeftUp;
-    // public static event MouseUpEvent OnMouseRightUp;
     public static event MouseMoveEvent OnMouseMove;
     public static event ButtonEvent OnCancel;
     public static event ButtonEvent OnShowStatus;
@@ -35,14 +34,44 @@ public class InputManager : ManagerBase
     public static event ButtonEvent OnShowInfo;
     public static event ButtonEvent OnDev;
     public static event VectorEvent OnMove;
+    public static event ButtonEvent OnShift;
+    public static event ButtonEvent OnCtrl;
+
 
     PlayerInput targetInput;
     Dictionary<string, InputAction> actionDictionary = new(); // 인풋액션을 찾어라잉
     List<RaycastResult> cursorHitList = new();
 
-    GameObject cursorHoverObject;
-    Vector2 cursorScreenPosition;
-    Vector3 cursorWorldPosition;
+
+    static ISelectable _cursorHoverSelectable;
+    public static ISelectable CursorHoverSelectable => _cursorHoverSelectable;
+    
+    static Vector2 _cursorScreenPosition;
+    public static Vector2 CursorScreenPosition => _cursorScreenPosition;
+
+    static Vector3 _cursorWorldPosition;
+    public static Vector3 CursorWorldPosition => _cursorWorldPosition;
+
+    static GameObject _cursorHoverObject;
+    public static GameObject CursorHoverObject => _cursorHoverObject;
+
+    static bool _isCursorHoverOnUI;
+    public static bool IsCursorHoverOnUI => _isCursorHoverOnUI;
+
+    public static bool IsShift { get; private set; } = false;
+    void ShiftInput(bool value)
+    {
+        IsShift = value;
+        OnShift?.Invoke(value);
+    }
+    
+    public static bool IsCtrl { get; private set; } = false;
+    void CtrlInput(bool value)
+    {
+        IsCtrl = value;
+        OnShift?.Invoke(value);
+    }
+
 
     protected override IEnumerator OnConnected(GameManager newManager)
     {
@@ -66,7 +95,7 @@ public class InputManager : ManagerBase
 
     public void UpdateEvent(float deltaTime)
     {
-        RefreshGameObjectUnderCursor(cursorScreenPosition);
+        RefreshGameObjectUnderCursor(_cursorScreenPosition);
     }
 
     void RefreshGameObjectUnderCursor(Vector2 screenPosition)
@@ -106,11 +135,11 @@ public class InputManager : ManagerBase
             worldPosition = nearest.worldPosition;
         }
 
-        GameObject lastHoverObject = cursorHoverObject;
+        GameObject lastHoverObject = _cursorHoverObject;
 
-        cursorScreenPosition = screenPosition;
-        cursorWorldPosition = worldPosition;
-        cursorHoverObject = firstObject;
+        _cursorScreenPosition = screenPosition;
+        _cursorWorldPosition = worldPosition;
+        _cursorHoverObject = firstObject;
         
         if (lastHoverObject != firstObject)
         {
@@ -146,17 +175,21 @@ public class InputManager : ManagerBase
             (context) => OnMove?.Invoke(GetVector2Value(context)),
             (context) => OnMove?.Invoke(Vector2.zero)
         );
-        InitializeAction("MouseLeftButtonDown",  (context) => OnMouseLeftButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition)
-                                              ,  (context) => OnMouseLeftButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
+        InitializeAction("MouseLeftButton",  (context) => OnMouseLeftButton?.Invoke(true, _cursorScreenPosition, _cursorWorldPosition)
+                                              ,  (context) => OnMouseLeftButton?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
 
-        InitializeAction("MouseRightButtonDown", (context) => OnMouseRightButton?.Invoke(true, cursorScreenPosition, cursorWorldPosition) 
-                                               , (context) => OnMouseRightButton?.Invoke(false, cursorScreenPosition, cursorWorldPosition));
+        InitializeAction("MouseRightButton", (context) => OnMouseRightButton?.Invoke(true, _cursorScreenPosition, _cursorWorldPosition) 
+                                               , (context) => OnMouseRightButton?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
 
         InitializeAction("Cancel", (context) => OnCancel?.Invoke(true));
         InitializeAction("ShowStatus", (context) => OnShowStatus?.Invoke(true));
         InitializeAction("ShowInventoryButton", (context) => OnShowInventoryButton?.Invoke(true));
         InitializeAction("ShowInfo", (context) => OnShowInfo?.Invoke(true));
         InitializeAction("DevMode", (context) => OnDev?.Invoke(true));
+        InitializeAction("Shift", (context) => ShiftInput(true)
+                                , (context) => ShiftInput(false));
+        InitializeAction("Ctrl", (context) => CtrlInput(true)
+                                , (context) => CtrlInput(false));
     }
 
     void InitializeAction(string actionName, Action<InputAction.CallbackContext> actionMethod, Action<InputAction.CallbackContext> cancelMethod = null)
@@ -194,6 +227,7 @@ public class InputManager : ManagerBase
 
         RefreshGameObjectUnderCursor(screenPosition); // 마우스 위치 바꼈으니 새로고침
 
-        OnMouseMove?.Invoke(cursorScreenPosition, cursorWorldPosition);
+        OnMouseMove?.Invoke(_cursorScreenPosition, _cursorWorldPosition);
     }
+
 }

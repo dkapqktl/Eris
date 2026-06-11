@@ -16,11 +16,6 @@ public class UI_LoadingScreen : UI_ScreenBase, IOpenable, IProgress<int>, IStatu
 
     public int AddMax(int value) => Set(Current, Max + value);
 
-    public void Open() => gameObject.SetActive(true);
-
-
-    public void Close() => gameObject.SetActive(false);
-
     // 함수는 함수끼리 식으로 프로퍼티, 변수도 마찬가지 끼리끼리 있어야함, 변수는 크기가 큰 순서가 앞
     public UnityEngine.UI.Slider progressBar;
     public TMPro.TextMeshProUGUI progressText;
@@ -49,12 +44,5 @@ public class UI_LoadingScreen : UI_ScreenBase, IOpenable, IProgress<int>, IStatu
         Max = newMax;
         return Set(newCurrent);
     }
-
-   
-
-
-    public void Toggle() => gameObject.SetActive(!IsOpen);
-
-
 
 }

@@ -10,7 +10,8 @@ public class UI_ItemSlotInfo : UIBase
 
     [SerializeField] Sprite noneIcon; // Sprite(스프라이트) = 게임 화면에 출력하기위한 가공된 이미지, Texture(텍스처) = 원본 이미지 데이터
 
-    ItemSlot connectedSlot; // 일단 저장해두기
+    protected ItemSlot connectedSlot; // 일단 저장해두기
+    public ItemSlot ConnectedSlot => connectedSlot;
 
     public void ConnectSlot(ItemSlot targetSlot)
     {

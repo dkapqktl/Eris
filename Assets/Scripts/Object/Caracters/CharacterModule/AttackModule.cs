@@ -1,9 +1,8 @@
 using UnityEngine;
-using System;
 
 public class AttackModule : CharacterModule
 {
-    public sealed override Type RegistrationType => typeof(AttackModule);
+    public sealed override System.Type RegistrationType => typeof(AttackModule);
 
     StatusModule status;
 
@@ -54,10 +53,10 @@ public class AttackModule : CharacterModule
         return adDamage;
     }
 
-    public float APDeal(buff)
-    {
-
-    }
+    // public float APDeal(buff)
+    // {
+    // 
+    // }
 
     public bool CriticalRandom()
     {
@@ -83,8 +82,8 @@ public class AttackModule : CharacterModule
         float finalDamage;
         float Criticalsuccess;
 
-        if (CriticalRandom()) Criticalsuccess = (_attackPower + _magicPower) * CriticalMultiple;
-        else Criticalsuccess = (_attackPower + _magicPower);
+        if (CriticalRandom()) Criticalsuccess = (AttackDamage + AvilityPower) * CriticalMultiple;
+        else Criticalsuccess = (AttackDamage + AvilityPower);
 
         finalDamage = Criticalsuccess;
 
@@ -97,10 +96,10 @@ public class AttackModule : CharacterModule
         target.TakeDamage(gameObject, Owner.Controller, FinalDamage());
     }
 
-    public float Defence()
-    {
-        float def = (150f / (150f + _defense));
-        return def;
-    }
+    // public float Defence()
+    // {
+    //     float def = (150f / (150f + Defence));
+    //     return def;
+    // }
 
 }

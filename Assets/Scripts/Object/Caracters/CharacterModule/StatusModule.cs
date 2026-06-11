@@ -9,6 +9,7 @@ public class StatusModule : CharacterModule
 {
     HitPointModule HP;
     AttackModule Damage;
+    UI_Button_StatusUI StatusButton;
 
     public sealed override Type RegistrationType => typeof(StatusModule);
 
@@ -41,6 +42,8 @@ public class StatusModule : CharacterModule
         if (addPoint <= 0) return;
 
         _statusPoint += addPoint;
+
+        OnStatusChanged?.Invoke();
     }
 
     public bool UseStatusPoint()
@@ -48,6 +51,8 @@ public class StatusModule : CharacterModule
         if (_statusPoint <= 0) return false;
 
         _statusPoint--;
+
+        OnStatusChanged?.Invoke();
 
         return true;
     }
@@ -57,6 +62,17 @@ public class StatusModule : CharacterModule
         if (!UseStatusPoint()) return;
 
         baseStrength++;
+
+        OnStatusChanged?.Invoke();
+    }
+
+    public void FiveIncreaseStrength()
+    {
+
+        int value = Mathf.Min(StatusPoint, 5);
+        if (value <= 0) return;
+        _statusPoint -= value;
+        baseStrength += value;
 
         OnStatusChanged?.Invoke();
     }

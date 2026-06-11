@@ -16,7 +16,7 @@ public class LevelSystemModule : CharacterModule
 
 
 
-    private int _level; // 레벨
+    private int _level = 1; // 레벨
     public int level => _level;
 
     private int maxLevel = 60;
@@ -62,8 +62,4 @@ public class LevelSystemModule : CharacterModule
     {
         return level * 100;
     }
-}
-
-
-
 }

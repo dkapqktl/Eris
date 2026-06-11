@@ -88,6 +88,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4361142354616627106, guid: 703faa74168ec064aa9e575da504e2c1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3440882981867967557}
+    - targetCorrespondingSourceObject: {fileID: 4361142354616627106, guid: 703faa74168ec064aa9e575da504e2c1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1334782127803103400}
+    - targetCorrespondingSourceObject: {fileID: 4361142354616627106, guid: 703faa74168ec064aa9e575da504e2c1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4169246002229536233}
     - targetCorrespondingSourceObject: {fileID: 1000938599205859929, guid: 703faa74168ec064aa9e575da504e2c1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5423792306660003088}
@@ -110,7 +116,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitPointModule
   invincibility: 0
-  _maxhp: 30
+  baseMaxHP: 10
+  _minhp: 0
   hpRegenInterval: 5
   hpRegenPercent: 0.05
 --- !u!114 &1058725612108584909
@@ -153,11 +160,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef88b487d53614347b709251072cfa27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::AttackModule
-  _attackPower: 0
-  _magicPower: 0
-  _attackSpeed: 0
-  _criticalMultiple: 0
-  _criticalChance: 0
+  baseAD: 1
+  baseAP: 1
+  baseAttackSpeed: 10
+  baseCriticalMultiple: 1.25
+  baseCriticalChance: 0
+  _adPenetration: 0
+  _apPenetration: 0
+  _buff: 0
 --- !u!114 &3440882981867967557
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -172,6 +182,30 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Inventory
   maxInventorySize: 25
   currentInventorySize: 10
+--- !u!114 &1334782127803103400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782885665743987210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8855f1c157b23e4e8e76496d9b772f9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelSystemModule
+--- !u!114 &4169246002229536233
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1782885665743987210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0260cb667dd14354987d55e206fe3c22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::StatusModule
 --- !u!1 &3017405798314655729 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1000938599205859929, guid: 703faa74168ec064aa9e575da504e2c1, type: 3}

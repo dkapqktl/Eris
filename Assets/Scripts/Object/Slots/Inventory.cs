@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.GraphicsBuffer;
 
 public delegate void InventoryEvent();
 
@@ -8,6 +9,8 @@ public delegate void InventoryEvent();
 
 public class Inventory : MonoBehaviour
 {
+
+    public static ItemSlot cursorSlot = new ItemSlot();
     // Columns   Rows
     //  세로      가로
     //   행       열
@@ -268,11 +271,14 @@ public class Inventory : MonoBehaviour
 
     public int AddItem(ItemContainer wantItem, int amount = 1)
     {
+
         amount = AddItemOnExistSlots(wantItem, amount);
+        
         if (amount <= 0) return 0;
 
         return AddItemOnEmptySlots(wantItem, amount);
     }
+
     public int AddItemOnExistSlots(ItemContainer wantItem, int amount)
     {
         foreach (ItemSlot currenttSlot in FindFirstItem(wantItem))
@@ -342,7 +348,7 @@ public class Inventory : MonoBehaviour
             currentSlot.NoticeChanged();
         }
 
-        return RemoveItemOnExistSlots(wantItem, amount);
+        return amount; // rl RemoveItemOnExistSlots(wantItem, amount);
     }
     public int RemoveItemOnExistSlots(ItemContainer wantItem, int amount)
     {
@@ -364,10 +370,39 @@ public class Inventory : MonoBehaviour
         return default;
     }
 
-
-    public void MoveItem(int startRow, int startColumn, Inventory targetInventory, int ratgetRow, int targetColumn, int amount = -1)
+    public void MoveItem(int index, Inventory targetInventory, int targetIndex, int amount = -1)
     {
 
+    }
+
+    public void ExchangeItem(int index, int targetIndex)
+    {
+        ExchangeItem(index, this, targetIndex);
+    }
+
+    public void ExchangeItem(int index, ItemSlot targetSlot)
+    {
+
+        ItemSlot first = GetSlot(index);
+        if (first is null) return; // 슬롯이 없으면 리턴
+        
+        first.ExchangeItem(targetSlot);
+        first.NoticeChanged();
+        targetSlot.NoticeChanged();
+    }
+
+    public void ExchangeItem(int index, Inventory targetInventory, int targetIndex)
+    {
+        ItemSlot first = GetSlot(index);
+        if (first is null) return; // 슬롯이 없으면 리턴
+        if (!targetInventory) return; // 인벤토리가 없으면 리턴
+        
+        ItemSlot second = targetInventory.GetSlot(targetIndex);
+        if (second is null) return; // 대상이 없으면 리턴
+
+        first.ExchangeItem(second);
+        first.NoticeChanged();
+        second.NoticeChanged();
     }
 
 

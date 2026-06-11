@@ -41,15 +41,17 @@ public class HitPointModule : CharacterModule
     public override void OnRegistration(CharacterBase newOwner)
     {
         base.OnRegistration(newOwner); // 캐릭터 생성시 아래것도 해줘
-        _curHP = MaxHP; // 시작시 현재체력은 설정해둔 체력으로
         GameManager.OnUpdateCharacter -= RegenHPUpdate; // 게임메니저 업데이트에 리젠HP 업데이트
         GameManager.OnUpdateCharacter += RegenHPUpdate; // 게임메니저 업데이트에 리젠HP 업데이트
 
         if(newOwner)
         {
-            StatusModule status = newOwner.GetModule<StatusModule>();
-            status.OnStatusChanged += BroadCastChangedHP;
+            isStatus = newOwner.GetComponent<StatusModule>();
+            isLevel = newOwner.GetComponent<LevelSystemModule>();
+            isBattle = newOwner.GetComponent<BattleModule>();
+            isStatus.OnStatusChanged += BroadCastChangedHP;
         }
+        _curHP = MaxHP; // 시작시 현재체력은 설정해둔 체력으로
     }
 
     public override void OnUnRegistration(CharacterBase oldOwner)
@@ -128,7 +130,7 @@ public class HitPointModule : CharacterModule
     public void RegenerationHP()
     {
         if (!CanHeal()) return;
-        if (isBattle != null && isBattle.isInBattle) return;
+        if (isBattle == null || isBattle.isInBattle) return;
 
         _curHP = Mathf.Min((_curHP + (MaxHP * hpRegenPercent)), MaxHP);
 
@@ -137,7 +139,7 @@ public class HitPointModule : CharacterModule
     public void RegenHPUpdate(float deltaTime)
     {
         if (!CanHeal()) return;
-        if(isBattle != null && isBattle.isInBattle) return;
+        if(isBattle == null || isBattle.isInBattle) return;
 
         // 위 조건 만족시 리젠타이머에 시간을 더한다
         hpRegenTimer += deltaTime;
