@@ -223,7 +223,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitPointModule
   invincibility: 0
-  _maxhp: 30
+  baseMaxHP: 10
+  _minhp: 0
   hpRegenInterval: 5
   hpRegenPercent: 0.05
 --- !u!1 &166745362 stripped
@@ -1689,7 +1690,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::HitPointModule
   invincibility: 0
-  _maxhp: 30
+  baseMaxHP: 10
+  _minhp: 0
   hpRegenInterval: 5
   hpRegenPercent: 0.05
 --- !u!1 &1832742496

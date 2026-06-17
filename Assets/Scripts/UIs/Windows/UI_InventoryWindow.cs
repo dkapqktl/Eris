@@ -1,6 +1,7 @@
 using NUnit.Framework.Constraints;
 using System;
 using UnityEditor.Networking.PlayerConnection;
+using UnityEditor.Overlays;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -63,12 +64,26 @@ public class UI_InventoryWindow : OpenableUIBase
             RemoveSlot(0);
         }
 
+        //    if (!layout) return;
+        //    while (layout.transform.childCount > 0)
+        //    {
+        //        Transform targetChild = layout.transform.GetChild(0);
+        //        targetChild.SetParent(null);
+        //        ObjectManager.DestroyObject(targetChild.gameObject);
+        //    }
+
 
         // ¿Ã∞« æ∆¥‘
         // foreach (layout.GetComponentInChildren(out GameObject currentObject))
         // { ObjectManager.DestroyObject(currentObject); }
+    }
 
-
+    public void ClaimSort()
+    {
+        if(targetInventory)
+        {
+            targetInventory.SortByType();
+        }
     }
 
     public void InventoryChanged()
@@ -128,4 +143,5 @@ public class UI_InventoryWindow : OpenableUIBase
         targetChild.SetParent(null);
         ObjectManager.DestroyObject(targetChild.gameObject);
     }
+
 }
