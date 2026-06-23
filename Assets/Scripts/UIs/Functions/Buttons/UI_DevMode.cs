@@ -8,10 +8,13 @@ public class UI_DevMode : MonoBehaviour
     
     private HitPointModule HP;
     private Inventory Inven;
+    private LevelSystemModule Level;
 
     public TMP_InputField hpInputAmount;
     public TMP_InputField inventoryInputAmount;
     public TMP_InputField potionInputAmount;
+    public TMP_InputField ExpInputAmount;
+    public TMP_InputField LevelInputAmount;
 
     public float devCurHP;
     public float devMaxHP;
@@ -26,6 +29,7 @@ public class UI_DevMode : MonoBehaviour
     {
         HP = CharacterBase.localPlayer.GetModule<HitPointModule>();
         Inven = CharacterBase.localPlayer.GetComponent<Inventory>();
+        Level = CharacterBase.localPlayer.GetComponent<LevelSystemModule>();
     }
 
     public void ResetHP()
@@ -111,5 +115,30 @@ public class UI_DevMode : MonoBehaviour
         {
             Inven.DecreaseInventory(asInteger);
         }
+    }
+
+    public void AddExp()
+    {
+        if (int.TryParse(potionInputAmount.text, out int asInteger))
+        {
+            Level.AddExp(asInteger);
+        }
+    }
+    public void MinusExp()
+    {
+        if (int.TryParse(potionInputAmount.text, out int asInteger))
+        {
+            Level.AddExp(-asInteger);
+        }
+    }
+
+    public void LevelUpButton()
+    {
+        Level.LevelUpUpdate();
+    }
+
+    public void LevelDownButton()
+    {
+        Level.LevelDownUpdate();
     }
 }

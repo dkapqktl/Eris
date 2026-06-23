@@ -39,7 +39,7 @@ public class StatusModule : CharacterModule
 
     public void AddStatusPoint(int addPoint)
     {
-        if (addPoint <= 0) return;
+        // if (addPoint <= 0) return;
 
         _statusPoint += addPoint;
 

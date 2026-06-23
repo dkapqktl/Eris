@@ -49,6 +49,7 @@ public class HitPointModule : CharacterModule
             isStatus = newOwner.GetComponent<StatusModule>();
             isLevel = newOwner.GetComponent<LevelSystemModule>();
             isBattle = newOwner.GetComponent<BattleModule>();
+            isStatus.OnStatusChanged -= BroadCastChangedHP;
             isStatus.OnStatusChanged += BroadCastChangedHP;
         }
         _curHP = MaxHP; // 시작시 현재체력은 설정해둔 체력으로
@@ -58,6 +59,7 @@ public class HitPointModule : CharacterModule
     {
         base.OnRegistration(oldOwner); // 캐릭터 없앨때 아래것도 해줘
         GameManager.OnUpdateCharacter -= RegenHPUpdate; // 게임메니저 업데이트에 리젠HP 업데이트 제거
+        isStatus.OnStatusChanged -= BroadCastChangedHP;
     }
 
     public void TakeDamage(GameObject causer, ControllerBase instigator, float damage)

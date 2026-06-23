@@ -80,7 +80,7 @@ public class Inventory : MonoBehaviour
     {
         MergeAll(); // 정렬 시작할 때 모든 대상을 병합하고 시작
         // System.Array.Sort(slots, Method);
-
+        
         int totalLength = slots.Length;
 
         if (slots is null || totalLength <= 1) return;
@@ -97,8 +97,8 @@ public class Inventory : MonoBehaviour
 
                 int comparisonResult = Method(left, right); // 좌우 비교 후 좌가 더 크다면
                 
-                // if (comparisonResult < 0) // 오름차순
-                if (comparisonResult > 0) // 내림차순
+                // if (comparisonResult > 0) // 내림차순, 이거 버그걸림
+                if (comparisonResult < 0) // 오름차순
                 {
                     currentFinder = i;
                     left.ExchangeItem(right); // 좌는 우와 자리 바꿔라
@@ -116,7 +116,6 @@ public class Inventory : MonoBehaviour
             }
             lastFinder = currentFinder;
         }
-
         /* 2차원 배열
         int width = slots.GetLength(1);
         for (int i = 0; i < totalLength - 1; i++) // totalLength - 1 => 맨 끝애 칸은 비교 할 필요가 없으니 - 1 가지
@@ -128,6 +127,11 @@ public class Inventory : MonoBehaviour
             if (comparisonResult > 0) left.ExchangeItem(right);
         }
         */
+
+        foreach (ItemSlot currentSlot in GetAllSlot())
+        {
+            currentSlot?.NoticeChanged();
+        }
 
     }
 

@@ -21,6 +21,7 @@ public class UI_HPBar : UIBase
     {
         HP = CharacterBase.localPlayer.GetModule<HitPointModule>();
         if (HP is null) return;
+        HP.OnChangedHP -= UpdateBar;
         HP.OnChangedHP += UpdateBar;
         UpdateBar();
     }
