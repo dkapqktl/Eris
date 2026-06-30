@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -43,8 +42,8 @@ public class InputManager : ManagerBase
     List<RaycastResult> cursorHitList = new();
 
 
-    static ISelectable _cursorHoverSelectable;
-    public static ISelectable CursorHoverSelectable => _cursorHoverSelectable;
+    // static ISelectable _cursorHoverSelectable;
+    // public static ISelectable CursorHoverSelectable => _cursorHoverSelectable;
     
     static Vector2 _cursorScreenPosition;
     public static Vector2 CursorScreenPosition => _cursorScreenPosition;
@@ -101,7 +100,7 @@ public class InputManager : ManagerBase
     void RefreshGameObjectUnderCursor(Vector2 screenPosition)
     {
         cursorHitList.Clear();
-        GameManager.Instance.Camera.GetRaycastResult(screenPosition, cursorHitList);
+        GameManager.Camera.GetRaycastResult(screenPosition, cursorHitList);
 
         Vector3 worldPosition = Camera.main.ScreenToWorldPoint(screenPosition);
         GameObject firstObject = null;

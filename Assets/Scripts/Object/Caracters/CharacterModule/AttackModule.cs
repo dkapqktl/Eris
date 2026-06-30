@@ -8,7 +8,7 @@ public class AttackModule : CharacterModule
 
 
     [SerializeField] private float baseAD = 1f;
-    private float AttackDamage => baseAD + (status.Strength * 2);
+    private float AttackDamage => baseAD + (status.Strength * 2) + (status.Dexterity);
     public float ViewAttackDamage => AttackDamage;
 
 

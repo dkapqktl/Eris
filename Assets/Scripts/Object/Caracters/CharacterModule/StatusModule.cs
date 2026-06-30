@@ -100,9 +100,12 @@ public class StatusModule : CharacterModule
         if (!CanUseReset) return;
 
         int statusPoint = AllStatus;
+
         baseStrength = 0;
         baseDexterity = 0;
         baseIntelligence = 0;
+
+        // _intelligence += 1;
 
         AddStatusPoint(statusPoint);
 

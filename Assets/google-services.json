@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "374961694213",
+    "firebase_url" : "https://erinyes-e4dcf-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    "project_id": "erinyes-e4dcf",
+    "storage_bucket": "erinyes-e4dcf.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:374961694213:android:7f65616f5c5d75f85e5e6c",
+        "android_client_info": {
+          "package_name": "com.DefaultCompany.Erisgame"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCWIHpO7Ul_jujf6orOOR7z7i5P-V4zkkQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

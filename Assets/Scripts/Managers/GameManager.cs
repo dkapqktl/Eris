@@ -21,31 +21,34 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance => _instance;
 
     UIManager       _ui;
-    public UIManager UI => _ui;
+    public static UIManager UI => _instance?._ui;
+
+    DBManager _db;
+    public static DBManager DB => _instance?._db;
 
     DataManager     _data;
-    public DataManager Data => _data;
+    public static DataManager Data => _instance?._data;
 
     ObjectManager _objectM;
-    public ObjectManager ObjectM => _objectM;
+    public static ObjectManager ObjectM => _instance?._objectM;
 
     SaveManager     _save;
-    public SaveManager Save => _save;
+    public static SaveManager Save => _instance?._save;
     
     SettingManager  _setting;
-    public SettingManager Setting => _setting;
+    public static SettingManager Setting => _instance?._setting;
 
     LanguageManager _language;
-    public LanguageManager Language => _language;
+    public static LanguageManager Language => _instance?._language;
 
     AudioManager    _audio;
-    public AudioManager Audio => _audio;
+    public static AudioManager Audio => _instance?._audio;
 
     CameraManager  _camera;
-    public CameraManager Camera => _camera;
+    public static CameraManager Camera => _instance?._camera;
 
     InputManager    _input;
-    public InputManager Input => _input;
+    public static InputManager Input => _instance?._input;
 
     IEnumerator initializing; // 초기화 중 코루틴
 
@@ -122,7 +125,8 @@ public class GameManager : MonoBehaviour
     {
         int tatalLoadCount = 0;
 
-        tatalLoadCount += CreateManager(ref _ui).LoadCount; 
+        tatalLoadCount += CreateManager(ref _ui).LoadCount;
+        tatalLoadCount += CreateManager(ref _db).LoadCount;
         tatalLoadCount += CreateManager(ref _data).LoadCount;
         tatalLoadCount += CreateManager(ref _objectM).LoadCount;
         tatalLoadCount += CreateManager(ref _save).LoadCount;
@@ -139,6 +143,8 @@ public class GameManager : MonoBehaviour
         IProgress<int> loadingProgress = loadingUI as IProgress<int>; // 이 유아이가 아이프로그래스라면
 
         loadingProgress?.Set(0, tatalLoadCount);
+        yield return DB.Connect(this);
+        loadingProgress?.AddCurrent(1);
         yield return Data.Connect(this); // 게임 데이터 불러오기
         loadingProgress?.AddCurrent(1);
         yield return ObjectM.Connect(this);
@@ -175,6 +181,7 @@ public class GameManager : MonoBehaviour
         Camera?.Disconnect();
         UI?.Disconnect();
         Data?.Disconnect();
+        DB?.Disconnect();
     }
 
     // 반환값 이름<자료형>(매개변수) where 자료형 : 부모

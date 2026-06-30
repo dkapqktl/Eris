@@ -43,6 +43,8 @@ public class UI_InGameScreen : UI_ScreenBase
             if (type == UIType.Target) continue;
             if (type == UIType.Ingame) continue;
             if (type == UIType.GameQuit) continue;
+            if (type == UIType.InGameMenu) continue;
+            if (type == UIType.ItemCursorSlot) continue;
 
             var ui = UIManager.ClaimGetUI(type); // 위에 블랙리스트에 해당하지 않는걸 가져와
 
