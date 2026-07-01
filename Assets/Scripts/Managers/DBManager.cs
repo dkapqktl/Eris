@@ -9,6 +9,8 @@ using System.Security.Authentication;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.UI;
+using static UnityEditor.Progress;
 
 public class DBManager : ManagerBase
 {
@@ -48,14 +50,6 @@ public class DBManager : ManagerBase
         }
     }
 
-    private void OnTaskResult(Task task)
-    {
-        if (task.IsCanceled || task.IsFaulted)
-        {
-            Debug.LogError(task.Exception);
-        }
-    }
-
 
     public TMPro.TMP_InputField nickNameInput;
 
@@ -64,18 +58,27 @@ public class DBManager : ManagerBase
         WriteData(MakeNewUserData(nickNameInput.text), "user", "userData", user.UserId);
     }
 
-    public void GuestLogin()
+    public async void GuestLogin()
     {
         if (authentication is null) return;
 
         if (user is not null)
         {
             Debug.LogError($"Login Falled : Already Has Login Data ({user.IsValid()}, {user.UserId})");
-            WriteData(MakeNewUserData("고라자니"), "user", "userData", user.UserId);
-            return;
+            UserData resultData = await ReadDataAsync<UserData>("user", "userData", user.UserId);
+            if (resultData is not null)
+            {
+                Debug.Log(resultData.nickname);
+            }
+            else
+            {
+                WriteData(MakeNewUserData("NoNamed"), "users", "userData", user.UserId);
+            }
+
+                return;
         }
 
-        authentication.SignInAnonymouslyAsync().ContinueWithOnMainThread(OnLoginResult);
+        await authentication.SignInAnonymouslyAsync().ContinueWithOnMainThread(OnLoginResult);
     }
 
     private void OnLoginResult(Task<AuthResult> task)
@@ -111,6 +114,19 @@ public class DBManager : ManagerBase
         attendtime  = 0
     };
 
+
+    public DatabaseReference GetFinalDirectory(DatabaseReference root, params string[] directory)
+    {
+        if (directory is null || directory.Length == 0) return root;
+        DatabaseReference currentReference = root;
+        foreach (string currentChild in directory)
+        {
+            currentReference = currentReference.Child(currentChild);
+        }
+        return currentReference;
+    }
+
+
     // params : 몇개를 전달 받든 다 받을 수 있음
     // ex) WriteData(wantData, 1) 이든 WriteData(wantData, 1,2,3) 이든 다 받을 수 있음
     private void WriteData(object wantData, params string[] directory)
@@ -119,14 +135,61 @@ public class DBManager : ManagerBase
 
         string jsonData = JsonUtility.ToJson(wantData);
 
-        DatabaseReference currentReference = rootDB;
-
-        foreach (string currentChild in directory)
-        {
-            currentReference = currentReference.Child(currentChild);
-        }
-        currentReference.SetRawJsonValueAsync(jsonData).ContinueWithOnMainThread(OnTaskResult);
+        GetFinalDirectory(rootDB, directory).SetRawJsonValueAsync(jsonData).ContinueWithOnMainThread(OnTaskResult);
         // 포이치 부분이 아래 코드랑 같음, 다만 차일드가 몇명일지 모르니 위방식 포이치로 돌리는 형태
         // rootDB.Child("item").Child("Misc").Child("Nature").Child("Stone").UpdateChildrenAsync(item).ContinueWithOnMainThread(OnTaskResult);
+    }
+
+    public void WriteData(Dictionary<string, object> changes, params string[] directory)
+    {
+        if (rootDB is null || changes is null) return;
+
+        GetFinalDirectory(rootDB, directory).UpdateChildrenAsync(changes).ContinueWithOnMainThread(OnTaskResult);
+    }
+
+    public void ReadData(Action<Task<DataSnapshot>> OnReadData, params string[] directory)
+    {
+        GetFinalDirectory(rootDB, directory).GetValueAsync().ContinueWithOnMainThread(OnReadData);
+    }
+
+    public IEnumerator ReadDataCoroutine(Action<Task<DataSnapshot>> OnReadData, params string[] directory)
+    {
+        Task<DataSnapshot> readTask = GetFinalDirectory(rootDB, directory).GetValueAsync();
+        yield return readTask.WaitForTask();
+        OnReadData?.Invoke(readTask);
+    }
+
+    public async Task<T> ReadDataAsync<T>(params string[] directory)
+    {
+        DataSnapshot currentTask = await GetFinalDirectory(rootDB, directory).GetValueAsync();
+        if (currentTask is null) return default;
+        if (!currentTask.Exists) return default;
+
+
+        // 1. 복합타입
+        try
+        {
+            if (currentTask.HasChildren)
+            {
+                return JsonUtility.FromJson<T>(currentTask.GetRawJsonValue());
+            }
+
+            // 2. 단일타입
+            return (T)System.Convert.ChangeType(currentTask.Value, typeof(T));
+        }
+        catch (Exception e)
+        {
+            Debug.LogError(e);
+            return default;
+        }
+    }
+
+
+    private void OnTaskResult(Task task)
+    {
+        if (task.IsCanceled || task.IsFaulted)
+        {
+            Debug.LogError(task.Exception);
+        }
     }
 }

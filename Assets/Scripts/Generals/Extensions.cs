@@ -76,7 +76,7 @@ public static class Extensions
         return result;
     }
 
-    public static IEnumerator WiatForTask(this Task targetTask) // Task => 비동기 작업 => 끝날때 까지 기다리는 함수
+    public static IEnumerator WaitForTask(this Task targetTask) // Task => 비동기 작업 => 끝날때 까지 기다리는 함수
     {
         yield return new WaitUntil(() => targetTask.IsCompleted); // Task가 끝날때 까지 기다려라
         targetTask.Dispose(); // Task는 끝났으면 닫아줘야함

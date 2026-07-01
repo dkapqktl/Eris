@@ -67,11 +67,11 @@ public class DataManager : ManagerBase
         // 그냥 함수를 실행하는 것이 아니라, 이 작업을 시작할 인원을 모 => 해당 스레드한테 시켜야 함
         // LoadFileFromAssetBundle<GameObject>("Original/Prefabs/Square.prefab");
         loadString = "Load Game Objects";
-        yield return LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad).WiatForTask(); // WiatForTask => Task가 끝날때 까지 기다리는 함수
+        yield return LoadAllFromAssetBundle<GameObject>("Global", ProgressOnLoad).WaitForTask(); // WiatForTask => Task가 끝날때 까지 기다리는 함수
         loadString = "Load Pool Requests";
-        yield return LoadAllFromAssetBundle<PoolRequest>("Global", ProgressOnLoad).WiatForTask(); // WiatForTask => Task가 끝날때 까지 기다리는 함수
+        yield return LoadAllFromAssetBundle<PoolRequest>("Global", ProgressOnLoad).WaitForTask(); // WiatForTask => Task가 끝날때 까지 기다리는 함수
         loadString = "load Items";
-        yield return LoadAllFromAssetBundle<ItemContainer>("Global", ProgressOnLoad).WiatForTask(); // WiatForTask => Task가 끝날때 까지 기다리는 함수
+        yield return LoadAllFromAssetBundle<ItemContainer>("Global", ProgressOnLoad).WaitForTask(); // WiatForTask => Task가 끝날때 까지 기다리는 함수
 
 
 
