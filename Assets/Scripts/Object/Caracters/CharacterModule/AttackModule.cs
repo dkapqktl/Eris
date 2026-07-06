@@ -4,32 +4,32 @@ public class AttackModule : CharacterModule
 {
     public sealed override System.Type RegistrationType => typeof(AttackModule);
 
-    StatusModule status;
+    StatusModule isStatus;
 
 
     [SerializeField] private float baseAD = 1f;
-    private float AttackDamage => baseAD + (status.Strength * 2) + (status.Dexterity);
+    private float AttackDamage => baseAD + (isStatus.Strength * 2) + (isStatus.Dexterity);
     public float ViewAttackDamage => AttackDamage;
 
 
     [SerializeField] private float baseAP = 1f;
-    private float AvilityPower => baseAP + (status.Intelligence * 2);
+    private float AvilityPower => baseAP + (isStatus.Intelligence * 2);
     public float ViewAvilityPower => AvilityPower;
 
 
     [SerializeField] private float baseAttackSpeed = 10f;
-    private float AttackSpeed => baseAttackSpeed + (status.Dexterity * 0.5f);
+    private float AttackSpeed => baseAttackSpeed + (isStatus.Dexterity * 0.5f);
     public float ViewAttackSpeed => AttackSpeed;
 
 
     [SerializeField] private float baseCriticalMultiple = 1.25f;
-    private float CriticalMultiple => baseCriticalMultiple + (status.Dexterity * 0.005f);
+    private float CriticalMultiple => baseCriticalMultiple + (isStatus.Dexterity * 0.005f);
     public float ViewCriticalMultiple => CriticalMultiple;
 
 
     [SerializeField] private float baseCriticalChance = 0f;
 
-    private float CriticalChance => baseCriticalChance + (status.Dexterity * 0.5f);
+    private float CriticalChance => baseCriticalChance + (isStatus.Dexterity * 0.5f);
     public float ViewCriticalChance => CriticalChance;
 
 
@@ -43,6 +43,19 @@ public class AttackModule : CharacterModule
     [SerializeField] private float _buff = 0f;
     public float Buff => _buff;
 
+    public override void OnRegistration(CharacterBase newOwner)
+    {
+        base.OnRegistration(newOwner);
+        if (newOwner)
+        {
+            isStatus = newOwner.GetComponent<StatusModule>();
+        }
+    }
+
+    public override void OnUnRegistration(CharacterBase oldOwner)
+    {
+        base.OnUnRegistration(oldOwner);
+    }
 
     public float AD(float adAddBuff, float adMultiplierBuff)
     {
@@ -60,9 +73,10 @@ public class AttackModule : CharacterModule
 
     public bool CriticalRandom()
     {
+        if (CriticalChance == 0) return false;
         int criticalvalue = Random.Range(1, 100);
 
-        if (CriticalChance <= criticalvalue) return true;
+        if (CriticalChance >= criticalvalue) return true;
         else return false;
     }
 
@@ -72,7 +86,7 @@ public class AttackModule : CharacterModule
         if (CriticalChance == 0f) return 1f;
 
         if (CriticalRandom()) criticalDeal = (AttackDamage + AvilityPower) * CriticalMultiple;
-        else return criticalDeal = (AttackDamage + AvilityPower);
+        else criticalDeal = (AttackDamage + AvilityPower);
 
         return criticalDeal;
     }
@@ -81,6 +95,8 @@ public class AttackModule : CharacterModule
     {
         float finalDamage;
         float Criticalsuccess;
+
+
 
         if (CriticalRandom()) Criticalsuccess = (AttackDamage + AvilityPower) * CriticalMultiple;
         else Criticalsuccess = (AttackDamage + AvilityPower);

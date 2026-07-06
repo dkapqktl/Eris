@@ -55,7 +55,7 @@ public class DBManager : ManagerBase
 
     public void MakeUserData(string newUserName)
     {
-        WriteData(MakeNewUserData(nickNameInput.text), "user", "userData", user.UserId);
+        WriteData(MakeNewUserData(nickNameInput.text), "users", "userData", user.UserId);
     }
 
     public async void GuestLogin()
@@ -65,7 +65,7 @@ public class DBManager : ManagerBase
         if (user is not null)
         {
             Debug.LogError($"Login Falled : Already Has Login Data ({user.IsValid()}, {user.UserId})");
-            UserData resultData = await ReadDataAsync<UserData>("user", "userData", user.UserId);
+            UserData resultData = await ReadDataAsync<UserData>("users", "userData", user.UserId);
             if (resultData is not null)
             {
                 Debug.Log(resultData.nickname);
@@ -90,8 +90,9 @@ public class DBManager : ManagerBase
         }
 
         user = task.Result.User;
-        WriteData(MakeNewUserData("고라자니"), "user", "userData");
+        WriteData(MakeNewUserData("고라자니"), "users", "userData", user.UserId);
         Debug.Log($"Sign in Succesed :{user.UserId}");
+
     }
 
 
@@ -110,7 +111,7 @@ public class DBManager : ManagerBase
         nickname    = wantNickname,
         assignData  = DateTime.Now,
         userLevel   = 1,
-        money       = 9999,
+        money       = 1000,
         attendtime  = 0
     };
 
@@ -190,6 +191,76 @@ public class DBManager : ManagerBase
         if (task.IsCanceled || task.IsFaulted)
         {
             Debug.LogError(task.Exception);
+        }
+    }
+
+    public async void LoadUserData()
+    {
+        UserData data = await ReadDataAsync<UserData>(
+            "users",
+            "userData",
+            user.UserId);
+
+        if (data == null)
+        {
+            Debug.Log("User Data Null");
+            return;
+        }
+
+        Debug.Log($"닉네임 : {data.nickname}");
+        Debug.Log($"레벨 : {data.userLevel}");
+        Debug.Log($"골드 : {data.money}");
+    }
+
+    public void Click()
+    {
+        LoadUserData();
+    }
+
+    public void ClickChangeNickname()
+    {
+        ChangeNickname(nickNameInput.text);
+    }
+
+    public async void ChangeNickname(string newNickname)
+    {
+        UserData oldData = await ReadDataAsync<UserData>(
+            "users",
+            "userData",
+            user.UserId);
+
+        if (oldData == null)
+        {
+            Debug.Log("유저가 없습니다.");
+            return;
+        }
+
+        // 롤백용 백업
+        string oldNickname = oldData.nickname;
+
+        oldData.nickname = newNickname;
+
+        try
+        {
+            WriteData(oldData,
+                "users",
+                "userData",
+                user.UserId);
+
+            Debug.Log("닉네임 변경 성공");
+            Debug.Log($"변경한 닉네임 : {oldData.nickname}");
+        }
+        catch
+        {
+            // 실패 시 복구
+            oldData.nickname = oldNickname;
+
+            WriteData(oldData,
+                "users",
+                "userData",
+                user.UserId);
+
+            Debug.Log("닉네임 변경 실패 -> 롤백");
         }
     }
 }

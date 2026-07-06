@@ -15,6 +15,8 @@ public class HitPointModule : CharacterModule
     BattleModule isBattle;
     StatusModule isStatus;
     LevelSystemModule isLevel;
+    AttackModule isAttack;
+    DefenceModule isDefence;
 
     public sealed override Type RegistrationType => typeof(HitPointModule);
 
@@ -49,6 +51,8 @@ public class HitPointModule : CharacterModule
             isStatus = newOwner.GetComponent<StatusModule>();
             isLevel = newOwner.GetComponent<LevelSystemModule>();
             isBattle = newOwner.GetComponent<BattleModule>();
+            isAttack = newOwner.GetComponent<AttackModule>();
+            isDefence = newOwner.GetComponent<DefenceModule>();
             isStatus.OnStatusChanged -= BroadCastChangedHP;
             isStatus.OnStatusChanged += BroadCastChangedHP;
         }
@@ -66,9 +70,11 @@ public class HitPointModule : CharacterModule
     {
         if (IsDead || invincibility) return; // 죽거나 무적 상태라면 리턴
 
-        _curHP = Mathf.Clamp(_curHP - damage, _minhp, MaxHP);
+        float finalDamage = damage * isDefence.Defensive();
 
-        Owner.DamageNotify(causer, instigator, damage); // 데미지를 쓰는넘들에게 알림
+        _curHP = Mathf.Clamp(_curHP - finalDamage, _minhp, MaxHP);
+
+        Owner.DamageNotify(causer, instigator, finalDamage); // 데미지를 쓰는넘들에게 알림
 
         if (IsDead)
         {
