@@ -3,33 +3,33 @@ using UnityEngine;
 public class AttackModule : CharacterModule
 {
     public sealed override System.Type RegistrationType => typeof(AttackModule);
-
+    
     StatusModule isStatus;
 
 
     [SerializeField] private float baseAD = 1f;
-    private float AttackDamage => baseAD + (isStatus.Strength * 2) + (isStatus.Dexterity);
+    private float AttackDamage => isStatus ? baseAD + (isStatus.Strength * 2) + (isStatus.Dexterity) : baseAD;
     public float ViewAttackDamage => AttackDamage;
 
 
     [SerializeField] private float baseAP = 1f;
-    private float AvilityPower => baseAP + (isStatus.Intelligence * 2);
+    private float AvilityPower => isStatus ? baseAP + (isStatus.Intelligence * 2) : baseAP;
     public float ViewAvilityPower => AvilityPower;
 
 
     [SerializeField] private float baseAttackSpeed = 10f;
-    private float AttackSpeed => baseAttackSpeed + (isStatus.Dexterity * 0.5f);
+    private float AttackSpeed => isStatus ? baseAttackSpeed + (isStatus.Dexterity * 0.5f) : baseAttackSpeed;
     public float ViewAttackSpeed => AttackSpeed;
 
 
     [SerializeField] private float baseCriticalMultiple = 1.25f;
-    private float CriticalMultiple => baseCriticalMultiple + (isStatus.Dexterity * 0.005f);
+    private float CriticalMultiple => isStatus ? baseCriticalMultiple + (isStatus.Dexterity * 0.005f) : baseCriticalMultiple;
     public float ViewCriticalMultiple => CriticalMultiple;
 
 
     [SerializeField] private float baseCriticalChance = 0f;
 
-    private float CriticalChance => baseCriticalChance + (isStatus.Dexterity * 0.5f);
+    private float CriticalChance => isStatus ? baseCriticalChance + (isStatus.Dexterity * 0.5f) : baseCriticalChance;
     public float ViewCriticalChance => CriticalChance;
 
 
@@ -48,7 +48,7 @@ public class AttackModule : CharacterModule
         base.OnRegistration(newOwner);
         if (newOwner)
         {
-            isStatus = newOwner.GetComponent<StatusModule>();
+            isStatus = newOwner?.GetComponent<StatusModule>();
         }
     }
 
