@@ -6,6 +6,13 @@ public class UI_OptionUI : OpenableUIBase
     [SerializeField] private GameObject setController;
     [SerializeField] private GameObject setGameSet;
     [SerializeField] private GameObject setUISet;
+
+    [SerializeField] GameObject[] Tabs;
+
+
+    public int currentTab;
+
+
     private void OnEnable()
     {
         InputManager.OnCancel -= CancelMenu;
@@ -30,6 +37,23 @@ public class UI_OptionUI : OpenableUIBase
         if (UIManager.ClaimGetUI(UIType.Option).isActiveAndEnabled)
         {
             UIManager.ClaimCloseUI(UIType.Option);
+        }
+    }
+
+    public void SettingTab(int index)
+    {
+        currentTab = index;
+        for (int i = 0; i < Tabs.Length; i++)
+        {
+            Tabs[i].SetActive(index == i);
+        }
+    }
+
+    public void CurrentTabReset()
+    {
+        switch (currentTab)
+        {
+            case 0: SettingManager.GraphicSettingReset(); break;
         }
     }
 }

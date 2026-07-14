@@ -2,59 +2,39 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Unity.VisualScripting;
+using System;
 
 public class Setting_Graphic : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI VsyncText;
-    [SerializeField] Toggle VsyncColor;
+
+    [SerializeField] static TextMeshProUGUI VsyncText;
+    [SerializeField] static Toggle VsyncColor;
+    [SerializeField] public static TMP_Dropdown ResolutionDropdown;
 
     [Space]
     [Header("On Color")]
-    public ColorBlock OnColor;
+    public static ColorBlock OnColor;
     [Space]
     [Header("Off Color")]
-    public ColorBlock OffColor;
+    public static ColorBlock OffColor;
 
+    public void Awake()
+    {
+        GameManager.OnInitializeManager += Initialize;
+    }
+
+    private void Initialize()
+    {
+        ResolutionDropdown.value = SettingManager.CurrentResolution;
+    }
 
     public void OnResolutionChanged(int index)
     {
-        switch (index)
-        {
-            case 0: SetResolution(5120, 1400); break;
-            case 1: SetResolution(3440, 1440); break;
-            case 2: SetResolution(2560, 1080); break;
-            case 3: SetResolution(1920, 1200); break;
-            case 4: SetResolution(1680, 1050); break;
-            case 5: SetResolution(1440, 900); break;
-            case 6: SetResolution(1280, 800); break;
-            case 7: SetResolution(3840, 2160); break;
-            case 8: SetResolution(2560, 1440); break;
-            case 9: SetResolution(1920, 1080); break;
-            case 10: SetResolution(1600, 900); break;
-            case 11: SetResolution(1366, 768); break;
-            case 12: SetResolution(1280, 720); break;
-            case 13: SetResolution(1600, 1200); break;
-            case 14: SetResolution(1280, 960); break;
-            case 15: SetResolution(1024, 768); break;
-            case 16: SetResolution(800, 600); break;
-        }
+        SettingManager.SetResolution(index);
     }
 
-    private void SetResolution(int width, int height)
-    {
-        Screen.SetResolution(width, height, Screen.fullScreenMode);
-    }
-
-    private int GetResolution()
-    {
-        switch (Screen.currentResolution.width)
-        {
-            case 5120: return 0;
-            default :
-        }
-    }
-
-    public void OnSetScreenMode(int index)
+    public static void OnSetScreenMode(int index)
     {
         switch (index)
         {
@@ -75,7 +55,7 @@ public class Setting_Graphic : MonoBehaviour
         }
     }
 
-    public void OnSetVSync(bool enabled)
+    public static void OnSetVSync(bool enabled)
     {
         if (enabled)
         {
@@ -91,7 +71,7 @@ public class Setting_Graphic : MonoBehaviour
         }
     }
 
-    public void OnSetFPSLimit(int index)
+    public static void OnSetFPSLimit(int index)
     {
         switch (index)
         {
@@ -100,13 +80,12 @@ public class Setting_Graphic : MonoBehaviour
             case 2 : SetFPSLimit(120); break;
             case 3 : SetFPSLimit(144); break;
             case 4 : SetFPSLimit(240); break;
-            case 5 : SetFPSLimit(-1); break;
+            case 5 : SetFPSLimit(-1); break; // FPS 제한 없음
         }
     }
 
-    private void SetFPSLimit(int fps)
+    private static void SetFPSLimit(int fps)
     {
-        QualitySettings.vSyncCount = 0; // FPS 제한 사용 시 VSync 끄기 권장
         Application.targetFrameRate = fps;
     }
 }
