@@ -34,6 +34,20 @@ public class SettingManager : ManagerBase
         Setting_Graphic.OnSetVSync(_defaultVSync);
         Setting_Graphic.OnSetFPSLimit(_defaultFPS);
     }
+    public static void ControllerSettingReset()
+    {
+
+    }
+
+    public static void GameOptionSettingReset()
+    {
+
+    }
+
+    public static void SoundSettingReset()
+    {
+
+    }
 
     private int GetResolution()
     {

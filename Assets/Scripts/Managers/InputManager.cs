@@ -92,6 +92,10 @@ public class InputManager : ManagerBase
         GameManager.OnUpdateManager -= UpdateEvent;
     }
 
+    public InputAction GetAction(string wantName) => targetInput.actions.FindAction(wantName);
+    public static InputAction ClaimGetAction(string wantName) => GameManager.Input?.GetAction(wantName);
+
+
     public void UpdateEvent(float deltaTime)
     {
         RefreshGameObjectUnderCursor(_cursorScreenPosition);

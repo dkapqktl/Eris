@@ -54,6 +54,9 @@ public class UI_OptionUI : OpenableUIBase
         switch (currentTab)
         {
             case 0: SettingManager.GraphicSettingReset(); break;
+            case 1: SettingManager.ControllerSettingReset(); break;
+            case 2: SettingManager.GameOptionSettingReset(); break;
+            case 3: SettingManager.SoundSettingReset(); break;
         }
     }
 }
