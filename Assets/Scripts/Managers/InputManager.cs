@@ -71,10 +71,32 @@ public class InputManager : ManagerBase
         OnShift?.Invoke(value);
     }
 
+    static bool isUp;
+    public static bool IsUp => isUp;
+    
+    
+    static bool isDown;
+    public static bool IsDown => isDown;
+    
+    
+    static bool isLeft;
+    public static bool IsLeft => isLeft;
+
+    
+    static bool isRight;
+    public static bool IsRight => isRight;
+
 
     protected override IEnumerator OnConnected(GameManager newManager)
     {
         targetInput = GetComponent<PlayerInput>();
+
+        string json = PlayerPrefs.GetString("KeyBindings", "");
+
+        if (!string.IsNullOrEmpty(json))
+        {
+            targetInput.actions.LoadBindingOverridesFromJson(json);
+        }
 
         LoadAllActions();
         InitializeSetAllActions();
@@ -92,7 +114,16 @@ public class InputManager : ManagerBase
         GameManager.OnUpdateManager -= UpdateEvent;
     }
 
-    public InputAction GetAction(string wantName) => targetInput.actions.FindAction(wantName);
+    public InputAction GetAction(string wantName)
+    {
+        if (targetInput == null)
+        {
+            Debug.LogError("targetInput 이 아직 초기화되지 않았습니다.");
+            return null;
+        }
+
+        return targetInput.actions.FindAction(wantName);
+    }
     public static InputAction ClaimGetAction(string wantName) => GameManager.Input?.GetAction(wantName);
 
 
@@ -172,12 +203,22 @@ public class InputManager : ManagerBase
         if (actionDictionary == null || actionDictionary.Count == 0) return;
 
         InitializeAction("CursorPositionChanged", (context) => CursorPositionChanged(GetVector2Value(context)));
-        InitializeActionMove
-        (
-            "Move", 
-            (context) => OnMove?.Invoke(GetVector2Value(context)),
-            (context) => OnMove?.Invoke(Vector2.zero)
-        );
+        
+        InitializeAction("Up",
+            (context) => { isUp = true; UpdateMove(); },
+            (context) => { isUp = false; UpdateMove(); });
+
+        InitializeAction("Down",
+            (context) => { isDown = true; UpdateMove(); },
+            (context) => { isDown = false; UpdateMove(); });
+
+        InitializeAction("Left",
+            (context) => { isLeft = true; UpdateMove(); },
+            (context) => { isLeft = false; UpdateMove(); });
+
+        InitializeAction("Right",
+            (context) => { isRight = true; UpdateMove(); },
+            (context) => { isRight = false; UpdateMove(); });
         InitializeAction("MouseLeftButton",  (context) => OnMouseLeftButton?.Invoke(true, _cursorScreenPosition, _cursorWorldPosition)
                                               ,  (context) => OnMouseLeftButton?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
 
@@ -193,6 +234,27 @@ public class InputManager : ManagerBase
                                 , (context) => ShiftInput(false));
         InitializeAction("Ctrl", (context) => CtrlInput(true)
                                 , (context) => CtrlInput(false));
+    }
+
+    void UpdateMove()
+    {
+        Vector2 move = Vector2.zero;
+
+        if (isUp)
+            move.y += 1;
+
+        if (isDown)
+            move.y -= 1;
+
+        if (isLeft)
+            move.x -= 1;
+
+        if (isRight)
+            move.x += 1;
+
+        move = move.normalized;
+
+        OnMove?.Invoke(move);
     }
 
     void InitializeAction(string actionName, Action<InputAction.CallbackContext> actionMethod, Action<InputAction.CallbackContext> cancelMethod = null)

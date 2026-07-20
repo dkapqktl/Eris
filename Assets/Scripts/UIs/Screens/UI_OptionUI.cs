@@ -1,4 +1,6 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UI_OptionUI : OpenableUIBase
 {
@@ -6,11 +8,16 @@ public class UI_OptionUI : OpenableUIBase
     [SerializeField] private GameObject setController;
     [SerializeField] private GameObject setGameSet;
     [SerializeField] private GameObject setUISet;
+    [SerializeField] private GameObject ConfirmUI;
+    [SerializeField] private Button ResetButton;
 
     [SerializeField] GameObject[] Tabs;
 
+    public TextMeshProUGUI ResetButtonTexts;
+    public TextMeshProUGUI YNResetButtonTexts;
 
-    public int currentTab;
+    public int defaultTab = 999;
+    public static int currentTab = 999;
 
 
     private void OnEnable()
@@ -40,12 +47,41 @@ public class UI_OptionUI : OpenableUIBase
         }
     }
 
+    public void OpenConfirmBox()
+    {
+        if (currentTab == defaultTab) return;
+        ConfirmUI.SetActive(true);
+
+        switch (currentTab)
+        {
+            case 0: YNResetButtonTexts.text = "그래픽 설정을 초기화 하시겠습니까?"; break;
+            case 1: YNResetButtonTexts.text = "컨트롤러 설정을 초기화 하시겠습니까?"; break;
+            case 2: YNResetButtonTexts.text = "게임설정을 초기화 하시겠습니까?"; break;
+            case 3: YNResetButtonTexts.text = "사운드를 초기화 하시겠습니까?"; break;
+        }
+    }
+
+    public void CloseConfirmBox()
+    {
+        ConfirmUI.SetActive(false);
+        currentTab = defaultTab;
+    }
+
     public void SettingTab(int index)
     {
         currentTab = index;
         for (int i = 0; i < Tabs.Length; i++)
         {
             Tabs[i].SetActive(index == i);
+        }
+
+        switch (index)
+        {
+            case 0: ResetButtonTexts.text = "그래픽 전체 초기화"; ResetButton.interactable = true; break;
+            case 1: ResetButtonTexts.text = "컨트롤러 전체 초기화"; ResetButton.interactable = true; break;
+            case 2: ResetButtonTexts.text = "게임설정 전체 초기화"; ResetButton.interactable = true; break;
+            case 3: ResetButtonTexts.text = "사운드 전체 초기화"; ResetButton.interactable = true; break;
+            case 999: ResetButtonTexts.text = ""; ResetButton.interactable = false; break;
         }
     }
 
@@ -58,5 +94,7 @@ public class UI_OptionUI : OpenableUIBase
             case 2: SettingManager.GameOptionSettingReset(); break;
             case 3: SettingManager.SoundSettingReset(); break;
         }
+
+        CloseConfirmBox();
     }
 }

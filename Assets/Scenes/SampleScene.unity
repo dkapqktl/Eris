@@ -175,12 +175,24 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterBase (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3533095975641063731, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 8749302817991680212, guid: bd6d052ab83602c4b94807fed75748c2, type: 3}
+    - target: {fileID: 5423792306660003088, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6173330457735387148, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
       propertyPath: m_Constraints
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 6173330457735387148, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
       propertyPath: m_GravityScale
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6410690869372418224, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
+      propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:

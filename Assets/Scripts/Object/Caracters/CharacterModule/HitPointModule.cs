@@ -1,10 +1,5 @@
 using System;
-using Unity.VisualScripting;
-using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.UIElements;
-using static UnityEngine.Rendering.DebugUI;
 
 public delegate void ChangeHPEvent();
 
@@ -24,7 +19,7 @@ public class HitPointModule : CharacterModule
 
     [SerializeField] private float baseMaxHP = 10;
     
-    public float MaxHP => baseMaxHP + (isStatus.Strength * 5) + (isLevel.level * 10);
+    public float MaxHP =>  baseMaxHP + (isStatus.Strength * 5) + (isLevel.level * 10);
 
     private float _curHP = 30;
     public float curHP => _curHP;

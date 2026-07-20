@@ -1,91 +1,85 @@
-using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using Unity.VisualScripting;
-using System;
 
 public class Setting_Graphic : MonoBehaviour
 {
 
-    [SerializeField] static TextMeshProUGUI VsyncText;
-    [SerializeField] static Toggle VsyncColor;
-    [SerializeField] public static TMP_Dropdown ResolutionDropdown;
+    [SerializeField] TMP_Dropdown ResolutionDropdown;
+
+    [SerializeField] TMP_Dropdown ScreenModeDropdown;
+    
+    [SerializeField] Toggle VSyncToggle;
+    [SerializeField] TextMeshProUGUI VsyncText;
+    [SerializeField] Toggle VsyncColor;
+    
+    [SerializeField] TMP_Dropdown FPSDropdown;
 
     [Space]
     [Header("On Color")]
-    public static ColorBlock OnColor;
+    [SerializeField] public ColorBlock OnColor;
     [Space]
     [Header("Off Color")]
-    public static ColorBlock OffColor;
+    [SerializeField] public ColorBlock OffColor;
 
     public void Awake()
     {
         GameManager.OnInitializeManager += Initialize;
+
+        SettingManager.OnGraphicChanged += OnGraphicChangedEvent;
     }
 
     private void Initialize()
     {
         ResolutionDropdown.value = SettingManager.CurrentResolution;
+        ScreenModeDropdown.value = SettingManager.CurrentScreenMode;
+        VSyncToggle.isOn = SettingManager.CurrentVSync;
+        FPSDropdown.value = SettingManager.CurrentFPS;
     }
 
-    public void OnResolutionChanged(int index)
-    {
-        SettingManager.SetResolution(index);
-    }
-
-    public static void OnSetScreenMode(int index)
+    public void OnGraphicChangedEvent(int index)
     {
         switch (index)
         {
-            // 전체화면
-            case 0:
-                Screen.fullScreenMode = FullScreenMode.ExclusiveFullScreen;
-                break;
-
-            // 테두리 없는 창모드 (Windowed Borderless)
-            case 1:
-                Screen.fullScreenMode = FullScreenMode.FullScreenWindow;
-                break;
-
-            // 일반 창모드
-            case 2:
-                Screen.fullScreenMode = FullScreenMode.Windowed;
-                break;
+            case 0: OnResolutionChange(SettingManager.CurrentResolution); break;
+            case 1: OnScreenModeChange(SettingManager.CurrentScreenMode); break;
+            case 2: OnVSyncChange(SettingManager.CurrentVSync); break;
+            case 3: OnFPSLimitChange(SettingManager.CurrentFPS); break;
         }
     }
 
-    public static void OnSetVSync(bool enabled)
+    public void OnResolutionChange(int index)
     {
+        SettingManager.resolutionDropdownCount = ResolutionDropdown.options.Count;
+        SettingManager.OnSetResolution(index);
+        ResolutionDropdown.value = index;
+    }
+
+    public void OnScreenModeChange(int index)
+    {
+        SettingManager.OnSetScreenMode(index);
+        ScreenModeDropdown.value = index;
+    }
+
+    public void OnVSyncChange(bool enabled)
+    {
+        SettingManager.OnSetVSync(enabled);
+
         if (enabled)
         {
-            QualitySettings.vSyncCount = 1; // 모니터 주사율에 맞춤
             VsyncText.text = "켜짐";
             VsyncColor.colors = OnColor;
         }
         else
         {
-            QualitySettings.vSyncCount = 0; // VSync OFF
             VsyncText.text = "꺼짐";
             VsyncColor.colors = OffColor;
         }
     }
 
-    public static void OnSetFPSLimit(int index)
+    public void OnFPSLimitChange(int index)
     {
-        switch (index)
-        {
-            case 0 : SetFPSLimit(30); break;
-            case 1 : SetFPSLimit(60); break;
-            case 2 : SetFPSLimit(120); break;
-            case 3 : SetFPSLimit(144); break;
-            case 4 : SetFPSLimit(240); break;
-            case 5 : SetFPSLimit(-1); break; // FPS 제한 없음
-        }
-    }
-
-    private static void SetFPSLimit(int fps)
-    {
-        Application.targetFrameRate = fps;
+        SettingManager.OnSetFPSLimit(index);
+        FPSDropdown.value = index;
     }
 }

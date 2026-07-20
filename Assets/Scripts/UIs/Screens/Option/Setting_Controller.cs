@@ -1,6 +1,5 @@
-using TMPro;
+using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class Setting_Controller : MonoBehaviour
 {
@@ -34,22 +33,38 @@ public class Setting_Controller : MonoBehaviour
         [SerializeField]public string ActionName;
         [SerializeField]public InputType SettingType;
     }
-    
-    public ActionSetter[] Setter;
-    
-    public void Awake()
-    {
 
-        foreach(var current in Setter)
+    public ActionSetter[] Setter;
+
+    public void ControllerSettingUIReset()
+    {
+        Setting_GameSet.LanguageDropdown.value = 0;
+        Setting_GameSet.AutoSaveToggle.isOn = true;
+        Setting_GameSet.AutoSaveIntervalDropdown.value = 1;
+        Setting_GameSet.MiniMapToggle.isOn = true;
+        Setting_GameSet.TimeToggle.isOn = true;
+        Setting_GameSet.AutoLootToggle.isOn = true;
+        Setting_GameSet.CameraShakeToggle.isOn = true;
+    }
+
+    private IEnumerator Start()
+    {
+        while (GameManager.Input == null)
+            yield return null;
+
+        foreach (var current in Setter)
         {
             GameObject instance = ObjectManager.CreateObject("Set_Key", Content);
+
             KeySetter currentSetter = instance.GetComponent<KeySetter>();
-            if (currentSetter is null) continue;
+
+            if (currentSetter == null)
+                continue;
+
             currentSetter.Initialized(current);
         }
     }
 
-    
 
 
     // public void ChangeInvetoryKey()
@@ -69,5 +84,5 @@ public class Setting_Controller : MonoBehaviour
     }
     */
 
-    }
+}
 

@@ -1,8 +1,6 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using static Setting_Controller;
-
 public class KeySetter : MonoBehaviour
 {
     InputAction Action;
@@ -13,7 +11,9 @@ public class KeySetter : MonoBehaviour
 
     public void Initialized(Setting_Controller.ActionSetter Setter)
     {
+
         Action = InputManager.ClaimGetAction(Setter.ActionName);
+
         if (Action is null) return;
         Text.text = Setter.DisplayName;
         keyText.text = PathToKeyName(Action.GetBindingDisplayString());
@@ -54,6 +54,13 @@ public class KeySetter : MonoBehaviour
                 operation.Dispose();
                 Action.Enable();
                 keyText.text = PathToKeyName(Action.GetBindingDisplayString()); // 새 키로 UI 갱신
+                PlayerPrefs.SetString
+                (
+                "KeyBindings",
+                Action.actionMap.asset.SaveBindingOverridesAsJson()
+                );
+
+                PlayerPrefs.Save();
             })
             .OnCancel(operation =>
             {
@@ -90,5 +97,38 @@ public class KeySetter : MonoBehaviour
             }
         }
         return false;
+    }
+    public void ResetKey()
+    {
+        if (Action == null)
+            return;
+
+        string defaultPath = Action.bindings[0].path;
+
+        if (IsDuplicateBinding(Action, defaultPath))
+        {
+            Debug.LogWarning($"이미 키를 사용중입니다. ({defaultPath})");
+            return;
+        }
+
+        Action.RemoveAllBindingOverrides();
+
+        keyText.text = PathToKeyName(Action.GetBindingDisplayString());
+
+        PlayerPrefs.SetString
+        (
+            "KeyBindings",
+            Action.actionMap.asset.SaveBindingOverridesAsJson()
+        );
+
+        PlayerPrefs.Save();
+    }
+
+    public void Refresh()
+    {
+        if (Action == null)
+            return;
+
+        keyText.text = PathToKeyName(Action.GetBindingDisplayString());
     }
 }
