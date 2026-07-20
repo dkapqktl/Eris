@@ -16,7 +16,7 @@ public class UI_OptionUI : OpenableUIBase
     public TextMeshProUGUI ResetButtonTexts;
     public TextMeshProUGUI YNResetButtonTexts;
 
-    public int defaultTab = 999;
+    public static int defaultTab = 999;
     public static int currentTab = 999;
 
 
@@ -29,12 +29,12 @@ public class UI_OptionUI : OpenableUIBase
     private void OnDisable()
     {
         InputManager.OnCancel -= CancelMenu;
+        SettingTab(defaultTab);
     }
 
     void CancelMenu(bool value)
     {
-        if (!value)
-            return;
+        if (!value) return;
 
         setGraphics.SetActive(false);
         setController.SetActive(false);
@@ -64,7 +64,6 @@ public class UI_OptionUI : OpenableUIBase
     public void CloseConfirmBox()
     {
         ConfirmUI.SetActive(false);
-        currentTab = defaultTab;
     }
 
     public void SettingTab(int index)
@@ -81,7 +80,7 @@ public class UI_OptionUI : OpenableUIBase
             case 1: ResetButtonTexts.text = "컨트롤러 전체 초기화"; ResetButton.interactable = true; break;
             case 2: ResetButtonTexts.text = "게임설정 전체 초기화"; ResetButton.interactable = true; break;
             case 3: ResetButtonTexts.text = "사운드 전체 초기화"; ResetButton.interactable = true; break;
-            case 999: ResetButtonTexts.text = ""; ResetButton.interactable = false; break;
+            case 999: ResetButtonTexts.text = "초기화"; ResetButton.interactable = false; break;
         }
     }
 

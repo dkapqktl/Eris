@@ -5,6 +5,27 @@ using UnityEngine.UI;
 public class Setting_GameSet : MonoBehaviour
 {
 
+    [SerializeField] private TMP_Dropdown LanguageDropdown;
+    [SerializeField] private TextMeshProUGUI LanguageText;
+
+    [SerializeField] private TMP_Dropdown AutoSaveToggle;
+    [SerializeField] private TextMeshProUGUI AutoSaveText;
+                     
+    [SerializeField] private TMP_Dropdown AutoSaveIntervalDropdown;
+    [SerializeField] private TextMeshProUGUI AutoSaveIntervalText;
+
+    [SerializeField] private TMP_Dropdown MiniMapToggle;
+    [SerializeField] private TextMeshProUGUI MiniMapText;
+                     
+    [SerializeField] private TMP_Dropdown TimeToggle;
+    [SerializeField] private TextMeshProUGUI TimeText;
+                     
+    [SerializeField] private TMP_Dropdown AutoLootToggle;
+    [SerializeField] private TextMeshProUGUI AutoLootText;
+                     
+    [SerializeField] private TMP_Dropdown CameraShakeToggle;
+    [SerializeField] private TextMeshProUGUI CameraShakeText;
+
 
     public static bool AutoSave { get; private set; }
     public static int AutoSaveInterval { get; private set; }
@@ -17,24 +38,6 @@ public class Setting_GameSet : MonoBehaviour
     public static int Language { get; private set; }
 
 
-    [SerializeField] public static TMP_Dropdown LanguageDropdown;
-
-    [SerializeField] public static Toggle AutoSaveToggle;
-    [SerializeField] public static TextMeshProUGUI AutoSaveText;
-
-    [SerializeField] public static TMP_Dropdown AutoSaveIntervalDropdown;
-    
-    [SerializeField] public static Toggle MiniMapToggle;
-    [SerializeField] public static TextMeshProUGUI MiniMapText;
-
-    [SerializeField] public static Toggle TimeToggle;
-    [SerializeField] public static TextMeshProUGUI TimeText;
-
-    [SerializeField] public static Toggle AutoLootToggle;
-    [SerializeField] public static TextMeshProUGUI AutoLootText;
-
-    [SerializeField] public static Toggle CameraShakeToggle;
-    [SerializeField] public static TextMeshProUGUI CameraShakeText;
 
     private void Awake()
     {
@@ -46,11 +49,15 @@ public class Setting_GameSet : MonoBehaviour
         Language = PlayerPrefs.GetInt("Language", 0);
 
         AutoSave = PlayerPrefs.GetInt("AutoSave", 1) == 1;
+
         AutoSaveInterval = PlayerPrefs.GetInt("AutoSaveInterval", 5);
 
         ShowMiniMap = PlayerPrefs.GetInt("ShowMiniMap", 1) == 1;
+
         ShowTime = PlayerPrefs.GetInt("ShowTime", 1) == 1;
+
         AutoLoot = PlayerPrefs.GetInt("AutoLoot", 1) == 1;
+
         CameraShake = PlayerPrefs.GetInt("CameraShake", 1) == 1;
     }
 

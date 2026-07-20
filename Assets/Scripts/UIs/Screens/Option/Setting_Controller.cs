@@ -36,16 +36,6 @@ public class Setting_Controller : MonoBehaviour
 
     public ActionSetter[] Setter;
 
-    public void ControllerSettingUIReset()
-    {
-        Setting_GameSet.LanguageDropdown.value = 0;
-        Setting_GameSet.AutoSaveToggle.isOn = true;
-        Setting_GameSet.AutoSaveIntervalDropdown.value = 1;
-        Setting_GameSet.MiniMapToggle.isOn = true;
-        Setting_GameSet.TimeToggle.isOn = true;
-        Setting_GameSet.AutoLootToggle.isOn = true;
-        Setting_GameSet.CameraShakeToggle.isOn = true;
-    }
 
     private IEnumerator Start()
     {

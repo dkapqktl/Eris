@@ -1,18 +1,35 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 
-public delegate void GraphicEvent(int index);
+public delegate void NumeralValueChangeEvent(int index);
+public delegate void BoolValueChangeEvent(bool value);
+
+public delegate void LangaugeGhacngeEvent(SettingManager.Langueage index);
+
 
 public class SettingManager : ManagerBase
 {
-    public static event GraphicEvent OnGraphicChanged;
+
+    public enum Langueage
+    {
+        Korean, English, Japanese, SimplifiedChinese, TraditionalChinese
+    }
+
+
+    // Graphic 영역 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    public static event NumeralValueChangeEvent OnResolutionChanged;
+    public static event NumeralValueChangeEvent OnScreenModeChanged;
+    public static event BoolValueChangeEvent    OnVSyncChanged;
+    public static event NumeralValueChangeEvent OnFPSChanged;
 
     public const int basicResolution = 9; // 기본 해상도는 1920x1080
 
     public static int _defaultResolution; // 기본 해상도는 게임 제일 처음시작할때 해상도로
-    public const int _defaultScreenMode = 1;
+    public const int _defaultScreenMode = 0;
     public const bool _defaultVSync = false;
     public const int _defaultFPS = 1;
 
@@ -28,16 +45,40 @@ public class SettingManager : ManagerBase
     static int _currentFPS;
     public static int CurrentFPS => _currentFPS;
 
-    public const int EventNom_BasicResolution = 0;
-    public const int EventNom_Resolution = 1;
-    public const int EventNom_ScreenMode = 2;
-    public const int EventNom_VSync = 3;
-    public const int EventNom_FPS = 4;
 
-    public static int resolutionDropdownCount = 1;
 
+
+
+
+    // Game Setting 영역!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    public static event LangaugeGhacngeEvent KoreanLanguage;
+
+    public static bool AutoSave;
+    public static int AutoSaveInterval;
+
+    public static bool ShowMiniMap;
+    public static bool ShowTime;
+    public static bool AutoLoot;
+    public static bool CameraShake;
+
+    public static int Language;
+
+
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     protected override IEnumerator OnConnected(GameManager newManager)
+    {
+        GraphicSettingLoad();
+
+        yield return null;
+    }
+    protected override void OnDisconnected()
+    {
+
+    }
+
+    public void GraphicSettingLoad()
     {
         if (PlayerPrefs.HasKey("Resolution"))
         {
@@ -52,37 +93,34 @@ public class SettingManager : ManagerBase
             _currentVSync = _defaultVSync;
             _currentFPS = _defaultFPS;
 
-            SaveGraphicSettings(EventNom_BasicResolution);
+            SaveGraphicSettings();
         }
 
         OnSetResolution(_currentResolution);
         OnSetScreenMode(_currentScreenMode);
         OnSetVSync(_currentVSync);
         OnSetFPSLimit(_currentFPS);
-
-        yield return null;
     }
 
-    protected override void OnDisconnected()
+    public void KeySettingLoad()
     {
 
     }
 
-    public static void SaveGraphicSettings(int index)
+
+    public static void SaveGraphicSettings()
     {
-        switch (index)
-        {
-            case 0: PlayerPrefs.SetInt("DefaultResolution", _defaultResolution); break;
-            case 1: PlayerPrefs.SetInt("Resolution", _currentResolution); break;
-            case 2: PlayerPrefs.SetInt("ScreenMode", _currentScreenMode); break;
-            case 3: PlayerPrefs.SetInt("VSync", _currentVSync ? 1 : 0); break;
-            case 4: PlayerPrefs.SetInt("FPS", _currentFPS); break;
-        }
+
+        PlayerPrefs.SetInt("DefaultResolution", _defaultResolution);
+        PlayerPrefs.SetInt("Resolution", _currentResolution);
+        PlayerPrefs.SetInt("ScreenMode", _currentScreenMode);
+        PlayerPrefs.SetInt("VSync", _currentVSync ? 1 : 0);
+        PlayerPrefs.SetInt("FPS", _currentFPS);
         
         PlayerPrefs.Save();
     }
 
-
+   
     public static void LoadGraphicSettings()
     {
         _defaultResolution = PlayerPrefs.GetInt("DefaultResolution", basicResolution);
@@ -100,6 +138,8 @@ public class SettingManager : ManagerBase
 
 
 
+
+
     // Graphic Setting 관련 함수들!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     public static void GraphicSettingReset()
@@ -108,6 +148,30 @@ public class SettingManager : ManagerBase
         OnSetScreenMode(_defaultScreenMode);
         OnSetVSync(_defaultVSync);
         OnSetFPSLimit(_defaultFPS);
+    }
+
+    public static void ResolutionReset()
+    {
+        OnSetResolution(_defaultResolution);
+        OnResolutionChanged?.Invoke(_defaultResolution);
+    }
+
+    public static void ScreenModeReset()
+    {
+        OnSetScreenMode(_defaultScreenMode);
+        OnScreenModeChanged?.Invoke(_defaultScreenMode);
+    }
+
+    public static void VSyncReset()
+    {
+        OnSetVSync(_defaultVSync);
+        OnVSyncChanged?.Invoke(_defaultVSync);
+    }
+
+    public static void FPSReset()
+    {
+        OnSetFPSLimit(_defaultFPS);
+        OnFPSChanged?.Invoke(_defaultFPS);
     }
 
     private int GetResolution()
@@ -135,7 +199,7 @@ public class SettingManager : ManagerBase
 
     public static void OnSetResolution(int index)
     {
-        if (0 > index || resolutionDropdownCount - 1 < index) return;
+        // if (0 > index || resolutionDropdownCount - 1 < index) return;
 
         _currentResolution = index;
 
@@ -165,8 +229,8 @@ public class SettingManager : ManagerBase
         Screen.SetResolution(width, height, Screen.fullScreenMode);
 
 
-        SaveGraphicSettings(EventNom_Resolution);
-        OnGraphicChanged?.Invoke(EventNom_Resolution);
+        SaveGraphicSettings();
+        OnResolutionChanged?.Invoke(_currentResolution);
     }
 
     public static void OnSetScreenMode(int index)
@@ -191,8 +255,8 @@ public class SettingManager : ManagerBase
                 break;
         }
 
-        SaveGraphicSettings(EventNom_ScreenMode);
-        OnGraphicChanged?.Invoke(EventNom_ScreenMode);
+        SaveGraphicSettings();
+        OnScreenModeChanged?.Invoke(index);
     }
 
     public static void OnSetVSync(bool enabled)
@@ -207,8 +271,8 @@ public class SettingManager : ManagerBase
         }
 
         _currentVSync = enabled;
-        SaveGraphicSettings(EventNom_VSync);
-        OnGraphicChanged?.Invoke(EventNom_VSync);
+        SaveGraphicSettings();
+        OnVSyncChanged?.Invoke(enabled);
     }
 
     public static void OnSetFPSLimit(int index)
@@ -230,8 +294,8 @@ public class SettingManager : ManagerBase
     {
         Application.targetFrameRate = fps;
 
-        SaveGraphicSettings(EventNom_FPS);
-        OnGraphicChanged?.Invoke(EventNom_FPS);
+        SaveGraphicSettings();
+        OnFPSChanged?.Invoke(_currentFPS);
     }
 
 
@@ -293,17 +357,18 @@ public class SettingManager : ManagerBase
         Setting_GameSet.LoadSettings();
 
         // UI 즉시 갱신
-        Setting_GameSet.LanguageDropdown.value = 0;
-
-        Setting_GameSet.AutoSaveToggle.isOn = true;
-        Setting_GameSet.AutoSaveIntervalDropdown.value = 1;
-
-        Setting_GameSet.MiniMapToggle.isOn = true;
-        Setting_GameSet.TimeToggle.isOn = true;
-        Setting_GameSet.AutoLootToggle.isOn = true;
-        Setting_GameSet.CameraShakeToggle.isOn = true;
+        // Setting_GameSet.LanguageDropdown.value = 0;
+        // 
+        // Setting_GameSet.AutoSaveToggle.isOn = true;
+        // Setting_GameSet.AutoSaveIntervalDropdown.value = 1;
+        // 
+        // Setting_GameSet.MiniMapToggle.isOn = true;
+        // Setting_GameSet.TimeToggle.isOn = true;
+        // Setting_GameSet.AutoLootToggle.isOn = true;
+        // Setting_GameSet.CameraShakeToggle.isOn = true;
     }
 
+    
 
 
 

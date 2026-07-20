@@ -26,7 +26,11 @@ public class Setting_Graphic : MonoBehaviour
     {
         GameManager.OnInitializeManager += Initialize;
 
-        SettingManager.OnGraphicChanged += OnGraphicChangedEvent;
+        SettingManager.OnResolutionChanged  += OnResolutionChange;
+        SettingManager.OnScreenModeChanged  += OnScreenModeChange;
+        SettingManager.OnVSyncChanged       += OnVSyncChange;
+        SettingManager.OnFPSChanged         += OnFPSLimitChange;
+
     }
 
     private void Initialize()
@@ -37,34 +41,52 @@ public class Setting_Graphic : MonoBehaviour
         FPSDropdown.value = SettingManager.CurrentFPS;
     }
 
-    public void OnGraphicChangedEvent(int index)
+    public void ClaimResolutionChange(int index)
     {
-        switch (index)
-        {
-            case 0: OnResolutionChange(SettingManager.CurrentResolution); break;
-            case 1: OnScreenModeChange(SettingManager.CurrentScreenMode); break;
-            case 2: OnVSyncChange(SettingManager.CurrentVSync); break;
-            case 3: OnFPSLimitChange(SettingManager.CurrentFPS); break;
-        }
+        SettingManager.OnSetResolution(index);
     }
 
     public void OnResolutionChange(int index)
     {
-        SettingManager.resolutionDropdownCount = ResolutionDropdown.options.Count;
-        SettingManager.OnSetResolution(index);
         ResolutionDropdown.value = index;
     }
 
-    public void OnScreenModeChange(int index)
+    public void ClaimResolutionReset()
+    {
+        SettingManager.ResolutionReset();
+    }
+
+    public void ClaimScreenModeReset()
+    {
+        SettingManager.ScreenModeReset();
+    }
+    
+    public void ClaimVSyncReset()
+    {
+        SettingManager.VSyncReset();
+    }
+
+    public void ClaimFPSReset()
+    {
+        SettingManager.FPSReset();
+    }
+
+    public void ClaimScreenModeChange(int index)
     {
         SettingManager.OnSetScreenMode(index);
+    }
+    public void OnScreenModeChange(int index)
+    {
         ScreenModeDropdown.value = index;
+    }
+
+    public void ClaimVSyncChange(bool enabled)
+    {
+        SettingManager.OnSetVSync(enabled);
     }
 
     public void OnVSyncChange(bool enabled)
     {
-        SettingManager.OnSetVSync(enabled);
-
         if (enabled)
         {
             VsyncText.text = "ÄÑÁü";
@@ -77,9 +99,12 @@ public class Setting_Graphic : MonoBehaviour
         }
     }
 
-    public void OnFPSLimitChange(int index)
+    public void ClaimFPSLimitChange(int index)
     {
         SettingManager.OnSetFPSLimit(index);
+    }
+    public void OnFPSLimitChange(int index)
+    {
         FPSDropdown.value = index;
     }
 }
