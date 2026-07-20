@@ -1,10 +1,14 @@
+using System;
 using System.Collections;
+using UnityEditor.Rendering.LookDev;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using static Unity.VisualScripting.Icons;
 
 
 public delegate void NumeralValueChangeEvent(int index);
+public delegate void TextChangeEvent(string value);
 public delegate void BoolValueChangeEvent(bool value);
 
 public delegate void LangaugeGhacngeEvent(SettingManager.Langueage index);
@@ -50,26 +54,57 @@ public class SettingManager : ManagerBase
 
 
 
-    // Game Setting 영역!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // Gameplay Setting 영역!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    public static event LangaugeGhacngeEvent KoreanLanguage;
+    public static event LangaugeGhacngeEvent LanguageChanged;
+    public static event NumeralValueChangeEvent AutoSaveChanged;
+    public static event NumeralValueChangeEvent AutoSaveIntervalChanged;
+    public static event NumeralValueChangeEvent ShowMiniMapChanged;
+    public static event NumeralValueChangeEvent ShowTimeChanged;
+    public static event NumeralValueChangeEvent AutoLootChanged;
+    public static event NumeralValueChangeEvent CameraShakeChanged;
 
-    public static bool AutoSave;
-    public static int AutoSaveInterval;
+    public static int defaultLanguage = (int)Langueage.Korean;
+    public static int defaultAutoSave = 0;
+    public static int defaultAutoSaveInterval = 2;
+    public static int defaultShowMiniMap = 0;
+    public static int defaultShowTime = 0;
+    public static int defaultAutoLoot = 0;
+    public static int defaultCameraShake = 0;
+    
+    static int currentLanguage;
+    public static int CurrentLanguage => currentLanguage;
+    
+    
+    static int currentAutoSave;
+    public static int CurrentAutoSave => currentAutoSave;
+    
+    
+    static int currentAutoSaveInterval;
+    public static int CurrentAutoSaveInterval => currentAutoSaveInterval;
+    
+    
+    static int currentShowMiniMap;
+    public static int CurrentShowMiniMap => currentShowMiniMap;
+    
+    
+    static int currentShowTime;
+    public static int CurrentShowTime => currentShowTime;
+    
+    
+    static int currentAutoLoot;
+    public static int CurrentAutoLoot => currentAutoLoot;
 
-    public static bool ShowMiniMap;
-    public static bool ShowTime;
-    public static bool AutoLoot;
-    public static bool CameraShake;
 
-    public static int Language;
-
+    static int currentCameraShake;
+    public static int CurrentCameraShake => currentCameraShake;
 
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     protected override IEnumerator OnConnected(GameManager newManager)
     {
         GraphicSettingLoad();
+        GameplaySettingLoad();
 
         yield return null;
     }
@@ -77,6 +112,13 @@ public class SettingManager : ManagerBase
     {
 
     }
+
+
+
+
+
+
+    // Graphic Save & Load 함수들!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     public void GraphicSettingLoad()
     {
@@ -101,13 +143,6 @@ public class SettingManager : ManagerBase
         OnSetVSync(_currentVSync);
         OnSetFPSLimit(_currentFPS);
     }
-
-    public void KeySettingLoad()
-    {
-
-    }
-
-
     public static void SaveGraphicSettings()
     {
 
@@ -133,6 +168,151 @@ public class SettingManager : ManagerBase
 
         _currentFPS = PlayerPrefs.GetInt("FPS", _defaultFPS);
     }
+
+
+
+
+
+
+    // Gameplay Option Save & Load 함수들!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+    public void GameplaySettingLoad()
+    {
+        if (PlayerPrefs.HasKey("Language"))
+        {
+            LoadGameplaySettings();
+        }
+        else
+        {
+            currentLanguage = defaultLanguage;
+            currentAutoSave = defaultAutoSave;
+            currentAutoSaveInterval = defaultAutoSaveInterval;
+            currentShowMiniMap = defaultShowMiniMap;
+            currentShowTime = defaultShowTime;
+            currentAutoLoot = defaultAutoLoot;
+            currentCameraShake = defaultCameraShake;
+            
+            SaveGameplaySettings();
+        }
+
+        OnSetLanguage(currentLanguage);
+        OnSetAutoSave(currentAutoSave);
+        OnSetAutoSaveInterval(currentAutoSaveInterval);
+        OnSetShowMiniMap(currentShowMiniMap);
+        OnSetShowTime(currentShowTime);
+        OnSetAutoLoot(currentAutoLoot);
+        OnSetCameraShake(currentCameraShake);
+    }
+    private static void SaveGameplaySettings()
+    {
+        PlayerPrefs.SetInt("Language", currentLanguage);
+        PlayerPrefs.SetInt("AutoSave", currentAutoSave);
+        PlayerPrefs.SetInt("AutoSaveInterval", currentAutoSaveInterval);
+        PlayerPrefs.SetInt("ShowMiniMap", currentShowMiniMap);
+        PlayerPrefs.SetInt("ShowTime", currentShowTime);
+        PlayerPrefs.SetInt("AutoLoot", currentAutoLoot);
+        PlayerPrefs.SetInt("CameraShake", currentCameraShake);
+
+        PlayerPrefs.Save();
+    }
+
+    private static void LoadGameplaySettings()
+    {
+        currentLanguage = PlayerPrefs.GetInt("Language", defaultLanguage);
+        currentAutoSave = PlayerPrefs.GetInt("AutoSave", defaultAutoSave);
+        currentAutoSaveInterval = PlayerPrefs.GetInt("AutoSaveInterval", defaultAutoSaveInterval);
+        currentShowMiniMap = PlayerPrefs.GetInt("ShowMiniMap", defaultShowMiniMap);
+        currentShowTime = PlayerPrefs.GetInt("ShowTime", defaultShowTime);
+        currentAutoLoot = PlayerPrefs.GetInt("AutoLoot", defaultAutoLoot);
+        currentCameraShake = PlayerPrefs.GetInt("CameraShake", defaultCameraShake);
+    }
+
+    public static void GameplaySettingReset()
+    {
+        OnSetLanguage(defaultLanguage);
+        OnSetAutoSave(defaultAutoSave);
+        OnSetAutoSaveInterval(defaultAutoSaveInterval);
+        OnSetShowMiniMap(defaultShowMiniMap);
+        OnSetShowTime(defaultShowTime);
+        OnSetAutoLoot(defaultAutoLoot);
+        OnSetCameraShake(defaultCameraShake);
+    }
+
+    public static void LanguageReset()
+    {
+        OnSetLanguage(defaultLanguage);
+    }
+    public static void AutoSaveReset()
+    {
+        OnSetAutoSave(defaultAutoSave);
+    }
+    public static void AutoSaveIntervalReset()
+    {
+        OnSetAutoSaveInterval(defaultAutoSaveInterval);
+    }
+    public static void ShowMiniMapReset()
+    {
+        OnSetShowMiniMap(defaultShowMiniMap);
+    }
+    public static void ShowTimeReset()
+    {
+        OnSetShowTime(defaultShowTime);
+    }
+    public static void AutoLootReset()
+    {
+        OnSetAutoLoot(defaultAutoLoot);
+    }
+    public static void CameraShakeReset()
+    {
+        OnSetCameraShake(defaultCameraShake);
+    }
+
+
+    public static void OnSetLanguage(int index)
+    {
+        currentLanguage = index;
+        SaveGameplaySettings();
+        LanguageChanged.Invoke((Langueage)index);
+    }
+    public static void OnSetAutoSave(int index)
+    {
+        currentAutoSave = index;
+        SaveGameplaySettings();
+        AutoSaveChanged.Invoke(index);
+    }
+    public static void OnSetAutoSaveInterval(int index)
+    {
+        currentAutoSaveInterval = index;
+        SaveGameplaySettings();
+        AutoSaveIntervalChanged.Invoke(index);
+    }
+    public static void OnSetShowMiniMap(int index)
+    {
+        currentShowMiniMap = index;
+        SaveGameplaySettings();
+        ShowMiniMapChanged.Invoke(index);
+    }
+    public static void OnSetShowTime(int index)
+    {
+        currentShowTime = index;
+        SaveGameplaySettings();
+        ShowTimeChanged.Invoke(index);
+    }
+    public static void OnSetAutoLoot(int index)
+    {
+        currentAutoLoot = index;
+        SaveGameplaySettings();
+        AutoLootChanged.Invoke(index);
+    }
+    public static void OnSetCameraShake(int index)
+    {
+        currentCameraShake = index;
+        SaveGameplaySettings();
+        CameraShakeChanged.Invoke(index);
+    }
+
+
+
 
 
 
@@ -338,35 +518,6 @@ public class SettingManager : ManagerBase
 
 
     // Game Option Setting 관련 함수들!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-    public static void GameOptionSettingReset()
-    {
-        PlayerPrefs.SetInt("Language", 0);
-
-        PlayerPrefs.SetInt("AutoSave", 1);
-        PlayerPrefs.SetInt("AutoSaveInterval", 1);
-
-        PlayerPrefs.SetInt("ShowMiniMap", 1);
-        PlayerPrefs.SetInt("ShowTime", 1);
-        PlayerPrefs.SetInt("AutoLoot", 1);
-        PlayerPrefs.SetInt("CameraShake", 1);
-
-        PlayerPrefs.Save();
-
-        // 변수 다시 로드
-        Setting_GameSet.LoadSettings();
-
-        // UI 즉시 갱신
-        // Setting_GameSet.LanguageDropdown.value = 0;
-        // 
-        // Setting_GameSet.AutoSaveToggle.isOn = true;
-        // Setting_GameSet.AutoSaveIntervalDropdown.value = 1;
-        // 
-        // Setting_GameSet.MiniMapToggle.isOn = true;
-        // Setting_GameSet.TimeToggle.isOn = true;
-        // Setting_GameSet.AutoLootToggle.isOn = true;
-        // Setting_GameSet.CameraShakeToggle.isOn = true;
-    }
 
     
 

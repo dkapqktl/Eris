@@ -1,11 +1,13 @@
 
 using System.Collections;
+using UnityEditor;
 using UnityEngine;
 
 public class LanguageManager : ManagerBase
 {
     protected override IEnumerator OnConnected(GameManager newManager)
     {
+        // SettingManager.LanguageChanged += SettingManager_LanguageChanged;
          yield return null;
     }
 
@@ -26,6 +28,11 @@ public class LanguageManager : ManagerBase
     private void UpdateLanguageUI()
     {
         // Implement your UI update logic here
+
+    }
+
+    public static void KoreanLanguage()
+    {
 
     }
 }

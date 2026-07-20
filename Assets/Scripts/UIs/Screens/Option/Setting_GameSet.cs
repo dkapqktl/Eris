@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,126 +8,113 @@ public class Setting_GameSet : MonoBehaviour
 
     [SerializeField] private TMP_Dropdown LanguageDropdown;
     [SerializeField] private TextMeshProUGUI LanguageText;
+    [SerializeField] private TextMeshProUGUI LanguageResetText;
 
     [SerializeField] private TMP_Dropdown AutoSaveToggle;
     [SerializeField] private TextMeshProUGUI AutoSaveText;
-                     
+    [SerializeField] private TextMeshProUGUI AutoSaveResetText;
+
     [SerializeField] private TMP_Dropdown AutoSaveIntervalDropdown;
     [SerializeField] private TextMeshProUGUI AutoSaveIntervalText;
+    [SerializeField] private TextMeshProUGUI AutoSaveIntervalResetText; 
 
     [SerializeField] private TMP_Dropdown MiniMapToggle;
     [SerializeField] private TextMeshProUGUI MiniMapText;
-                     
+    [SerializeField] private TextMeshProUGUI MiniMapResetText;
+
     [SerializeField] private TMP_Dropdown TimeToggle;
     [SerializeField] private TextMeshProUGUI TimeText;
-                     
+    [SerializeField] private TextMeshProUGUI TimeResetText;
+
     [SerializeField] private TMP_Dropdown AutoLootToggle;
     [SerializeField] private TextMeshProUGUI AutoLootText;
-                     
+    [SerializeField] private TextMeshProUGUI AutoLootResetText;
+
     [SerializeField] private TMP_Dropdown CameraShakeToggle;
     [SerializeField] private TextMeshProUGUI CameraShakeText;
-
-
-    public static bool AutoSave { get; private set; }
-    public static int AutoSaveInterval { get; private set; }
-
-    public static bool ShowMiniMap { get; private set; }
-    public static bool ShowTime { get; private set; }
-    public static bool AutoLoot { get; private set; }
-    public static bool CameraShake { get; private set; }
-
-    public static int Language { get; private set; }
+    [SerializeField] private TextMeshProUGUI CameraShakeResetText;
 
 
 
     private void Awake()
     {
-        LoadSettings();
+        GameManager.OnInitializeManager += Initialize;
     }
 
-    public static void LoadSettings()
+    private void Initialize()
     {
-        Language = PlayerPrefs.GetInt("Language", 0);
 
-        AutoSave = PlayerPrefs.GetInt("AutoSave", 1) == 1;
-
-        AutoSaveInterval = PlayerPrefs.GetInt("AutoSaveInterval", 5);
-
-        ShowMiniMap = PlayerPrefs.GetInt("ShowMiniMap", 1) == 1;
-
-        ShowTime = PlayerPrefs.GetInt("ShowTime", 1) == 1;
-
-        AutoLoot = PlayerPrefs.GetInt("AutoLoot", 1) == 1;
-
-        CameraShake = PlayerPrefs.GetInt("CameraShake", 1) == 1;
+        LanguageDropdown.value = SettingManager.CurrentLanguage;
     }
 
-    public void OnSetLanguage(int value)
-    {
-        Language = value;
 
-        PlayerPrefs.SetInt("Language", value);
-        PlayerPrefs.Save();
+
+    public void ClaimLanguageChange(int value)
+    {
+        SettingManager.OnSetLanguage(value);
+    }
+    public void ClaimLanguageReset()
+    {
+        SettingManager.LanguageReset();
+    }
+    public void OnLanguageChange()
+    {
+
     }
 
-    public void OnSetAutoSave(bool value)
-    {
-        AutoSave = value;
 
-        PlayerPrefs.SetInt("AutoSave", value ? 1 : 0);
-        PlayerPrefs.Save();
+
+
+    public void ClaimAutoSaveChange(int value)
+    {
+        SettingManager.OnSetAutoSave(value);
+    }
+    public void ClaimAutoSaveReset()
+    {
+        SettingManager.AutoSaveReset();
+    }
+    public void OnAutoSaveChange()
+    {
+
     }
 
-    public void OnSetAutoSaveInterval(int value)
-    {
-        AutoSaveInterval = value;
 
-        PlayerPrefs.SetInt("AutoSaveInterval", value);
-        PlayerPrefs.Save();
+
+
+    public void ClaimAutoSaveIntervalChange(int value)
+    {
+        SettingManager.OnSetAutoSaveInterval(value);
     }
 
-    public static float GetAutoSaveSeconds()
+
+
+
+    public void ClaimMiniMapChange(int value)
     {
-        return AutoSaveInterval switch
-        {
-            0 => 60f,
-            1 => 300f,
-            2 => 600f,
-            3 => 900f,
-            4 => 1800f,
-            _ => 300f
-        };
+        SettingManager.OnSetShowMiniMap(value);
     }
 
-    public void OnSetMiniMap(bool value)
-    {
-        ShowMiniMap = value;
 
-        PlayerPrefs.SetInt("ShowMiniMap", value ? 1 : 0);
-        PlayerPrefs.Save();
+
+
+    public void ClaimShowTimeChange(int value)
+    {
+        SettingManager.OnSetShowTime(value);
     }
 
-    public void OnSetShowTime(bool value)
-    {
-        ShowTime = value;
 
-        PlayerPrefs.SetInt("ShowTime", value ? 1 : 0);
-        PlayerPrefs.Save();
+
+
+    public void ClaimAutoLootChange(int value)
+    {
+        SettingManager.OnSetAutoLoot(value);
     }
 
-    public void OnSetAutoLoot(bool value)
+
+
+
+    public void ClaimCameraShakeChange(int value)
     {
-        AutoLoot = value;
-
-        PlayerPrefs.SetInt("AutoLoot", value ? 1 : 0);
-        PlayerPrefs.Save();
-    }
-
-    public void OnSetCameraShake(bool value)
-    {
-        CameraShake = value;
-
-        PlayerPrefs.SetInt("CameraShake", value ? 1 : 0);
-        PlayerPrefs.Save();
+        SettingManager.OnSetCameraShake(value);
     }
 }
