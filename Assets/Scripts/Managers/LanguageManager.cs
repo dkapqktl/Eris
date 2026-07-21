@@ -1,13 +1,24 @@
-
 using System.Collections;
-using UnityEditor;
-using UnityEngine;
+
+public delegate string LanguageText(string text);
 
 public class LanguageManager : ManagerBase
 {
+    public int Korean = 0;
+    public int English = 1;
+    public int Japanese = 2;
+    public int SimplifiedChinese = 3;
+    public int TraditionalChinese = 4;
+
+    public static string demo = "그래픽";
+    public static string demo2 = "촉기화";
+
+    public static event LanguageText OnResetTextChange;
+
+
     protected override IEnumerator OnConnected(GameManager newManager)
     {
-        // SettingManager.LanguageChanged += SettingManager_LanguageChanged;
+        SettingManager.LanguageChanged += SetLanguage;
          yield return null;
     }
 
@@ -16,22 +27,81 @@ public class LanguageManager : ManagerBase
 
     }
 
-    public void SetLanguage(string languageCode)
+    public void SetLanguage(int index)
     {
-        // Set the language in PlayerPrefs
-        PlayerPrefs.SetString("Language", languageCode);
-        PlayerPrefs.Save();
-        // Optionally, you can also trigger a method to update the UI or reload the scene
-        UpdateLanguageUI();
+        switch(index)
+        {
+            case 0: KoreanLanguage(); break;
+            case 1: EnglishLanguage(); break;
+            case 2: JapaneseLanguage(); break;
+            case 3: TraditionalChineseLanguage(); break;
+            case 4: SimplifiedChineseLanguage(); break;
+        }
     }
 
-    private void UpdateLanguageUI()
-    {
-        // Implement your UI update logic here
 
-    }
+    // 한국어
 
     public static void KoreanLanguage()
+    {
+        KoreanResetbutton();
+        KoreanAllResetButton();
+    }
+
+    public static string DisplayNameText(int index)
+    {
+        switch (index)
+        {
+            case 0: return "초기화";
+            default: return "초기화";
+        }
+    }
+    public static string ResetButtonText(int index)
+    {
+
+    }
+
+
+
+
+
+    // 영어
+
+    public static void EnglishLanguage()
+    {
+        EnglishResetbutton();
+    }
+    public static void EnglishResetbutton()
+    {
+        // OnKoreanTextChange.Invoke("Reset");
+    }
+    
+
+
+
+    // 일본어
+
+    public static void JapaneseLanguage()
+    {
+
+    }
+
+
+
+    // 중국어 간체
+
+    public static void TraditionalChineseLanguage()
+    {
+
+    }
+
+
+
+
+
+    // 중국어 번체
+
+    public static void SimplifiedChineseLanguage()
     {
 
     }

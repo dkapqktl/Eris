@@ -1,16 +1,18 @@
+using TMPro;
 using UnityEngine;
 
 public class Setting_Sound : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] TMP_Dropdown SoundDropdown;
+    
+    private void Awake()
     {
-        
+        GameManager.OnInitializeManager += Initialize;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Initialize()
     {
-        
+
+        SoundDropdown.value = SettingManager.CurrentLanguage;
     }
 }

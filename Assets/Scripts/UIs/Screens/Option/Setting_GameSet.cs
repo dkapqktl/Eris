@@ -1,49 +1,50 @@
-using System;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Setting_GameSet : MonoBehaviour
 {
 
-    [SerializeField] private TMP_Dropdown LanguageDropdown;
+    [SerializeField] private TMP_Dropdown    LanguageDropdown;
     [SerializeField] private TextMeshProUGUI LanguageText;
     [SerializeField] private TextMeshProUGUI LanguageResetText;
 
-    [SerializeField] private TMP_Dropdown AutoSaveToggle;
+    [SerializeField] private TMP_Dropdown    AutoSaveDropdown;
     [SerializeField] private TextMeshProUGUI AutoSaveText;
     [SerializeField] private TextMeshProUGUI AutoSaveResetText;
 
-    [SerializeField] private TMP_Dropdown AutoSaveIntervalDropdown;
+    [SerializeField] private TMP_Dropdown    AutoSaveIntervalDropdown;
     [SerializeField] private TextMeshProUGUI AutoSaveIntervalText;
     [SerializeField] private TextMeshProUGUI AutoSaveIntervalResetText; 
 
-    [SerializeField] private TMP_Dropdown MiniMapToggle;
+    [SerializeField] private TMP_Dropdown    MiniMapDropdown;
     [SerializeField] private TextMeshProUGUI MiniMapText;
     [SerializeField] private TextMeshProUGUI MiniMapResetText;
 
-    [SerializeField] private TMP_Dropdown TimeToggle;
+    [SerializeField] private TMP_Dropdown    TimeDropdown;
     [SerializeField] private TextMeshProUGUI TimeText;
     [SerializeField] private TextMeshProUGUI TimeResetText;
 
-    [SerializeField] private TMP_Dropdown AutoLootToggle;
+    [SerializeField] private TMP_Dropdown    AutoLooDropdown;
     [SerializeField] private TextMeshProUGUI AutoLootText;
     [SerializeField] private TextMeshProUGUI AutoLootResetText;
 
-    [SerializeField] private TMP_Dropdown CameraShakeToggle;
+    [SerializeField] private TMP_Dropdown    CameraShakeDropdown;
     [SerializeField] private TextMeshProUGUI CameraShakeText;
     [SerializeField] private TextMeshProUGUI CameraShakeResetText;
+
+    public struct []
 
 
 
     private void Awake()
     {
         GameManager.OnInitializeManager += Initialize;
+
+        SettingManager.LanguageChanged += OnLanguageChange;
     }
 
     private void Initialize()
     {
-
         LanguageDropdown.value = SettingManager.CurrentLanguage;
     }
 
@@ -57,9 +58,11 @@ public class Setting_GameSet : MonoBehaviour
     {
         SettingManager.LanguageReset();
     }
-    public void OnLanguageChange()
+    public void OnLanguageChange(int index)
     {
-
+        LanguageDropdown.value = index;
+        LanguageText
+        LanguageResetText = LanguageManager.ResetButtonText(index);
     }
 
 
@@ -85,6 +88,14 @@ public class Setting_GameSet : MonoBehaviour
     {
         SettingManager.OnSetAutoSaveInterval(value);
     }
+    public void ClaimAutoSaveIntervalReset()
+    {
+
+    }
+    public void OnAutoSaveIntervaChange()
+    {
+
+    }
 
 
 
@@ -92,6 +103,14 @@ public class Setting_GameSet : MonoBehaviour
     public void ClaimMiniMapChange(int value)
     {
         SettingManager.OnSetShowMiniMap(value);
+    }
+    public void ClaimMiniMapReset()
+    {
+
+    }
+    public void OnMiniMapChange()
+    {
+
     }
 
 
@@ -101,6 +120,14 @@ public class Setting_GameSet : MonoBehaviour
     {
         SettingManager.OnSetShowTime(value);
     }
+    public void ClaimShowTimeReset()
+    {
+
+    }
+    public void OnShowTimeChange()
+    {
+
+    }
 
 
 
@@ -108,6 +135,14 @@ public class Setting_GameSet : MonoBehaviour
     public void ClaimAutoLootChange(int value)
     {
         SettingManager.OnSetAutoLoot(value);
+    }
+    public void ClaimAutoLootReset()
+    {
+
+    }
+    public void OnAutoLootChange()
+    {
+
     }
 
 
@@ -117,4 +152,14 @@ public class Setting_GameSet : MonoBehaviour
     {
         SettingManager.OnSetCameraShake(value);
     }
+    public void ClaimCameraShakeReset()
+    {
+
+    }
+    public void OnCameraShakeChange()
+    {
+
+    }
+
+
 }

@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+
 public class KeySetter : MonoBehaviour
 {
     InputAction Action;

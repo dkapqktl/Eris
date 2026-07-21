@@ -52,6 +52,7 @@ public class UI_OptionUI : OpenableUIBase
         if (currentTab == defaultTab) return;
         ConfirmUI.SetActive(true);
 
+        
         switch (currentTab)
         {
             case 0: YNResetButtonTexts.text = "그래픽 설정을 초기화 하시겠습니까?"; break;

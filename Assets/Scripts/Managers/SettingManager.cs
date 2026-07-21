@@ -1,17 +1,14 @@
-using System;
 using System.Collections;
-using UnityEditor.Rendering.LookDev;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
-using static Unity.VisualScripting.Icons;
 
 
-public delegate void NumeralValueChangeEvent(int index);
+public delegate void GraphicSetChangeEvent(int index);
 public delegate void TextChangeEvent(string value);
-public delegate void BoolValueChangeEvent(bool value);
+public delegate void GraphicSetBooChangeEvent(bool value);
 
-public delegate void LangaugeGhacngeEvent(SettingManager.Langueage index);
+
+public delegate void GameplaySetChangeEvent(int index);
 
 
 public class SettingManager : ManagerBase
@@ -25,10 +22,10 @@ public class SettingManager : ManagerBase
 
     // Graphic 영역 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    public static event NumeralValueChangeEvent OnResolutionChanged;
-    public static event NumeralValueChangeEvent OnScreenModeChanged;
-    public static event BoolValueChangeEvent    OnVSyncChanged;
-    public static event NumeralValueChangeEvent OnFPSChanged;
+    public static event GraphicSetChangeEvent OnResolutionChanged;
+    public static event GraphicSetChangeEvent OnScreenModeChanged;
+    public static event GraphicSetBooChangeEvent OnVSyncChanged;
+    public static event GraphicSetChangeEvent OnFPSChanged;
 
     public const int basicResolution = 9; // 기본 해상도는 1920x1080
 
@@ -56,15 +53,15 @@ public class SettingManager : ManagerBase
 
     // Gameplay Setting 영역!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    public static event LangaugeGhacngeEvent LanguageChanged;
-    public static event NumeralValueChangeEvent AutoSaveChanged;
-    public static event NumeralValueChangeEvent AutoSaveIntervalChanged;
-    public static event NumeralValueChangeEvent ShowMiniMapChanged;
-    public static event NumeralValueChangeEvent ShowTimeChanged;
-    public static event NumeralValueChangeEvent AutoLootChanged;
-    public static event NumeralValueChangeEvent CameraShakeChanged;
+    public static event GameplaySetChangeEvent LanguageChanged;
+    public static event GameplaySetChangeEvent AutoSaveChanged;
+    public static event GameplaySetChangeEvent AutoSaveIntervalChanged;
+    public static event GameplaySetChangeEvent ShowMiniMapChanged;
+    public static event GameplaySetChangeEvent ShowTimeChanged;
+    public static event GameplaySetChangeEvent AutoLootChanged;
+    public static event GameplaySetChangeEvent CameraShakeChanged;
 
-    public static int defaultLanguage = (int)Langueage.Korean;
+    public static int defaultLanguage = 0;
     public static int defaultAutoSave = 0;
     public static int defaultAutoSaveInterval = 2;
     public static int defaultShowMiniMap = 0;
@@ -227,94 +224,6 @@ public class SettingManager : ManagerBase
         currentCameraShake = PlayerPrefs.GetInt("CameraShake", defaultCameraShake);
     }
 
-    public static void GameplaySettingReset()
-    {
-        OnSetLanguage(defaultLanguage);
-        OnSetAutoSave(defaultAutoSave);
-        OnSetAutoSaveInterval(defaultAutoSaveInterval);
-        OnSetShowMiniMap(defaultShowMiniMap);
-        OnSetShowTime(defaultShowTime);
-        OnSetAutoLoot(defaultAutoLoot);
-        OnSetCameraShake(defaultCameraShake);
-    }
-
-    public static void LanguageReset()
-    {
-        OnSetLanguage(defaultLanguage);
-    }
-    public static void AutoSaveReset()
-    {
-        OnSetAutoSave(defaultAutoSave);
-    }
-    public static void AutoSaveIntervalReset()
-    {
-        OnSetAutoSaveInterval(defaultAutoSaveInterval);
-    }
-    public static void ShowMiniMapReset()
-    {
-        OnSetShowMiniMap(defaultShowMiniMap);
-    }
-    public static void ShowTimeReset()
-    {
-        OnSetShowTime(defaultShowTime);
-    }
-    public static void AutoLootReset()
-    {
-        OnSetAutoLoot(defaultAutoLoot);
-    }
-    public static void CameraShakeReset()
-    {
-        OnSetCameraShake(defaultCameraShake);
-    }
-
-
-    public static void OnSetLanguage(int index)
-    {
-        currentLanguage = index;
-        SaveGameplaySettings();
-        LanguageChanged.Invoke((Langueage)index);
-    }
-    public static void OnSetAutoSave(int index)
-    {
-        currentAutoSave = index;
-        SaveGameplaySettings();
-        AutoSaveChanged.Invoke(index);
-    }
-    public static void OnSetAutoSaveInterval(int index)
-    {
-        currentAutoSaveInterval = index;
-        SaveGameplaySettings();
-        AutoSaveIntervalChanged.Invoke(index);
-    }
-    public static void OnSetShowMiniMap(int index)
-    {
-        currentShowMiniMap = index;
-        SaveGameplaySettings();
-        ShowMiniMapChanged.Invoke(index);
-    }
-    public static void OnSetShowTime(int index)
-    {
-        currentShowTime = index;
-        SaveGameplaySettings();
-        ShowTimeChanged.Invoke(index);
-    }
-    public static void OnSetAutoLoot(int index)
-    {
-        currentAutoLoot = index;
-        SaveGameplaySettings();
-        AutoLootChanged.Invoke(index);
-    }
-    public static void OnSetCameraShake(int index)
-    {
-        currentCameraShake = index;
-        SaveGameplaySettings();
-        CameraShakeChanged.Invoke(index);
-    }
-
-
-
-
-
 
 
 
@@ -385,16 +294,16 @@ public class SettingManager : ManagerBase
 
         switch (index)
         {
-            case 0: SetResolution(5120, 1400); break;
-            case 1: SetResolution(3440, 1440); break;
-            case 2: SetResolution(2560, 1080); break;
-            case 3: SetResolution(1920, 1200); break;
-            case 4: SetResolution(1680, 1050); break;
-            case 5: SetResolution(1440, 900); break;
-            case 6: SetResolution(1280, 800); break;
-            case 7: SetResolution(3840, 2160); break;
-            case 8: SetResolution(2560, 1440); break;
-            case 9: SetResolution(1920, 1080); break;
+            case 0:  SetResolution(5120, 1400); break;
+            case 1:  SetResolution(3440, 1440); break;
+            case 2:  SetResolution(2560, 1080); break;
+            case 3:  SetResolution(1920, 1200); break;
+            case 4:  SetResolution(1680, 1050); break;
+            case 5:  SetResolution(1440, 900); break;
+            case 6:  SetResolution(1280, 800); break;
+            case 7:  SetResolution(3840, 2160); break;
+            case 8:  SetResolution(2560, 1440); break;
+            case 9:  SetResolution(1920, 1080); break;
             case 10: SetResolution(1600, 900); break;
             case 11: SetResolution(1366, 768); break;
             case 12: SetResolution(1280, 720); break;
@@ -519,7 +428,91 @@ public class SettingManager : ManagerBase
 
     // Game Option Setting 관련 함수들!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-    
+    public static void GameplaySettingReset()
+    {
+        OnSetLanguage(defaultLanguage);
+        OnSetAutoSave(defaultAutoSave);
+        OnSetAutoSaveInterval(defaultAutoSaveInterval);
+        OnSetShowMiniMap(defaultShowMiniMap);
+        OnSetShowTime(defaultShowTime);
+        OnSetAutoLoot(defaultAutoLoot);
+        OnSetCameraShake(defaultCameraShake);
+    }
+
+    public static void LanguageReset()
+    {
+        OnSetLanguage(defaultLanguage);
+    }
+    public static void AutoSaveReset()
+    {
+        OnSetAutoSave(defaultAutoSave);
+    }
+    public static void AutoSaveIntervalReset()
+    {
+        OnSetAutoSaveInterval(defaultAutoSaveInterval);
+    }
+    public static void ShowMiniMapReset()
+    {
+        OnSetShowMiniMap(defaultShowMiniMap);
+    }
+    public static void ShowTimeReset()
+    {
+        OnSetShowTime(defaultShowTime);
+    }
+    public static void AutoLootReset()
+    {
+        OnSetAutoLoot(defaultAutoLoot);
+    }
+    public static void CameraShakeReset()
+    {
+        OnSetCameraShake(defaultCameraShake);
+    }
+
+
+    public static void OnSetLanguage(int index)
+    {
+        // currentLanguage = index;
+        // SaveGameplaySettings();
+        // LanguageChanged.Invoke(index);
+    }
+    public static void OnSetAutoSave(int index)
+    {
+        // currentAutoSave = index;
+        // SaveGameplaySettings();
+        // AutoSaveChanged.Invoke(index);
+    }
+    public static void OnSetAutoSaveInterval(int index)
+    {
+        // currentAutoSaveInterval = index;
+        // SaveGameplaySettings();
+        // AutoSaveIntervalChanged.Invoke(index);
+    }
+    public static void OnSetShowMiniMap(int index)
+    {
+        //  currentShowMiniMap = index;
+        //  SaveGameplaySettings();
+        //  ShowMiniMapChanged.Invoke(index);
+    }
+    public static void OnSetShowTime(int index)
+    {
+        // currentShowTime = index;
+        // SaveGameplaySettings();
+        // ShowTimeChanged.Invoke(index);
+    }
+    public static void OnSetAutoLoot(int index)
+    {
+        // currentAutoLoot = index;
+        // SaveGameplaySettings();
+        // AutoLootChanged.Invoke(index);
+    }
+    public static void OnSetCameraShake(int index)
+    {
+        // currentCameraShake = index;
+        // SaveGameplaySettings();
+        // CameraShakeChanged.Invoke(index);
+    }
+
+
 
 
 
