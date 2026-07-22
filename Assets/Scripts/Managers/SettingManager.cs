@@ -477,6 +477,7 @@ public class SettingManager : ManagerBase
             case 0: targetLanguage = Language.Korean; break;
             default: targetLanguage = Language.Korean; break;
         }    
+
         LanguageManager.SetLanguage(targetLanguage);
         // currentLanguage = index;
         // SaveGameplaySettings();
