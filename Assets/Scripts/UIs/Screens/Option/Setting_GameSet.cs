@@ -32,8 +32,6 @@ public class Setting_GameSet : MonoBehaviour
     [SerializeField] private TextMeshProUGUI CameraShakeText;
     [SerializeField] private TextMeshProUGUI CameraShakeResetText;
 
-    public struct []
-
 
 
     private void Awake()
@@ -61,8 +59,8 @@ public class Setting_GameSet : MonoBehaviour
     public void OnLanguageChange(int index)
     {
         LanguageDropdown.value = index;
-        LanguageText
-        LanguageResetText = LanguageManager.ResetButtonText(index);
+        // LanguageText
+        // LanguageResetText = LanguageManager.ResetButtonText(index);
     }
 
 

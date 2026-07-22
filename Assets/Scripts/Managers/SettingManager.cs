@@ -14,7 +14,7 @@ public delegate void GameplaySetChangeEvent(int index);
 public class SettingManager : ManagerBase
 {
 
-    public enum Langueage
+    public enum Language
     {
         Korean, English, Japanese, SimplifiedChinese, TraditionalChinese
     }
@@ -471,6 +471,13 @@ public class SettingManager : ManagerBase
 
     public static void OnSetLanguage(int index)
     {
+        Language targetLanguage;
+        switch (index)
+        {
+            case 0: targetLanguage = Language.Korean; break;
+            default: targetLanguage = Language.Korean; break;
+        }    
+        LanguageManager.SetLanguage(targetLanguage);
         // currentLanguage = index;
         // SaveGameplaySettings();
         // LanguageChanged.Invoke(index);

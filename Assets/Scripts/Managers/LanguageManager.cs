@@ -19,6 +19,7 @@ public class LanguageManager : ManagerBase
     protected override IEnumerator OnConnected(GameManager newManager)
     {
         SettingManager.LanguageChanged += SetLanguage;
+
          yield return null;
     }
 
@@ -27,11 +28,11 @@ public class LanguageManager : ManagerBase
 
     }
 
-    public void SetLanguage(int index)
+    public static void SetLanguage(SettingManager.Language index)
     {
         switch(index)
         {
-            case 0: KoreanLanguage(); break;
+            case SettingManager.Language.Korean: KoreanLanguage(); break;
             case 1: EnglishLanguage(); break;
             case 2: JapaneseLanguage(); break;
             case 3: TraditionalChineseLanguage(); break;
@@ -44,8 +45,8 @@ public class LanguageManager : ManagerBase
 
     public static void KoreanLanguage()
     {
-        KoreanResetbutton();
-        KoreanAllResetButton();
+        // KoreanResetbutton();
+        // KoreanAllResetButton();
     }
 
     public static string DisplayNameText(int index)
@@ -58,7 +59,7 @@ public class LanguageManager : ManagerBase
     }
     public static string ResetButtonText(int index)
     {
-
+        return default;
     }
 
 
