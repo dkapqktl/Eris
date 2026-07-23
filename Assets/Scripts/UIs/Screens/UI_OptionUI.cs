@@ -9,11 +9,16 @@ public class UI_OptionUI : OpenableUIBase
     [SerializeField] private GameObject setGameSet;
     [SerializeField] private GameObject setUISet;
     [SerializeField] private GameObject ConfirmUI;
+
     [SerializeField] private Button ResetButton;
+
+    [SerializeField] public TextMeshProUGUI GraphicButtonText;
+    [SerializeField] public TextMeshProUGUI ControllerButtonText;
+    [SerializeField] public TextMeshProUGUI GameplayButtonText;
+    [SerializeField] public TextMeshProUGUI SoundButtonText;
 
     [SerializeField] GameObject[] Tabs;
 
-    public TextMeshProUGUI ResetButtonTexts;
     public TextMeshProUGUI YNResetButtonTexts;
 
     public static int defaultTab = 999;
@@ -24,13 +29,28 @@ public class UI_OptionUI : OpenableUIBase
     {
         InputManager.OnCancel -= CancelMenu;
         InputManager.OnCancel += CancelMenu;
+
+        LanguageManager.OnLanguageTextChange -= ChangeText;
+        LanguageManager.OnLanguageTextChange += ChangeText;
     }
 
     private void OnDisable()
     {
         InputManager.OnCancel -= CancelMenu;
+        
+        LanguageManager.OnLanguageTextChange -= ChangeText;
+
         SettingTab(defaultTab);
     }
+
+    public void ChangeText()
+    {
+        GraphicButtonText.text = LanguageManager.GetText    ("GraphicButton");
+        ControllerButtonText.text = LanguageManager.GetText ("ControllerButton");
+        GameplayButtonText.text = LanguageManager.GetText   ("GameplayButton");
+        SoundButtonText.text = LanguageManager.GetText      ("SoundButton");
+    }
+
 
     void CancelMenu(bool value)
     {
@@ -52,13 +72,12 @@ public class UI_OptionUI : OpenableUIBase
         if (currentTab == defaultTab) return;
         ConfirmUI.SetActive(true);
 
-        
         switch (currentTab)
         {
-            case 0: YNResetButtonTexts.text = "그래픽 설정을 초기화 하시겠습니까?"; break;
-            case 1: YNResetButtonTexts.text = "컨트롤러 설정을 초기화 하시겠습니까?"; break;
-            case 2: YNResetButtonTexts.text = "게임설정을 초기화 하시겠습니까?"; break;
-            case 3: YNResetButtonTexts.text = "사운드를 초기화 하시겠습니까?"; break;
+            case 0: YNResetButtonTexts.text = LanguageManager.GetText("Initialize Graphic Confirm"); break;
+            case 1: YNResetButtonTexts.text = LanguageManager.GetText("Initialize Controller Confirm"); break;
+            case 2: YNResetButtonTexts.text = LanguageManager.GetText("Initialize Gameplay Confirm"); break;
+            case 3: YNResetButtonTexts.text = LanguageManager.GetText("Initialize Sound Confirm"); break;
         }
     }
 
@@ -77,11 +96,11 @@ public class UI_OptionUI : OpenableUIBase
 
         switch (index)
         {
-            case 0: ResetButtonTexts.text = "그래픽 전체 초기화"; ResetButton.interactable = true; break;
-            case 1: ResetButtonTexts.text = "컨트롤러 전체 초기화"; ResetButton.interactable = true; break;
-            case 2: ResetButtonTexts.text = "게임설정 전체 초기화"; ResetButton.interactable = true; break;
-            case 3: ResetButtonTexts.text = "사운드 전체 초기화"; ResetButton.interactable = true; break;
-            case 999: ResetButtonTexts.text = "초기화"; ResetButton.interactable = false; break;
+            case 0: YNResetButtonTexts.text = LanguageManager.GetText("All Reset Graphic Button"); break;
+            case 1: YNResetButtonTexts.text = LanguageManager.GetText("All Reset Controller Button"); break;
+            case 2: YNResetButtonTexts.text = LanguageManager.GetText("All Reset Gameplay Button"); break;
+            case 3: YNResetButtonTexts.text = LanguageManager.GetText("All Reset Sound Button"); break;
+            case 999: YNResetButtonTexts.text = ""; ResetButton.interactable = false; break;
         }
     }
 

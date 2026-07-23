@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -10,14 +11,23 @@ public class KeySetter : MonoBehaviour
 
     private InputActionRebindingExtensions.RebindingOperation rebindOperation;
 
+    public Setting_Controller.ActionSetter keySetter;
+
     public void Initialized(Setting_Controller.ActionSetter Setter)
     {
 
         Action = InputManager.ClaimGetAction(Setter.ActionName);
 
         if (Action is null) return;
-        Text.text = Setter.DisplayName;
+        keySetter = Setter;
         keyText.text = PathToKeyName(Action.GetBindingDisplayString());
+        ChangeDisplayName();
+        LanguageManager.OnLanguageTextChange += ChangeDisplayName;
+    }
+
+    private void ChangeDisplayName()
+    {
+        Text.text = LanguageManager.GetText(keySetter.DisplayName);
     }
 
     public string PathToKeyName(string path)

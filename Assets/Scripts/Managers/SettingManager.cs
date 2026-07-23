@@ -471,16 +471,22 @@ public class SettingManager : ManagerBase
 
     public static void OnSetLanguage(int index)
     {
+        currentLanguage = index;
+        
         Language targetLanguage;
         switch (index)
         {
             case 0: targetLanguage = Language.Korean; break;
+            case 1: targetLanguage = Language.English; break;
+            case 2: targetLanguage = Language.Japanese; break;
+            case 3: targetLanguage = Language.SimplifiedChinese; break;
+            case 4: targetLanguage = Language.TraditionalChinese; break;
             default: targetLanguage = Language.Korean; break;
         }    
 
         LanguageManager.SetLanguage(targetLanguage);
-        // currentLanguage = index;
-        // SaveGameplaySettings();
+        SaveGameplaySettings();
+        
         // LanguageChanged.Invoke(index);
     }
     public static void OnSetAutoSave(int index)

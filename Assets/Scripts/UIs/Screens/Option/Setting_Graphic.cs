@@ -6,13 +6,18 @@ public class Setting_Graphic : MonoBehaviour
 {
 
     [SerializeField] TMP_Dropdown ResolutionDropdown;
-
     [SerializeField] TMP_Dropdown ScreenModeDropdown;
-    
     [SerializeField] Toggle VSyncToggle;
     [SerializeField] TextMeshProUGUI VsyncText;
     [SerializeField] Toggle VsyncColor;
-    
+
+    [SerializeField] TextMeshProUGUI ResolutionDisplayText;
+    [SerializeField] TextMeshProUGUI ScreenModeDisplayText;
+
+    [SerializeField] TextMeshProUGUI[] ResetText;
+
+
+
     [SerializeField] TMP_Dropdown FPSDropdown;
 
     [Space]
@@ -31,6 +36,8 @@ public class Setting_Graphic : MonoBehaviour
         SettingManager.OnVSyncChanged       += OnVSyncChange;
         SettingManager.OnFPSChanged         += OnFPSLimitChange;
 
+        LanguageManager.OnLanguageTextChange += OnLanguageChange;
+
     }
 
     private void Initialize()
@@ -40,6 +47,18 @@ public class Setting_Graphic : MonoBehaviour
         VSyncToggle.isOn = SettingManager.CurrentVSync;
         FPSDropdown.value = SettingManager.CurrentFPS;
     }
+
+    public void OnLanguageChange()
+    {
+        ResolutionDisplayText.text = LanguageManager.GetText("ResolutionDisplay");
+        ScreenModeDisplayText.text = LanguageManager.GetText("ScreenModeDisplay");
+
+        for (int i = 0; i < ResetText.Length; i++)
+        {
+            ResetText[i].text = LanguageManager.GetText("Reset");
+        }
+    }
+
 
     public void ClaimResolutionChange(int index)
     {
@@ -80,6 +99,8 @@ public class Setting_Graphic : MonoBehaviour
         ScreenModeDropdown.value = index;
     }
 
+
+
     public void ClaimVSyncChange(bool enabled)
     {
         SettingManager.OnSetVSync(enabled);
@@ -89,12 +110,12 @@ public class Setting_Graphic : MonoBehaviour
     {
         if (enabled)
         {
-            VsyncText.text = "ÄÑÁü";
+            VsyncText.text = "O";
             VsyncColor.colors = OnColor;
         }
         else
         {
-            VsyncText.text = "²¨Áü";
+            VsyncText.text = "X";
             VsyncColor.colors = OffColor;
         }
     }

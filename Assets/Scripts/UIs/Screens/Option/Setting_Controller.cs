@@ -55,24 +55,5 @@ public class Setting_Controller : MonoBehaviour
         }
     }
 
-
-
-    // public void ChangeInvetoryKey()
-    // {
-    //     ChangeKey(InventoryAction, InventoryText);
-    // }
-
-    /* 이렇게 하면 나중에 수정할때 가독성 이슈로 매우 하드코어가 되니 가급적 하지말도록
-    public InputActionReference[] CurrentAction;
-    public TMP_Text[] CurrentText;
-    
-    public int currentKey;
-    
-    public void CurrentChangeKey(int index)
-    {
-        ChangeKey(CurrentAction[index], CurrentText[index]);
-    }
-    */
-
 }
 

@@ -1233,12 +1233,15 @@ MonoBehaviour:
   setUISet: {fileID: 4418338730960144090}
   ConfirmUI: {fileID: 5309479171566343894}
   ResetButton: {fileID: 4741440822771119236}
+  GraphicButtonText: {fileID: 6409914731207466487}
+  ControllerButtonText: {fileID: 901501770864547127}
+  GameplayButtonText: {fileID: 7917241266773899959}
+  SoundButtonText: {fileID: 2661556525641573025}
   Tabs:
   - {fileID: 106056119183612029}
   - {fileID: 1109662625658148371}
   - {fileID: 1460373506181600196}
   - {fileID: 4418338730960144090}
-  ResetButtonTexts: {fileID: 3043219991561197600}
   YNResetButtonTexts: {fileID: 7303277174603535751}
 --- !u!1 &7276579911909713432
 GameObject:
@@ -2375,6 +2378,26 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5840922846420821852, guid: 1b419332dacd6df4da988ed70c959c97, type: 3}
+      propertyPath: Setter.Array.data[0].DisplayName
+      value: displayUp
+      objectReference: {fileID: 0}
+    - target: {fileID: 5840922846420821852, guid: 1b419332dacd6df4da988ed70c959c97, type: 3}
+      propertyPath: Setter.Array.data[1].DisplayName
+      value: displayDown
+      objectReference: {fileID: 0}
+    - target: {fileID: 5840922846420821852, guid: 1b419332dacd6df4da988ed70c959c97, type: 3}
+      propertyPath: Setter.Array.data[2].DisplayName
+      value: displayLeft
+      objectReference: {fileID: 0}
+    - target: {fileID: 5840922846420821852, guid: 1b419332dacd6df4da988ed70c959c97, type: 3}
+      propertyPath: Setter.Array.data[3].DisplayName
+      value: displayRight
+      objectReference: {fileID: 0}
+    - target: {fileID: 5840922846420821852, guid: 1b419332dacd6df4da988ed70c959c97, type: 3}
+      propertyPath: Setter.Array.data[4].DisplayName
+      value: displayInventory
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -2612,6 +2635,28 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 4660016310004286046, guid: 212494de5c938c04b9ce20a44ecb0ad9, type: 3}
   m_PrefabInstance: {fileID: 1331971783667487108}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &7083594257069626268 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8084495925608301080, guid: 212494de5c938c04b9ce20a44ecb0ad9, type: 3}
+  m_PrefabInstance: {fileID: 1331971783667487108}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
+--- !u!114 &7778642102968700553 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8759312709763260173, guid: 212494de5c938c04b9ce20a44ecb0ad9, type: 3}
+  m_PrefabInstance: {fileID: 1331971783667487108}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!114 &8478817045355211982 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 7482399182283914570, guid: 212494de5c938c04b9ce20a44ecb0ad9, type: 3}
@@ -4381,8 +4426,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Setting_GameSet
   LanguageDropdown: {fileID: 8478817045355211982}
-  LanguageText: {fileID: 0}
-  LanguageResetText: {fileID: 0}
+  LanguageText: {fileID: 7083594257069626268}
+  LanguageResetText: {fileID: 7778642102968700553}
   AutoSaveDropdown: {fileID: 0}
   AutoSaveText: {fileID: 0}
   AutoSaveResetText: {fileID: 0}
@@ -4401,6 +4446,8 @@ MonoBehaviour:
   CameraShakeDropdown: {fileID: 0}
   CameraShakeText: {fileID: 0}
   CameraShakeResetText: {fileID: 0}
+  ResetButton: []
+  languageDropdownValue: 0
 --- !u!224 &1561399093682492721 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 4993935362554192021, guid: fc314bbc1a900094780155f4900e5c41, type: 3}
@@ -4977,6 +5024,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 5136383801262054956, guid: 8cbcfa73c2edf5f46b677df8a9213d08, type: 3}
   m_PrefabInstance: {fileID: 6845585259149835036}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &6409914731207466487 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 573348012092073707, guid: 8cbcfa73c2edf5f46b677df8a9213d08, type: 3}
+  m_PrefabInstance: {fileID: 6845585259149835036}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Unity.TextMeshPro::TMPro.TextMeshProUGUI
 --- !u!1001 &7472390167150884411
 PrefabInstance:
   m_ObjectHideFlags: 0
