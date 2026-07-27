@@ -1,31 +1,24 @@
+using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 public class Setting_Graphic : MonoBehaviour
 {
-
-    [SerializeField] TMP_Dropdown ResolutionDropdown;
-    [SerializeField] TMP_Dropdown ScreenModeDropdown;
-    [SerializeField] Toggle VSyncToggle;
-    [SerializeField] TextMeshProUGUI VsyncText;
-    [SerializeField] Toggle VsyncColor;
-
+    [Header("Display Name")]
     [SerializeField] TextMeshProUGUI ResolutionDisplayText;
     [SerializeField] TextMeshProUGUI ScreenModeDisplayText;
 
-    [SerializeField] TextMeshProUGUI[] ResetText;
-
-
-
+    [Space]
+    [Header("Dropdown")]
+    [SerializeField] TMP_Dropdown ResolutionDropdown;
+    [SerializeField] TMP_Dropdown ScreenModeDropdown;
+    [SerializeField] TMP_Dropdown VSyncDropdown;
     [SerializeField] TMP_Dropdown FPSDropdown;
 
     [Space]
-    [Header("On Color")]
-    [SerializeField] public ColorBlock OnColor;
-    [Space]
-    [Header("Off Color")]
-    [SerializeField] public ColorBlock OffColor;
+    [Header("Reset Text")]
+    [SerializeField] TextMeshProUGUI[] ResetText;
 
     public void Awake()
     {
@@ -44,7 +37,7 @@ public class Setting_Graphic : MonoBehaviour
     {
         ResolutionDropdown.value = SettingManager.CurrentResolution;
         ScreenModeDropdown.value = SettingManager.CurrentScreenMode;
-        VSyncToggle.isOn = SettingManager.CurrentVSync;
+        VSyncDropdown.value = SettingManager.CurrentVSync;
         FPSDropdown.value = SettingManager.CurrentFPS;
     }
 
@@ -58,6 +51,8 @@ public class Setting_Graphic : MonoBehaviour
             ResetText[i].text = LanguageManager.GetText("Reset");
         }
     }
+
+
 
 
     public void ClaimResolutionChange(int index)
@@ -75,20 +70,8 @@ public class Setting_Graphic : MonoBehaviour
         SettingManager.ResolutionReset();
     }
 
-    public void ClaimScreenModeReset()
-    {
-        SettingManager.ScreenModeReset();
-    }
-    
-    public void ClaimVSyncReset()
-    {
-        SettingManager.VSyncReset();
-    }
 
-    public void ClaimFPSReset()
-    {
-        SettingManager.FPSReset();
-    }
+
 
     public void ClaimScreenModeChange(int index)
     {
@@ -98,27 +81,28 @@ public class Setting_Graphic : MonoBehaviour
     {
         ScreenModeDropdown.value = index;
     }
-
-
-
-    public void ClaimVSyncChange(bool enabled)
+    public void ClaimScreenModeReset()
     {
-        SettingManager.OnSetVSync(enabled);
+        SettingManager.ScreenModeReset();
     }
 
-    public void OnVSyncChange(bool enabled)
+
+
+    public void ClaimVSyncChange(int index)
     {
-        if (enabled)
-        {
-            VsyncText.text = "O";
-            VsyncColor.colors = OnColor;
-        }
-        else
-        {
-            VsyncText.text = "X";
-            VsyncColor.colors = OffColor;
-        }
+        SettingManager.OnSetVSync(index);
     }
+    public void OnVSyncChange(int index)
+    {
+        ScreenModeDropdown.value = index;
+    }
+    public void ClaimVSyncReset()
+    {
+        SettingManager.VSyncReset();
+    }
+
+
+
 
     public void ClaimFPSLimitChange(int index)
     {
@@ -127,5 +111,9 @@ public class Setting_Graphic : MonoBehaviour
     public void OnFPSLimitChange(int index)
     {
         FPSDropdown.value = index;
+    }
+    public void ClaimFPSReset()
+    {
+        SettingManager.FPSReset();
     }
 }

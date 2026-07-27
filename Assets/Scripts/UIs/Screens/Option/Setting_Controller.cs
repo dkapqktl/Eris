@@ -3,23 +3,6 @@ using UnityEngine;
 
 public class Setting_Controller : MonoBehaviour
 {
-    /*
-    public InputActionReference InventoryAction;
-    public TMP_Text InventoryText;
-
-    public InputActionReference UpAction;
-    public TMP_Text UpText;
-
-    public InputActionReference DownAction;
-    public TMP_Text DownText;
-
-    public InputActionReference LeftAction;
-    public TMP_Text LeftText;
-
-    public InputActionReference RightAction;
-    public TMP_Text RightText;
-    */
-    
     public Transform Content;
 
     public enum InputType

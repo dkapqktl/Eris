@@ -13,6 +13,8 @@ public class KeySetter : MonoBehaviour
 
     public Setting_Controller.ActionSetter keySetter;
 
+    public TextMeshProUGUI ResetText;
+
     public void Initialized(Setting_Controller.ActionSetter Setter)
     {
 
@@ -28,6 +30,7 @@ public class KeySetter : MonoBehaviour
     private void ChangeDisplayName()
     {
         Text.text = LanguageManager.GetText(keySetter.DisplayName);
+        ResetText.text = LanguageManager.GetText("Reset");
     }
 
     public string PathToKeyName(string path)

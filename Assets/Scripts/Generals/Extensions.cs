@@ -146,5 +146,8 @@ public static class Extensions
         return result;
     }
 
+    // public static string Translate(string target) => LanguageManager.GetText(target);
+    
+
 }
 

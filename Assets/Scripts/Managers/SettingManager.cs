@@ -5,8 +5,6 @@ using UnityEngine.InputSystem;
 
 public delegate void GraphicSetChangeEvent(int index);
 public delegate void TextChangeEvent(string value);
-public delegate void GraphicSetBooChangeEvent(bool value);
-
 
 public delegate void GameplaySetChangeEvent(int index);
 
@@ -24,14 +22,14 @@ public class SettingManager : ManagerBase
 
     public static event GraphicSetChangeEvent OnResolutionChanged;
     public static event GraphicSetChangeEvent OnScreenModeChanged;
-    public static event GraphicSetBooChangeEvent OnVSyncChanged;
+    public static event GraphicSetChangeEvent OnVSyncChanged;
     public static event GraphicSetChangeEvent OnFPSChanged;
 
     public const int basicResolution = 9; // 기본 해상도는 1920x1080
 
     public static int _defaultResolution; // 기본 해상도는 게임 제일 처음시작할때 해상도로
     public const int _defaultScreenMode = 0;
-    public const bool _defaultVSync = false;
+    public const int _defaultVSync = 1;
     public const int _defaultFPS = 1;
 
     static int _currentResolution; // 변경된 셋팅값 저장
@@ -40,8 +38,8 @@ public class SettingManager : ManagerBase
     static int _currentScreenMode;
     public static int CurrentScreenMode => _currentScreenMode;
 
-    static bool _currentVSync;
-    public static bool CurrentVSync => _currentVSync;
+    static int _currentVSync;
+    public static int CurrentVSync => _currentVSync;
 
     static int _currentFPS;
     public static int CurrentFPS => _currentFPS;
@@ -146,7 +144,7 @@ public class SettingManager : ManagerBase
         PlayerPrefs.SetInt("DefaultResolution", _defaultResolution);
         PlayerPrefs.SetInt("Resolution", _currentResolution);
         PlayerPrefs.SetInt("ScreenMode", _currentScreenMode);
-        PlayerPrefs.SetInt("VSync", _currentVSync ? 1 : 0);
+        PlayerPrefs.SetInt("VSync", _currentVSync);
         PlayerPrefs.SetInt("FPS", _currentFPS);
         
         PlayerPrefs.Save();
@@ -161,7 +159,7 @@ public class SettingManager : ManagerBase
 
         _currentScreenMode = PlayerPrefs.GetInt("ScreenMode", _defaultScreenMode);
 
-        _currentVSync = PlayerPrefs.GetInt("VSync", _defaultVSync ? 1 : 0) == 1;
+        _currentVSync = PlayerPrefs.GetInt("VSync", _defaultVSync);
 
         _currentFPS = PlayerPrefs.GetInt("FPS", _defaultFPS);
     }
@@ -348,9 +346,9 @@ public class SettingManager : ManagerBase
         OnScreenModeChanged?.Invoke(index);
     }
 
-    public static void OnSetVSync(bool enabled)
+    public static void OnSetVSync(int index)
     {
-        if (enabled)
+        if (index == 0)
         {
             QualitySettings.vSyncCount = 1; // 모니터 주사율에 맞춤
         }
@@ -359,9 +357,9 @@ public class SettingManager : ManagerBase
             QualitySettings.vSyncCount = 0; // VSync OFF
         }
 
-        _currentVSync = enabled;
+        _currentVSync = index;
         SaveGraphicSettings();
-        OnVSyncChanged?.Invoke(enabled);
+        OnVSyncChanged?.Invoke(index);
     }
 
     public static void OnSetFPSLimit(int index)
@@ -426,7 +424,7 @@ public class SettingManager : ManagerBase
 
 
 
-    // Game Option Setting 관련 함수들!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    // Gameplay Setting 관련 함수들!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
     public static void GameplaySettingReset()
     {
@@ -486,8 +484,6 @@ public class SettingManager : ManagerBase
 
         LanguageManager.SetLanguage(targetLanguage);
         SaveGameplaySettings();
-        
-        // LanguageChanged.Invoke(index);
     }
     public static void OnSetAutoSave(int index)
     {
