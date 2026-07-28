@@ -440,10 +440,18 @@ public class SettingManager : ManagerBase
     public static void LanguageReset()
     {
         OnSetLanguage(defaultLanguage);
+        // LanguageChanged?.Invoke();
+        // AutoSaveChanged?.Invoke();
+        // AutoSaveIntervalChanged?.Invoke();
+        // ShowMiniMapChanged?.Invoke();
+        // ShowTimeChanged?.Invoke();
+        // AutoLootChanged?.Invoke();
+        // CameraShakeChanged?.Invoke();
     }
     public static void AutoSaveReset()
     {
         OnSetAutoSave(defaultAutoSave);
+        
     }
     public static void AutoSaveIntervalReset()
     {

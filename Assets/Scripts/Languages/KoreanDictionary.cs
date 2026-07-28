@@ -28,8 +28,8 @@ public partial class LanguageDictionaries
         { "No", "아니오" },
 
         // Graphic Display
-        { "Resolution","해상도" },
-        { "ScreenMode","스크린모드" },
+        { "ResolutionDisplay","해상도" },
+        { "ScreenModeDisplay","스크린모드" },
 
         // Graphic_ScreenMode Dropdown Text
         { "ExclusiveFullScreen", "전체화면" },

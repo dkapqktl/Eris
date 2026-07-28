@@ -16,6 +16,7 @@ public class UI_OptionUI : OpenableUIBase
     [SerializeField] public TextMeshProUGUI ControllerButtonText;
     [SerializeField] public TextMeshProUGUI GameplayButtonText;
     [SerializeField] public TextMeshProUGUI SoundButtonText;
+    [SerializeField] public TextMeshProUGUI ResetButtonText;
 
     [SerializeField] GameObject[] Tabs;
 
@@ -32,6 +33,8 @@ public class UI_OptionUI : OpenableUIBase
 
         LanguageManager.OnLanguageTextChange -= ChangeText;
         LanguageManager.OnLanguageTextChange += ChangeText;
+
+        ChangeText();
     }
 
     private void OnDisable()
@@ -96,11 +99,11 @@ public class UI_OptionUI : OpenableUIBase
 
         switch (index)
         {
-            case 0: YNResetButtonTexts.text = LanguageManager.GetText("All Reset Graphic Button"); break;
-            case 1: YNResetButtonTexts.text = LanguageManager.GetText("All Reset Controller Button"); break;
-            case 2: YNResetButtonTexts.text = LanguageManager.GetText("All Reset Gameplay Button"); break;
-            case 3: YNResetButtonTexts.text = LanguageManager.GetText("All Reset Sound Button"); break;
-            case 999: YNResetButtonTexts.text = ""; ResetButton.interactable = false; break;
+            case 0: ResetButtonText.text = LanguageManager.GetText("All Reset Graphic Button"); ResetButton.interactable = true; break;
+            case 1: ResetButtonText.text = LanguageManager.GetText("All Reset Controller Button"); ResetButton.interactable = true; break;
+            case 2: ResetButtonText.text = LanguageManager.GetText("All Reset Gameplay Button"); ResetButton.interactable = true; break;
+            case 3: ResetButtonText.text = LanguageManager.GetText("All Reset Sound Button"); ResetButton.interactable = true; break;
+            case 999: ResetButtonText.text = ""; ResetButton.interactable = false; break;
         }
     }
 

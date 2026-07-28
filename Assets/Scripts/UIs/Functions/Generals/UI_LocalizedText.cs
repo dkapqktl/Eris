@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -10,14 +11,16 @@ public class UI_LocalizedText : MonoBehaviour
 
     string originText;
 
-    private void Awake()
+    private IEnumerator Start()
     {
+        yield return new WaitForEndOfFrame();
         originText = TargetText.text;
         AutoTranslate();
     }
 
     private void OnEnable()
     {
+        AutoTranslate();
         OnLanguageTextChange -= AutoTranslate;
         OnLanguageTextChange += AutoTranslate;
     }
@@ -29,6 +32,8 @@ public class UI_LocalizedText : MonoBehaviour
 
     private void AutoTranslate()
     {
+        if (string.IsNullOrEmpty(originText)) return;
+
         TargetText.text = GetText(originText);
     }
 

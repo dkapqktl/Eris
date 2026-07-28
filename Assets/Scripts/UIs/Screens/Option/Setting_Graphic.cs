@@ -35,6 +35,11 @@ public class Setting_Graphic : MonoBehaviour
 
     private void Initialize()
     {
+        //ResolutionDropdownText.text = SettingManager.CurrentResolution;
+        //ScreenModeDropdownText.text = SettingManager.CurrentScreenMode;
+        //VSyncDropdownText.text = SettingManager.CurrentVSync;
+        //FPSDropdownText.text = SettingManager.CurrentFPS;
+
         ResolutionDropdown.value = SettingManager.CurrentResolution;
         ScreenModeDropdown.value = SettingManager.CurrentScreenMode;
         VSyncDropdown.value = SettingManager.CurrentVSync;

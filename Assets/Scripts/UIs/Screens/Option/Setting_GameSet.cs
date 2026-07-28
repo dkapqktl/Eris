@@ -4,32 +4,46 @@ using UnityEngine;
 
 public class Setting_GameSet : MonoBehaviour
 {
-
+    [Header("Language")]
     [SerializeField] private TMP_Dropdown    LanguageDropdown;
     [SerializeField] private TextMeshProUGUI LanguageDisplayText;
 
+    [Space]
+    [Header("Auto Save")]
     [SerializeField] private TMP_Dropdown    AutoSaveDropdown;
     [SerializeField] private TextMeshProUGUI AutoSaveDisplayText;
 
+    [Space]
+    [Header("Auto Save Interval")]
     [SerializeField] private TMP_Dropdown    AutoSaveIntervalDropdown;
     [SerializeField] private TextMeshProUGUI AutoSaveIntervalDisplayText;
 
+    [Space]
+    [Header("Mini Map")]
     [SerializeField] private TMP_Dropdown    MiniMapDropdown;
     [SerializeField] private TextMeshProUGUI MiniMapDisplayText;
 
+    [Space]
+    [Header("Time")]
     [SerializeField] private TMP_Dropdown    TimeDropdown;
     [SerializeField] private TextMeshProUGUI TimeDisplayText;
 
-    [SerializeField] private TMP_Dropdown    AutoLooDropdown;
+    [Space]
+    [Header("Auto Loot")]
+    [SerializeField] private TMP_Dropdown    AutoLootDropdown;
     [SerializeField] private TextMeshProUGUI AutoLootDisplayText;
 
+    [Space]
+    [Header("Camera")]
     [SerializeField] private TMP_Dropdown    CameraShakeDropdown;
     [SerializeField] private TextMeshProUGUI CameraShakeDisplayText;
 
+    [Space]
+    [Header("Reset Text")]
     public TextMeshProUGUI[] ResetButtonText;
 
 
-    private int languageDropdownValue = SettingManager.CurrentLanguage;
+    private int languageDropdownValue => SettingManager.CurrentLanguage;
     private int currentLanguage = SettingManager.CurrentLanguage;
 
 
@@ -42,7 +56,7 @@ public class Setting_GameSet : MonoBehaviour
 
     private void Initialize()
     {
-        LanguageDropdown.value = SettingManager.CurrentLanguage;
+        LanguageDropdown.value = languageDropdownValue;
     }
 
 
@@ -60,7 +74,7 @@ public class Setting_GameSet : MonoBehaviour
         LanguageDropdown.value = languageDropdownValue;
         
         LanguageDisplayText.text = LanguageManager.GetText("LanguageSetting");
-        AutoLootDisplayText.text = LanguageManager.GetText("AutoSave");
+        AutoSaveDisplayText.text = LanguageManager.GetText("AutoSave");
         AutoSaveIntervalDisplayText.text = LanguageManager.GetText("AutosaveInterval");
         MiniMapDisplayText.text = LanguageManager.GetText("ShowMiniMap");
         TimeDisplayText.text = LanguageManager.GetText("ShowTime");

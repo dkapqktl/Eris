@@ -18,9 +18,9 @@ public class LanguageManager : ManagerBase
 
     protected override IEnumerator OnConnected(GameManager newManager)
     {
-         // SettingManager.LanguageChanged += SetLanguage;
-
-         yield return null;
+        // SettingManager.LanguageChanged += SetLanguage;
+        LanguageChange(SettingManager.CurrentLanguage);
+        yield return null;
     }
 
 
@@ -67,37 +67,33 @@ public class LanguageManager : ManagerBase
             case 0: // 한국어
                 {
                     languageDictionary = LanguageDictionaries.koreanDictionary;
-                    OnLanguageTextChange.Invoke();
                 }
                 break;
 
             case 1: // 영어
                 {
                     languageDictionary = LanguageDictionaries.englishDictionary;
-                    OnLanguageTextChange.Invoke();
                 }
                 break;
 
             case 2: // 일본어  
                 {
                     languageDictionary = LanguageDictionaries.japaneseDictionary;
-                    OnLanguageTextChange.Invoke();
                 }
                 break;
 
             case 3: // 중국어 간체         
                 {
                     languageDictionary = LanguageDictionaries.chineseDictionary_CH;
-                    OnLanguageTextChange.Invoke();
                 }
                 break;
 
             case 4: // 중국어 번체
                 {
                     languageDictionary = LanguageDictionaries.chineseDictionary_TW;
-                    OnLanguageTextChange.Invoke();
                 }
                 break;
         }
+        OnLanguageTextChange?.Invoke();
     }
 }
