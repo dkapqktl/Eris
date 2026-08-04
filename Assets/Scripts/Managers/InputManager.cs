@@ -219,6 +219,7 @@ public class InputManager : ManagerBase
         InitializeAction("Right",
             (context) => { isRight = true; UpdateMove(); },
             (context) => { isRight = false; UpdateMove(); });
+        // 좌클릭시 공격
         InitializeAction("MouseLeftButton",  (context) => OnMouseLeftButton?.Invoke(true, _cursorScreenPosition, _cursorWorldPosition)
                                               ,  (context) => OnMouseLeftButton?.Invoke(false, _cursorScreenPosition, _cursorWorldPosition));
 

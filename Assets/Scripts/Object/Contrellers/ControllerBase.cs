@@ -46,7 +46,10 @@ public class ControllerBase : MonoBehaviour, IFunctionable
         _character = null;
     }
 
-
+    public void CommandAttackToDestination(Vector3 destination)
+    {
+        if (Character && Character.TryGetModule(out AttackModule target) target.Attack();
+    }
 
     public void CommandMoveToDirection(Vector3 direction)
     {

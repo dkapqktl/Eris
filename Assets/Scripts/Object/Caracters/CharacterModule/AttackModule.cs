@@ -106,7 +106,7 @@ public class AttackModule : CharacterModule
         return finalDamage;
     }
 
-    public void Attack()
+    public void Attack(Vector3 targetPosition)
     {
         HitPointModule target = null;
         target.TakeDamage(gameObject, Owner.Controller, FinalDamage());

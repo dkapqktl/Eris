@@ -83,6 +83,13 @@ public class CharacterBase : MonoBehaviour
         moduleDictionary.Clear();
     }
 
+    public bool TryGetModule<T>(out T result) where T : CharacterModule
+    {
+        moduleDictionary.TryGetValue(typeof(T), out CharacterModule finder);
+        result = finder as T;
+        return result;
+    }
+
     public T GetModule<T>() where T : CharacterModule
     {
         moduleDictionary.TryGetValue(typeof(T), out CharacterModule result);
