@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -54,7 +55,6 @@ public class UI_OptionUI : OpenableUIBase
         SoundButtonText.text = LanguageManager.GetText      ("SoundButton");
     }
 
-
     void CancelMenu(bool value)
     {
         if (!value) return;
@@ -75,7 +75,14 @@ public class UI_OptionUI : OpenableUIBase
         if (currentTab == defaultTab) return;
         ConfirmUI.SetActive(true);
 
-        switch (currentTab)
+        int index = currentTab;
+
+        YNResetText(index);
+    }
+
+    public void YNResetText(int index)
+    {
+        switch (index)
         {
             case 0: YNResetButtonTexts.text = LanguageManager.GetText("Initialize Graphic Confirm"); break;
             case 1: YNResetButtonTexts.text = LanguageManager.GetText("Initialize Controller Confirm"); break;
@@ -97,15 +104,19 @@ public class UI_OptionUI : OpenableUIBase
             Tabs[i].SetActive(index == i);
         }
 
+        AllResetTextChange(index);
+    }
+
+    public void AllResetTextChange(int index)
+    {
         switch (index)
         {
             case 0: ResetButtonText.text = LanguageManager.GetText("All Reset Graphic Button"); ResetButton.interactable = true; break;
             case 1: ResetButtonText.text = LanguageManager.GetText("All Reset Controller Button"); ResetButton.interactable = true; break;
             case 2: ResetButtonText.text = LanguageManager.GetText("All Reset Gameplay Button"); ResetButton.interactable = true; break;
             case 3: ResetButtonText.text = LanguageManager.GetText("All Reset Sound Button"); ResetButton.interactable = true; break;
-            case 999: ResetButtonText.text = ""; ResetButton.interactable = false; break;
+
         }
-    }
 
     public void CurrentTabReset()
     {

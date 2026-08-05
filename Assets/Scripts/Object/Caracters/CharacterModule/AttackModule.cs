@@ -6,6 +6,9 @@ public class AttackModule : CharacterModule
     
     StatusModule isStatus;
 
+    [SerializeField] LayerMask targetLayer;
+    [SerializeField] float attackRange = 1.5f;
+
 
     [SerializeField] private float baseAD = 1f;
     private float AttackDamage => isStatus ? baseAD + (isStatus.Strength * 2) + (isStatus.Dexterity) : baseAD;
@@ -17,9 +20,11 @@ public class AttackModule : CharacterModule
     public float ViewAvilityPower => AvilityPower;
 
 
-    [SerializeField] private float baseAttackSpeed = 10f;
+    [SerializeField] private float baseAttackSpeed = 3f;
     private float AttackSpeed => isStatus ? baseAttackSpeed + (isStatus.Dexterity * 0.5f) : baseAttackSpeed;
     public float ViewAttackSpeed => AttackSpeed;
+
+    public float finalAttackTime = 0f;
 
 
     [SerializeField] private float baseCriticalMultiple = 1.25f;
@@ -108,8 +113,27 @@ public class AttackModule : CharacterModule
 
     public void Attack(Vector3 targetPosition)
     {
-        HitPointModule target = null;
-        target.TakeDamage(gameObject, Owner.Controller, FinalDamage());
+        if (finalAttackTime + AttackSpeed > Time.time) return;
+
+        Vector2 attackDirection = (targetPosition - Owner.transform.position).normalized; // 플레이어 위치에서 마우스 방향 계산
+
+        Vector2 attackPosition = (Vector2)Owner.transform.position + attackDirection * attackRange; // 앞쪽 공격 지점 계산
+
+        Collider2D[] targets = Physics2D.OverlapCircleAll(attackPosition, 0.7f, targetLayer); // 공격범위 안 적 탐색
+
+        finalAttackTime = Time.time;
+
+
+
+        foreach (Collider2D hit in targets) // 찾은 적에게 대미지 적용
+        {
+            if (!hit.CompareTag("Monster")) continue;
+
+            if (hit.TryGetComponent(out HitPointModule hp))
+            {
+                hp.TakeDamage(Owner.gameObject, Owner.Controller, FinalDamage());
+            }
+        }
     }
 
     // public float Defence()
