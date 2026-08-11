@@ -60,6 +60,7 @@ public class LanguageManager : ManagerBase
             return key;
         }
     }
+
     public static void GameSetDisplayNameText(int index)
     {
         switch (index)

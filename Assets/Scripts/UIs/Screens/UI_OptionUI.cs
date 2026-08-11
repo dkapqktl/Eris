@@ -35,7 +35,10 @@ public class UI_OptionUI : OpenableUIBase
         LanguageManager.OnLanguageTextChange -= ChangeText;
         LanguageManager.OnLanguageTextChange += ChangeText;
 
+
+
         ChangeText();
+        AllResetTextChange(currentTab);
     }
 
     private void OnDisable()
@@ -99,12 +102,13 @@ public class UI_OptionUI : OpenableUIBase
     public void SettingTab(int index)
     {
         currentTab = index;
+
         for (int i = 0; i < Tabs.Length; i++)
         {
             Tabs[i].SetActive(index == i);
         }
 
-        AllResetTextChange(index);
+        AllResetTextChange(currentTab);
     }
 
     public void AllResetTextChange(int index)
@@ -115,8 +119,9 @@ public class UI_OptionUI : OpenableUIBase
             case 1: ResetButtonText.text = LanguageManager.GetText("All Reset Controller Button"); ResetButton.interactable = true; break;
             case 2: ResetButtonText.text = LanguageManager.GetText("All Reset Gameplay Button"); ResetButton.interactable = true; break;
             case 3: ResetButtonText.text = LanguageManager.GetText("All Reset Sound Button"); ResetButton.interactable = true; break;
-
+            default : ResetButtonText.text = LanguageManager.GetText("Reset"); ResetButton.interactable = false; break;
         }
+    }
 
     public void CurrentTabReset()
     {
