@@ -19,7 +19,7 @@ public class HitPointModule : CharacterModule
 
     [SerializeField] private float baseMaxHP = 10;
     
-    public float MaxHP =>  baseMaxHP + (isStatus.Strength * 5) + (isLevel.level * 10);
+    public float MaxHP =>  baseMaxHP + (isStatus?.Strength * 5 ?? 0) + (isLevel?.level * 10 ?? 0);
 
     private float _curHP = 30;
     public float curHP => _curHP;
@@ -61,22 +61,26 @@ public class HitPointModule : CharacterModule
         isStatus.OnStatusChanged -= BroadCastChangedHP;
     }
 
-    public void TakeDamage(GameObject causer, ControllerBase instigator, float damage)
+    public float? TakeDamage(GameObject causer, ControllerBase instigator, float damage)
     {
-        if (IsDead || invincibility) return; // 죽거나 무적 상태라면 리턴
+        if (IsDead || invincibility) return null; // 죽거나 무적 상태라면 리턴
 
-        float finalDamage = damage * isDefence.Defensive();
+        float finalDamage = damage * ( isDefence?.Defensive() ?? 1 );
 
         _curHP = Mathf.Clamp(_curHP - finalDamage, _minhp, MaxHP);
 
-        Owner.DamageNotify(causer, instigator, finalDamage); // 데미지를 쓰는넘들에게 알림
+        Debug.Log($"{finalDamage}의 데미지를 받았다");
+
+        Owner?.DamageNotify(causer, instigator, finalDamage); // 데미지를 쓰는넘들에게 알림
 
         if (IsDead)
         {
-            Owner.DeathNotify(gameObject, damage, _curHP); // 죽음을 쓰는넘들에게 정보 알림
+            Owner?.DeathNotify(gameObject, damage, _curHP); // 죽음을 쓰는넘들에게 정보 알림
         }
 
         BroadCastChangedHP();
+
+        return finalDamage;
     }
 
     // public float CurIncreaseHP(float value) // 현재 체력 증가

@@ -12,12 +12,12 @@ TagManager:
   - 
   - Water
   - UI
+  - NonTarget
   - Player
   - Monster
   - NPC
   - Item
   - AttackObject
-  - 
   - 
   - 
   - 

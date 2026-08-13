@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class AttackModule : CharacterModule
@@ -111,27 +112,42 @@ public class AttackModule : CharacterModule
         return finalDamage;
     }
 
+    public void OnDrawGizmos()
+    {
+        if (Owner is null) return;
+        Vector2 attackDirection = (InputManager.CursorWorldPosition - Owner.transform.position).normalized; // 플레이어 위치에서 마우스 방향 계산
+        Vector2 attackPosition = (Vector2)Owner.transform.position + attackDirection * attackRange; // 앞쪽 공격 지점 계산
+
+        Gizmos.DrawWireSphere(Owner.transform.position, attackRange);
+    }
+
     public void Attack(Vector3 targetPosition)
     {
-        if (finalAttackTime + AttackSpeed > Time.time) return;
+        Debug.Log("Attack 호출됨");
+        
+        // if (finalAttackTime + AttackSpeed > Time.time) return;
 
         Vector2 attackDirection = (targetPosition - Owner.transform.position).normalized; // 플레이어 위치에서 마우스 방향 계산
 
         Vector2 attackPosition = (Vector2)Owner.transform.position + attackDirection * attackRange; // 앞쪽 공격 지점 계산
+    
+        Collider2D[] targets = Physics2D.OverlapCircleAll(attackPosition, attackRange, targetLayer); // 공격범위 안 적 탐색
 
-        Collider2D[] targets = Physics2D.OverlapCircleAll(attackPosition, 0.7f, targetLayer); // 공격범위 안 적 탐색
+        
 
-        finalAttackTime = Time.time;
+        Debug.Log($"TargetLayer 값: {targetLayer.value}");
 
+        Debug.Log($"공격 위치: {attackPosition}");
+        Debug.Log($"찾은 타겟 수: {targets.Length}");
 
+        // finalAttackTime = Time.time;
 
         foreach (Collider2D hit in targets) // 찾은 적에게 대미지 적용
         {
-            if (!hit.CompareTag("Monster")) continue;
-
             if (hit.TryGetComponent(out HitPointModule hp))
             {
                 hp.TakeDamage(Owner.gameObject, Owner.Controller, FinalDamage());
+                Debug.Log("공격!");
             }
         }
     }

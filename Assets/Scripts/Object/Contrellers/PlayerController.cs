@@ -7,8 +7,8 @@ public class PlayerController : ControllerBase
     protected override void OnPossess(CharacterBase newCharacter)
     {
         base.OnPossess(newCharacter);
-        InputManager.OnMouseRightButton -= AttackToMouse;
-        InputManager.OnMouseRightButton += AttackToMouse;
+        InputManager.OnMouseLeftButton -= AttackToMouse;
+        InputManager.OnMouseLeftButton += AttackToMouse;
         InputManager.OnMove -= MoveToDirection;
         InputManager.OnMove += MoveToDirection;
 
@@ -30,7 +30,7 @@ public class PlayerController : ControllerBase
 
     public void MoveToMousePosition(bool value, Vector2 screenPosition, Vector3 worldPosition)
     {
-        if (value) CommandMoveToDestination(worldPosition, 0.0f);
+        if (value) CommandMoveToDestination(worldPosition, 0f);
     }
 
 

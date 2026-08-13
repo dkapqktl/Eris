@@ -175,6 +175,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterBase (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 1782885665743987210, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3533095975641063731, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
       propertyPath: m_Sprite
       value: 
@@ -222,23 +226,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ChaseAIController
   _focusTarget: {fileID: 1735431976}
---- !u!114 &93330067
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 93330057}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d77346d255ce3ce48a7dd36ebbcefea8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HitPointModule
-  invincibility: 0
-  baseMaxHP: 10
-  _minhp: 0
-  hpRegenInterval: 5
-  hpRegenPercent: 0.05
 --- !u!1 &166745362 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1782885665743987210, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
@@ -2202,6 +2189,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterBase (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 1782885665743987210, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6173330457735387148, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
       propertyPath: m_Constraints
       value: 4
@@ -2274,6 +2265,10 @@ PrefabInstance:
     - target: {fileID: 1782885665743987210, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
       propertyPath: m_Name
       value: CharacterBase (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 1782885665743987210, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6173330457735387148, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
       propertyPath: m_Constraints
@@ -2472,7 +2467,8 @@ GameObject:
   - component: {fileID: 1220774327}
   - component: {fileID: 1220774326}
   - component: {fileID: 1220774325}
-  m_Layer: 0
+  - component: {fileID: 1220774330}
+  m_Layer: 8
   m_Name: Monster_Goblin
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -2493,7 +2489,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::AttackModule
   targetLayer:
     serializedVersion: 2
-    m_Bits: 1152
+    m_Bits: 128
   attackRange: 1
   baseAD: 10
   baseAP: 0
@@ -2601,6 +2597,18 @@ Transform:
   - {fileID: 277484963}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1220774330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1220774324}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44fdba157c5feb54b9edb88b79e0b36d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CharacterBase
 --- !u!1 &1371485730
 GameObject:
   m_ObjectHideFlags: 0
@@ -2919,23 +2927,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab4b7a336c008f34c86d4fc65df7a5a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerController
---- !u!114 &1735431983
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1735431976}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d77346d255ce3ce48a7dd36ebbcefea8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::HitPointModule
-  invincibility: 0
-  baseMaxHP: 10
-  _minhp: 0
-  hpRegenInterval: 5
-  hpRegenPercent: 0.05
 --- !u!1 &1761567948
 GameObject:
   m_ObjectHideFlags: 0
@@ -3173,6 +3164,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterBase (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 1782885665743987210, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6173330457735387148, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
       propertyPath: m_Constraints
       value: 4
@@ -3246,6 +3241,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Character
       objectReference: {fileID: 0}
+    - target: {fileID: 1782885665743987210, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 2961674887715895046, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
+      propertyPath: targetLayer.m_Bits
+      value: 256
+      objectReference: {fileID: 0}
+    - target: {fileID: 3017405798314655729, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
+      propertyPath: m_Layer
+      value: 7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3253,9 +3260,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1782885665743987210, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1735431982}
-    - targetCorrespondingSourceObject: {fileID: 1782885665743987210, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1735431983}
   m_SourcePrefab: {fileID: 100100000, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
 --- !u!1001 &3858469871361361665
 PrefabInstance:
@@ -3313,6 +3317,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: CharacterBase
       objectReference: {fileID: 0}
+    - target: {fileID: 1782885665743987210, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2961674887715895046, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
+      propertyPath: targetLayer.m_Bits
+      value: 512
+      objectReference: {fileID: 0}
     - target: {fileID: 6173330457735387148, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
       propertyPath: m_Constraints
       value: 4
@@ -3329,9 +3341,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 1782885665743987210, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
       insertIndex: -1
       addedObject: {fileID: 93330066}
-    - targetCorrespondingSourceObject: {fileID: 1782885665743987210, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 93330067}
   m_SourcePrefab: {fileID: 100100000, guid: ac0fa7e79ae4aeb4890e72304cad99ed, type: 3}
 --- !u!1001 &7011539349218059982
 PrefabInstance:
