@@ -1,4 +1,5 @@
 using TMPro;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public class AttackModule : CharacterModule
@@ -49,6 +50,7 @@ public class AttackModule : CharacterModule
     [SerializeField] private float _buff = 0f;
     public float Buff => _buff;
 
+    public float attackAngle = 90f; // 부채꼴 공격
     public override void OnRegistration(CharacterBase newOwner)
     {
         base.OnRegistration(newOwner);
@@ -121,17 +123,19 @@ public class AttackModule : CharacterModule
         Gizmos.DrawWireSphere(Owner.transform.position, attackRange);
     }
 
-    public void Attack(Vector3 targetPosition)
+    public void AngleAttack(Vector3 targetPosition)
     {
         Debug.Log("Attack 호출됨");
-        
+
         // if (finalAttackTime + AttackSpeed > Time.time) return;
 
-        Vector2 attackDirection = (targetPosition - Owner.transform.position).normalized; // 플레이어 위치에서 마우스 방향 계산
+        Vector2 ownerPosition = Owner.transform.position; // 플레이어 위치
+
+        Vector2 attackDirection = ((Vector2)targetPosition - ownerPosition).normalized; // 플레이어 위치에서 마우스 방향 계산
 
         Vector2 attackPosition = (Vector2)Owner.transform.position + attackDirection * attackRange; // 앞쪽 공격 지점 계산
     
-        Collider2D[] targets = Physics2D.OverlapCircleAll(attackPosition, attackRange, targetLayer); // 공격범위 안 적 탐색
+        Collider2D[] targets = Physics2D.OverlapCircleAll(ownerPosition, attackRange, targetLayer); // 공격범위 안 적 탐색
 
         
 
@@ -142,12 +146,25 @@ public class AttackModule : CharacterModule
 
         // finalAttackTime = Time.time;
 
-        foreach (Collider2D hit in targets) // 찾은 적에게 대미지 적용
+        foreach (Collider2D hit in targets)
         {
-            if (hit.TryGetComponent(out HitPointModule hp))
+            Vector2 targetDirection =
+                ((Vector2)hit.transform.position - ownerPosition).normalized;
+
+            float angle =   Vector2.Angle(attackDirection, targetDirection);
+
+            if (angle <= attackAngle / 2f)
             {
-                hp.TakeDamage(Owner.gameObject, Owner.Controller, FinalDamage());
-                Debug.Log("공격!");
+                if (hit.TryGetComponent(out HitPointModule hp))
+                {
+                    hp.TakeDamage(
+                        Owner.gameObject,
+                        Owner.Controller,
+                        FinalDamage()
+                    );
+
+                    Debug.Log("부채꼴 공격!");
+                }
             }
         }
     }

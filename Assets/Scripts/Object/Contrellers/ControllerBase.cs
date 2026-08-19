@@ -48,7 +48,7 @@ public class ControllerBase : MonoBehaviour, IFunctionable
 
     public void CommandAttackToDestination(Vector3 destination)
     {
-        if (Character && Character.TryGetModule(out AttackModule target)) target.Attack(destination);
+        if (Character && Character.TryGetModule(out AttackModule target)) target.AngleAttack(destination);
     }
 
     public void CommandMoveToDirection(Vector3 direction)
