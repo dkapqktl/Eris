@@ -492,6 +492,8 @@ public class SettingManager : ManagerBase
 
         LanguageManager.SetLanguage(targetLanguage);
         SaveGameplaySettings();
+
+        LanguageChanged?.Invoke(index);
     }
     public static void OnSetAutoSave(int index)
     {

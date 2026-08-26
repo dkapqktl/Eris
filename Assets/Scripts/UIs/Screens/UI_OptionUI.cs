@@ -3,8 +3,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+public delegate void TabChangeEvent();
+
 public class UI_OptionUI : OpenableUIBase
 {
+    public static event TabChangeEvent OnTabChangeEvent;
+
     [SerializeField] private GameObject setGraphics;
     [SerializeField] private GameObject setController;
     [SerializeField] private GameObject setGameSet;
@@ -35,8 +39,6 @@ public class UI_OptionUI : OpenableUIBase
         LanguageManager.OnLanguageTextChange -= ChangeText;
         LanguageManager.OnLanguageTextChange += ChangeText;
 
-
-
         ChangeText();
         AllResetTextChange(currentTab);
     }
@@ -56,6 +58,8 @@ public class UI_OptionUI : OpenableUIBase
         ControllerButtonText.text = LanguageManager.GetText ("ControllerButton");
         GameplayButtonText.text = LanguageManager.GetText   ("GameplayButton");
         SoundButtonText.text = LanguageManager.GetText      ("SoundButton");
+
+        AllResetTextChange(currentTab);
     }
 
     void CancelMenu(bool value)
@@ -81,6 +85,7 @@ public class UI_OptionUI : OpenableUIBase
         int index = currentTab;
 
         YNResetText(index);
+        OnTabChangeEvent.Invoke();
     }
 
     public void YNResetText(int index)

@@ -31,15 +31,11 @@ public class Setting_Graphic : MonoBehaviour
 
         LanguageManager.OnLanguageTextChange += OnLanguageChange;
 
+        UI_OptionUI.OnTabChangeEvent += Initialize;
     }
 
     private void Initialize()
     {
-        //ResolutionDropdownText.text = SettingManager.CurrentResolution;
-        //ScreenModeDropdownText.text = SettingManager.CurrentScreenMode;
-        //VSyncDropdownText.text = SettingManager.CurrentVSync;
-        //FPSDropdownText.text = SettingManager.CurrentFPS;
-
         ResolutionDropdown.value = SettingManager.CurrentResolution;
         ScreenModeDropdown.value = SettingManager.CurrentScreenMode;
         VSyncDropdown.value = SettingManager.CurrentVSync;
@@ -99,7 +95,7 @@ public class Setting_Graphic : MonoBehaviour
     }
     public void OnVSyncChange(int index)
     {
-        ScreenModeDropdown.value = index;
+        VSyncDropdown.value = index;
     }
     public void ClaimVSyncReset()
     {

@@ -28,8 +28,8 @@ public partial class LanguageDictionaries
         { "No", "No" },
 
         // Graphic Display
-        { "Resolution","Resolution" },
-        { "ScreenMode","Screen Mode" },
+        { "ResolutionDisplay","Resolution" },
+        { "ScreenModeDisplay","Screen Mode" },
 
         // Graphic_ScreenMode Dropdown Text
         { "ExclusiveFullScreen", "Exclusive Fullscreen"},

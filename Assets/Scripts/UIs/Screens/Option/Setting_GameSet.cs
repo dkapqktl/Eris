@@ -50,7 +50,11 @@ public class Setting_GameSet : MonoBehaviour
     {
         GameManager.OnInitializeManager += Initialize;
 
+        SettingManager.LanguageChanged += OnlanguageUIChange;
+
         LanguageManager.OnLanguageTextChange += OnLanguageChange;
+
+        UI_OptionUI.OnTabChangeEvent += Initialize;
     }
 
     private void Initialize()
@@ -68,10 +72,14 @@ public class Setting_GameSet : MonoBehaviour
     {
         SettingManager.LanguageReset();
     }
+
+    public void OnlanguageUIChange(int index)
+    {
+        LanguageDropdown.value = index;
+    }
+
     public void OnLanguageChange()
     {
-        LanguageDropdown.value = languageDropdownValue;
-        
         LanguageDisplayText.text = LanguageManager.GetText("LanguageSetting");
         AutoSaveDisplayText.text = LanguageManager.GetText("AutoSave");
         AutoSaveIntervalDisplayText.text = LanguageManager.GetText("AutosaveInterval");
