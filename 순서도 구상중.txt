@@ -8,9 +8,30 @@
 
 4. 공격방식 제작
 
+공격자
+ ↓
+AttackModule
+ ↓
+DamageInfo 전달
+ ↓
+피격자 DefenseModule
+ ↓
+방어 계산
+ ↓
+HitPointModule
+ ↓
+실제 피해량 반환
+ ↓
+공격자에게 결과 반환
+
+
+
 
 01. 화상
 02. 젖음
 03. 감전
 04. 빙결
 05. 중독
+
+
+대상 
