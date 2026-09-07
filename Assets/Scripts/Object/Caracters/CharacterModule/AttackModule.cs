@@ -35,7 +35,7 @@ public class AttackModule : CharacterModule
 
     [SerializeField] private float baseCriticalChance = 0f;
 
-    private float CriticalChance => isStatus ? baseCriticalChance + (isStatus.Dexterity * 0.5f) : baseCriticalChance;
+    private float CriticalChance => isStatus ? Mathf.Clamp(baseCriticalChance + (isStatus.Dexterity * 0.5f), 0f, 100f) : baseCriticalChance;
     public float ViewCriticalChance => CriticalChance;
 
 
