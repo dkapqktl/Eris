@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.Collections;
 using UnityEngine;
 
 public class AttackModule : CharacterModule
@@ -12,7 +13,7 @@ public class AttackModule : CharacterModule
 
 
     [SerializeField] private float baseAD = 1f;
-    private float AttackDamage => isStatus ? baseAD + (isStatus.Strength * 2) + (isStatus.Dexterity) : baseAD;
+    private float AttackDamage => (isStatus ? baseAD + (isStatus.Strength * 2) + (isStatus.Dexterity) : baseAD) * (acceAD + 1);
     public float ViewAttackDamage => AttackDamage;
 
 
@@ -50,6 +51,8 @@ public class AttackModule : CharacterModule
     public float Buff => _buff;
 
     public float attackAngle = 90f; // 부채꼴 공격
+
+    public float acceAD = 0.5f;
     public override void OnRegistration(CharacterBase newOwner)
     {
         base.OnRegistration(newOwner);
